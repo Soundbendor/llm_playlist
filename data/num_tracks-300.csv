@@ -1,1 +1,1 @@
-name,num_tracks,file,pid,modified_at,collaborative,num_albums,num_followers
+name,num_tracks,idx,file,pid,modified_at,collaborative,num_albums,num_followers
