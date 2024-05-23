@@ -27,16 +27,26 @@ def connect_to_nct():
     cur = cnx.cursor()
     return cnx, cur
 
+def result_fetcher(res, get_all=False):
+    ret = {}
+    if get_all == False:
+        restup = res.fetchone()
+        if (restup is None) == False:
+            ret = nct_tup_to_dict(restup)
+    else:
+        restups = res.fetchall()
+        ret = [nct_tup_to_dict(x) for x in restups]
+    return ret
+
+            
+
 def get_features_by_id(cur,_id):
     res = cur.execute(f'SELECT * FROM new_combined_table WHERE id="{_id}"')
-    restup = res.fetchone()
-    resdict = None
-    try:
-        resdict = nct_tup_to_dict(restup)
-    except:
-        resdict = {}
-    return resdict
+    return result_fetcher(res)
 
+def get_features_by_artist_and_trackname(cur,_artist, _track):
+    res = cur.execute(f'SELECT * FROM new_combined_table WHERE artist_name="{_artist}" AND track_name="{_track}"')
+    return result_fetcher(res)
 
 if __name__ == "__main__":
     res = get_playlist('mpd.slice.549000-549999.json', 333)
