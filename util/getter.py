@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os, json,csv,sqlite3
 import numpy as np
 import glob as G
+import pandas as pd
 
 # joined.db new_combined_table has duplicates so need to use select distinct in queries
 # for example: select * from new_combined_table where (artist_name="Prince") and track_name="Little Red Corvette";
@@ -24,13 +25,9 @@ example track
 
 # features to compare by
 comp_feat = ['danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo']
-comp_str = ','.join(comp_feat)
-comp_query = f'select distinct {comp_str} from new_combined_table'
 
-# new combined table tup to dictionary when using select *
-def nct_tup_to_dict(nct_tup):
-    return {x:y for (x,y) in zip(nct_feat, nct_tup)}
-
+# predefining so don't have to run every time
+non_comp_feat = [x for x in nct_feat if x not in comp_feat]
 
 def get_playlist(file, idx):
     cur_path = os.path.join(G.data_dir, file)
@@ -48,52 +45,28 @@ def connect_to_nct():
     cur = cnx.cursor()
     return cnx, cur
 
-# get all = get all results, to_dict= return in dict form
-def result_fetcher(res, get_all=False,to_dict=True):
-    ret = {}
-    if get_all == False:
-        restup = res.fetchone()
-        if (restup is None) == False:
-            if to_dict == True:
-                ret = nct_tup_to_dict(restup)
-            else:
-                ret = restup
-    else:
-        restups = res.fetchall()
-        if to_dict == True:
-            ret = [nct_tup_to_dict(x) for x in restups]
-        else:
-            ret = restups
-    return ret
+def get_features_by_id(cnx,_id):
+    return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE id="{_id}"', cnx)
 
-            
 
-def get_features_by_id(cur,_id):
-    res = cur.execute(f'SELECT DISTINCT * FROM new_combined_table WHERE id="{_id}"')
-    return result_fetcher(res)
+def get_features_by_artist_and_trackname(cnx,_artist, _track):
+    return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}" AND track_name="{_track}"', cnx)
 
-def get_features_by_artist_and_trackname(cur,_artist, _track):
-    res = cur.execute(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}" AND track_name="{_track}"')
-    return result_fetcher(res)
-
-def get_features_by_artist(cur,_artist):
-    res = cur.execute(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}"')
-    return result_fetcher(res,get_all=True)
+def get_features_by_artist(cnx,_artist):
+    return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}"', cnx)
 
 
 def get_track_uri_from_playlist(playlist):
     return [x['track_uri'] for x in playlist['tracks']]
 
-def get_comp_feat_all_songs(cur):
-    res = cur.execute(comp_query)
-    return result_fetcher(res,get_all=True, to_dict = False)
+def get_feat_all_songs(cnx):
+    return pd.read_sql('select distinct * from new_combined_table', cnx)
 
-def get_comp_feat_playlist(cur, playlist):
+def get_feat_playlist(cnx, playlist):
     songids = get_track_uri_from_playlist(playlist)
     songstr = '","'.join(songids)
-    cur_q = f'select distinct {comp_str} from new_combined_table where uri in ("{songstr}")'
-    res = cur.execute(cur_q)
-    return result_fetcher(res,get_all=True, to_dict = False)
+    cur_q = f'select distinct * from new_combined_table where uri in ("{songstr}")'
+    return pd.read_sql(cur_q, cnx)
 
 if __name__ == "__main__":
     res = get_playlist('mpd.slice.549000-549999.json', 333)
@@ -103,13 +76,13 @@ if __name__ == "__main__":
     #print(r2tracks)
     #print(res2)
     cnx, cur = connect_to_nct()
-    res2f = get_comp_feat_playlist(cur,res2)
+    res2f = get_feat_playlist(cnx,res2)
     #print(res2f)
     #resdict = get_features_by_id(cur, "6JHrzpRYiDx53iTgTbI76X")
     #resdict2 = get_features_by_id(cur, "2Viqjkxmiu8hGIhjwtqYvI")
-    resdict3 = get_features_by_id(cur, "3uxhyRdWVXp7GQvERQl6fA")
+    resdict3 = get_features_by_id(cnx, "3uxhyRdWVXp7GQvERQl6fA")
     #print(resdict3)
-    resarr = get_features_by_artist(cur, "Radiohead")
+    resarr = get_features_by_artist(cnx, "Radiohead")
     #print(resarr)
     #print(resdict)
     #print(resdict2)
