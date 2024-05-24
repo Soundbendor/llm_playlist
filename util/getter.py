@@ -48,6 +48,12 @@ def get_features_by_artist_and_trackname(cur,_artist, _track):
     res = cur.execute(f'SELECT * FROM new_combined_table WHERE artist_name="{_artist}" AND track_name="{_track}"')
     return result_fetcher(res)
 
+def get_features_by_artist(cur,_artist):
+    res = cur.execute(f'SELECT * FROM new_combined_table WHERE artist_name="{_artist}"')
+    return result_fetcher(res,get_all=True)
+
+
+
 if __name__ == "__main__":
     res = get_playlist('mpd.slice.549000-549999.json', 333)
     #print(res)
@@ -56,6 +62,8 @@ if __name__ == "__main__":
     cnx, cur = connect_to_nct()
     resdict = get_features_by_id(cur, "6JHrzpRYiDx53iTgTbI76X")
     resdict2 = get_features_by_id(cur, "2Viqjkxmiu8hGIhjwtqYvI")
+    resarr = get_features_by_artist(cur, "Radiohead")
+    print(resarr)
     #print(resdict)
     #print(resdict2)
 
