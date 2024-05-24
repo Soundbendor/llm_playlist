@@ -53,17 +53,22 @@ def get_features_by_artist(cur,_artist):
     return result_fetcher(res,get_all=True)
 
 
+def get_song_ids_from_playlist(playlist):
+    return [x['track_uri'] for x in playlist['tracks']]
+
 
 if __name__ == "__main__":
     res = get_playlist('mpd.slice.549000-549999.json', 333)
     #print(res)
     res2 = get_playlist('mpd.slice.549000-549999.json', 793)
+    r2tracks = get_song_ids_from_playlist(res2)
+    print(r2tracks)
     #print(res2)
     cnx, cur = connect_to_nct()
     resdict = get_features_by_id(cur, "6JHrzpRYiDx53iTgTbI76X")
     resdict2 = get_features_by_id(cur, "2Viqjkxmiu8hGIhjwtqYvI")
     resarr = get_features_by_artist(cur, "Radiohead")
-    print(resarr)
+    #print(resarr)
     #print(resdict)
     #print(resdict2)
 
