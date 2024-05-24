@@ -1,4 +1,9 @@
 # from https://www.aicrowd.com/challenges/spotify-million-playlist-dataset-challenge#dataset
+# numpy intersection doesn't count duplicates but i count each duplicate in dcg
+# note that G = [1,2,3,4,5], R = [1,6,7] has a NDCG of 1
+# G = [1,2,3,4,5], R = [1,2,3,4,5,6,7] has a NDCG of 1
+# G = [1,2,3,4,5], R = [1] also has a NDCG of 1
+# G = [1,2,3,4,5, R = [0,1] has a NDCG < 1
 
 import numpy as np
 
@@ -14,7 +19,7 @@ def r_precision(g_arr,r_arr):
     num_g = g_arr.shape[0]
     return num_numer/num_g
 
-def dgc(g_arr, r_arr):
+def dcg(g_arr, r_arr):
     """
     g_arr = ground truth numpy 1d array(s)
     r_arr = retrieved numpy 1d array(s)
@@ -23,19 +28,24 @@ def dgc(g_arr, r_arr):
 
     """
     num_g = g_arr.shape[0]
-    labels = np.arange(num_g,0,-1)
+    #labels = np.arange(num_g-1,-1,-1)
+    #labels = np.arange(num_g, 0, -1)
 
+
+    #print(num_g, labels)
     # maybe this doesn't work with repeats
-    label_dict = {entry: label for (entry,label) in zip(num_g, labels)}
+    #label_dict = {entry: label for (entry,label) in zip(g_arr, labels)}
+    #label_dict = {entry: 1 for (entry,label) in zip(g_arr, labels)}
 
-    entries = label_dict.keys() # get all songs that have relevance labels
+    #entries = label_dict.keys() # get all songs that have relevance labels
     
     # entries without relevance labels get 0
-    labeled_r = np.array([label_dict[x] if x in entries else 0 for x in r_arr])
+    labeled_r = np.array([1 if x in g_arr else 0 for x in r_arr])
 
-    num_r = r.arr.shape[0]
-    denom = np.hstack(([1.], np.log2(np.arange(2, num_r))))
+    num_r = r_arr.shape[0]
+    denom = np.hstack(([1.], np.log2(np.arange(2, num_r+1))))
     terms = np.divide(labeled_r,denom)
+    #print(terms)
     cur_dcg = np.sum(terms)
 
     return cur_dcg
