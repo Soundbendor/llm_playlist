@@ -91,7 +91,7 @@ def get_comp_feat_all_songs(cur):
 def get_comp_feat_playlist(cur, playlist):
     songids = get_track_uri_from_playlist(playlist)
     songstr = '","'.join(songids)
-    cur_q = f'select {comp_str} from new_combined_table where uri in ("{songstr}")'
+    cur_q = f'select distinct {comp_str} from new_combined_table where uri in ("{songstr}")'
     res = cur.execute(cur_q)
     return result_fetcher(res,get_all=True, to_dict = False)
 
