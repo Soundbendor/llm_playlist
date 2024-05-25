@@ -67,7 +67,7 @@ if __name__ == "__main__":
     print(res)
     """
     cond_num = 10
-    gen_num = 100
+    gen_num = 1000
 
     res_dir2 = os.path.join(__file__.split(os.sep)[0], 'res', f'prellm_test-{cond_num}_{gen_num}')
     pl = get_playlists(sample_num = 500)
