@@ -108,13 +108,19 @@ if __name__ == "__main__":
         csvw.writerow(weights)
 
     runs = []
+
+
+    cnx, cursor = UG.connect_to_nct()
+
+    all_song_data, scaler = PL.load_all_songs(cnx, normalize=True)
+
     for pl_i, pl_dict in enumerate(pl):
         if pl_i < num_runs:
         #if True:
             print(pl_i)
             print('-----')
             pl_c = UG.get_playlist(pl_dict['file'], int(pl_dict['idx']))
-            pl_songs, res_songs, res_cos_sim = PL.get_closest_songs_to_playlist(PL.cnx, pl_c, metric='manhattan', mask=cond_num, k=gen_num, weights = weights)
+            pl_songs, res_songs, res_cos_sim = PL.get_closest_songs_to_playlist(PL.cnx, pl_c, all_song_data, metric='manhattan', mask=cond_num, k=gen_num, weights = weights, scaler=scaler)
             truth_ids = pl_songs['id'].to_numpy()[cond_num:]
             retr_ids = res_songs['id'].to_numpy()
             r_prec = UM.r_precision(truth_ids, retr_ids)
