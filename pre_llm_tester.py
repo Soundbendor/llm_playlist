@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
     cnx, cursor = UG.connect_to_nct()
 
-    all_song_data, scaler = PL.load_all_songs(cnx, normalize=True)
+    all_song_df, all_song_feat, scaler = PL.load_all_songs(cnx, normalize=True)
 
     for pl_i, pl_dict in enumerate(pl):
         if pl_i < num_runs:
@@ -120,7 +120,7 @@ if __name__ == "__main__":
             print(pl_i)
             print('-----')
             pl_c = UG.get_playlist(pl_dict['file'], int(pl_dict['idx']))
-            pl_songs, res_songs, res_cos_sim = PL.get_closest_songs_to_playlist(cnx, pl_c, all_song_data, metric='euclidean', mask=cond_num, k=gen_num, weights = weights, scaler=scaler)
+            pl_songs, res_songs, res_cos_sim = PL.get_closest_songs_to_playlist(cnx, pl_c, all_song_feat, all_song_df, metric='euclidean', mask=cond_num, k=gen_num, weights = weights, scaler=scaler)
             truth_ids = pl_songs['id'].to_numpy()[cond_num:]
             retr_ids = res_songs['id'].to_numpy()
             r_prec = UM.r_precision(truth_ids, retr_ids)
