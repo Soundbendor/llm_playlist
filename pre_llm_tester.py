@@ -77,42 +77,53 @@ if __name__ == "__main__":
             'liveness':1.0,
             'valence':1.0,
             'tempo': 1.0}
-    """
-    weights = {'danceability':0.75,
-            'energy':0.75,
+    weights = {'danceability': 0.75,
+            'energy':1.0,
             'key':0.0,
-            'loudness':0.125,
+            'loudness':0.0,
             'mode':0.5,
-            'speechiness':0.75,
-            'acousticness':0.5,
-            'instrumentalness':0.75,
+            'speechiness':1.0,
+            'acousticness':1.5,
+            'instrumentalness':1.5,
             'liveness':0.25,
             'valence':1.0,
-            'tempo': 1.0}
-    """
+            'tempo': 2.5}
+    #weights = None
     cond_num = 10
     gen_num = 100
-
-    res_dir2 = os.path.join(__file__.split(os.sep)[0], 'res', f'prellm_test2-{cond_num}_{gen_num}')
+    res_dir2 = os.path.join(__file__.split(os.sep)[0], 'res', f'prellm_test9-{cond_num}_{gen_num}')
     pl = get_playlists(sample_num = 500)
     num_runs = 1000
     mheader = ['expr_idx', 'pl_idx', 'r_prec', 'dcg', 'idcg', 'ndcg', 'clicks']
     r2_path = os.path.join(res_dir2, f'metrics-{cond_num}_{gen_num}.csv')
     w_path = os.path.join(res_dir2, f'weights-{cond_num}_{gen_num}.csv')
 
+    #weights = [1.0, 0.8,0.6,0.4,0.2]
     if os.path.exists(res_dir2) == False:
         os.mkdir(res_dir2)
-    with open(w_path, 'w') as f:
-        csvw = csv.DictWriter(f, fieldnames = UG.comp_feat)
-        csvw.writeheader()
-        csvw.writerow(weights)
+    if weights != None: 
+        if 'dict' in type(weights).__name__:
+            with open(w_path, 'w') as f:
+                csvw = csv.DictWriter(f, fieldnames = UG.comp_feat)
+                csvw.writeheader()
+                csvw.writerow({x:y for (x,y) in weights.items() if x in UG.comp_feat})
+        else:
+            wlen = len(weights)
+            fieldnames = [f'w{i}' for i in range(1, wlen+1)]
+            wzip = {y:x for (x,y) in zip(weights,fieldnames)}
+            with open(w_path, 'w') as f:
+                csvw = csv.DictWriter(f, fieldnames = fieldnames)
+                csvw.writeheader()
+                csvw.writerow(wzip)
+
+
 
     runs = []
 
 
     cnx, cursor = UG.connect_to_nct()
 
-    all_song_df, all_song_feat, scaler = PL.load_all_songs(cnx, normalize=True)
+    all_song_df, all_song_feat, txs = PL.load_all_songs(cnx, normalize=True, pca=0,seed=cur_seed)
 
     for pl_i, pl_dict in enumerate(pl):
         if pl_i < num_runs:
@@ -120,7 +131,7 @@ if __name__ == "__main__":
             print(pl_i)
             print('-----')
             pl_c = UG.get_playlist(pl_dict['file'], int(pl_dict['idx']))
-            pl_songs, res_songs, res_cos_sim = PL.get_closest_songs_to_playlist(cnx, pl_c, all_song_feat, all_song_df, metric='euclidean', mask=cond_num, k=gen_num, weights = weights, scaler=scaler)
+            pl_songs, res_songs, res_cos_sim = PL.get_closest_songs_to_playlist(cnx, pl_c, all_song_feat, all_song_df, metric='l1', mask=cond_num, k=gen_num, weights = weights, tx=txs)
             truth_ids = pl_songs['id'].to_numpy()[cond_num:]
             retr_ids = res_songs['id'].to_numpy()
             r_prec = UM.r_precision(truth_ids, retr_ids)
