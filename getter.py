@@ -55,7 +55,7 @@ def get_features_by_artist_and_trackname(cnx,_artist, _track):
 
 def get_features_by_artist(cnx,_artist, group = True):
     if group == True:
-        return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}" GROUP BY artist_name,track_name ORDER BY duration_ms', cnx)
+        return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}" GROUP BY artist_name,track_name ORDER BY duration_ms ASC', cnx)
     else:
         return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}"', cnx)
 
