@@ -46,8 +46,10 @@ def get_closest_songs_to_playlist(_cnx, playlist, all_song_data, metric='euclide
     return playlist_feat, top_songs, top_dist
 
 if __name__ == "__main__":
+    cnx, cursor = UG.connect_to_nct()
+    all_song_data, scaler = load_all_songs(cnx, normalize=True)
     playlist = UG.get_playlist('mpd.slice.549000-549999.json', 793)
-    pl_songs, top_songs, top_dist = get_closest_songs_to_playlist(cnx, playlist, k=10)
+    pl_songs, top_songs, top_dist = get_closest_songs_to_playlist(cnx, playlist, all_song_data, k=10, scaler=scaler)
     print(top_songs)
     print(top_dist)
     
