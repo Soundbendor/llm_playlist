@@ -6,7 +6,7 @@ import nltk
 # returns dataframe
 def get_closest_songs_by_artist(cnx, artist, song, k=1):
     artist_songs = UG.get_features_by_artist(cnx,artist.strip())
-    edit_dists = np.array([nltk.distance.edit_distance(song, x ) for x in artist_songs['track_name']])
+    edit_dists = np.array([nltk.distance.edit_distance(song.strip(), x ) for x in artist_songs['track_name']])
     sorted_dists = np.argsort(edit_dists)
     smallest_dists = edit_dists[sorted_dists]
     top_songs = artist_songs.iloc[sorted_dists]
