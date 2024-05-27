@@ -24,6 +24,7 @@ example track
 
 # features to compare by
 comp_feat = ['danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo']
+#comp_feat = ['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence']
 
 # predefining so don't have to run every time
 non_comp_feat = [x for x in nct_feat if x not in comp_feat]
