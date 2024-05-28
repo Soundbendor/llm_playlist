@@ -53,8 +53,11 @@ def get_features_by_id(cnx,_id):
 def get_features_by_artist_and_trackname(cnx,_artist, _track):
     return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}" AND track_name="{_track}"', cnx)
 
-def get_features_by_artist(cnx,_artist):
-    return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}"', cnx)
+def get_features_by_artist(cnx,_artist, group = True):
+    if group == True:
+        return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}" GROUP BY artist_name,track_name ORDER BY duration_ms ASC', cnx)
+    else:
+        return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}"', cnx)
 
 
 def get_track_uri_from_playlist(playlist):
