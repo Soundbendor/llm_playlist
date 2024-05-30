@@ -94,7 +94,14 @@ def all_songs_tx(df, normalize=True, pca = 3, seed=5):
     txdict['pca'] = pcaer
     return np_all_feat, txdict
 
-
+# input: all songs feature df
+# returns all songs feature df with 'count' column
+# default_count: default to put in case of missing count
+def add_pop_to_feat(df, pop_path=os.path.join(G.num_tracks_path, 'stats', 'popularity_1_trimmed.csv'), default_count = 1):
+    pop_df = pd.read_csv(pop_path)
+    df = pd.merge(df, pop_df, how='left')
+    df.loc[df['count'].isna(), 'count'] = default_count
+    return df
 
 if __name__ == "__main__":
     res = get_playlist('mpd.slice.549000-549999.json', 333)
@@ -103,14 +110,17 @@ if __name__ == "__main__":
     r2tracks = get_track_uri_from_playlist(res2)
     #print(r2tracks)
     #print(res2)
-    cnx, cur = connect_to_nct()
-    res2f = get_feat_playlist(cnx,res2)
+    #cnx, cur = connect_to_nct()
+    #_df = get_feat_all_songs(cnx)
+    #_df = add_pop_to_feat(_df)
+    #print(_df)
+    #res2f = get_feat_playlist(cnx,res2)
     #print(res2f)
     #resdict = get_features_by_id(cur, "6JHrzpRYiDx53iTgTbI76X")
     #resdict2 = get_features_by_id(cur, "2Viqjkxmiu8hGIhjwtqYvI")
-    resdict3 = get_features_by_id(cnx, "3uxhyRdWVXp7GQvERQl6fA")
+    #resdict3 = get_features_by_id(cnx, "3uxhyRdWVXp7GQvERQl6fA")
     #print(resdict3)
-    resarr = get_features_by_artist(cnx, "Radiohead")
+    #resarr = get_features_by_artist(cnx, "Radiohead")
     #print(resarr)
     #print(resdict)
     #print(resdict2)
