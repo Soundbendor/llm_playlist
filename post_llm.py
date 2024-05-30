@@ -9,7 +9,11 @@ import pandas as pd
 import getter as UG
 import glob as G
 
-res_path = 'res/gpt-preds/c10_d50_g100.json'
+jsonl_file_path = 'gpt_ouput/gpt4_output.jsonl'
+res_path = 'res/gpt-preds/gpt4-preds.json'
+
+print(jsonl_file_path)
+print(res_path)
 
 pd.options.mode.chained_assignment = None 
 _artists = np.load(G.artists_path, allow_pickle=True)
@@ -38,10 +42,21 @@ def extract_tracks_from_response(response_content):
                         track, artist = parts
                     else:
                         track, artist = str(parts), ""
+                # Remove leading numbers and dots
+                track = re.sub(r'^\d+\.\s*', '', track)
+                # Remove surrounding quotation marks if they are there
+                track = re.sub(r'^"(.*)"$', r'\1', track)
+
                 tracks_and_artists.append((clean_track_name(track), artist.strip()))
 
             except ValueError:
                 print(f"Could not parse line: {line}")
+
+    #         print(f"LINE: {line}")
+    #         print(f"TRACK: {track} - ARTIST: {artist}")
+    #         print()
+    # exit(0)
+
     return tracks_and_artists
 
 def process_gpt_jsonl(jsonl_file_path):
@@ -50,7 +65,7 @@ def process_gpt_jsonl(jsonl_file_path):
 
     # Read and process the JSONL file
     with open(jsonl_file_path, 'r') as file:
-        for line in file:
+        for i, line in enumerate(file):
             # Load the JSON object from the line
             json_object = json.loads(line)
 
@@ -68,6 +83,7 @@ def process_gpt_jsonl(jsonl_file_path):
             
             # Extract track names and artist names
             tracks = extract_tracks_from_response(response_content)
+
             preds.append({"file": file, "idx": idx, "tracks": tracks})
         
     return preds
@@ -128,7 +144,6 @@ if __name__ == "__main__":
     # ret = get_closest_tracks_by_artists_songs(_df,'jemmy hindrix','teh bird crys barry', k=5, artist_wt = 1., track_wt = 1.)
     # print(ret)
 
-    jsonl_file_path = 'gpt_ouput/batch_qFsLkwWLlpH7F53pMorfrlzA_output.jsonl'
     playlist_preds = process_gpt_jsonl(jsonl_file_path)
     # print(preds[0]['tracks'])
 
@@ -142,13 +157,19 @@ if __name__ == "__main__":
         for track_name, artist_name in tracks:
             # try:
             matches = get_closest_tracks_by_artists_songs(_df,artist_name,track_name, k=5)
-            # print(f"{track_name} - {artist_name}")
+            
+            # print(f"TRACK: {track_name} - ARTIST: {artist_name}")
             # print(matches)
-            top_match = matches.iloc[0]
+            # print()
+            
+            top_match = matches.iloc[0]  # NOTE: change this to pick the most popular match (Search subset where track distance is min and the same)
+            # NOTE: I think we should weigh track title more than artist name. While debugging I found that track title was more accurate
             songs.append(top_match)
             # except Exception as e:
             #     print(f"Error parsing line: {track_name} - {artist_name}\nException: {e}")
         res.append(songs)
+
+        # exit(0)
 
     with open(res_path, 'w') as json_file:
         json.dump(res, json_file)

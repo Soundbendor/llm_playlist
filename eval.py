@@ -19,7 +19,7 @@ cond_num = 10
 gen_num = 100
 sample_num = 500
 
-def print_json_structure(data, indent=0):
+def print_json_structure(data, indent=2):
     """Recursively prints the structure of the JSON data."""
     for key, value in data.items():
         print(' ' * indent + str(key))

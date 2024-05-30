@@ -8,6 +8,8 @@ import getter as UG
 import fuzzy_search as FZ
 import post_llm as PL
 
+# File path to the JSONL file
+jsonl_file_path = 'gpt_ouput/batch_qFsLkwWLlpH7F53pMorfrlzA_output.jsonl'
 output_file = ""
 
 def clean_track_name(text):
@@ -39,9 +41,6 @@ def extract_tracks_from_response(response_content):
             except ValueError:
                 print(f"Could not parse line: {line}")
     return tracks_and_artists
-
-# File path to the JSONL file
-jsonl_file_path = 'gpt_ouput/batch_qFsLkwWLlpH7F53pMorfrlzA_output.jsonl'
 
 # List to hold all extracted track and artist names for each seed playlist
 preds = []

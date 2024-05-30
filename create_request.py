@@ -3,8 +3,6 @@ import os,csv,json,datetime
 
 import getter as UG
 
-df = pd.read_csv('./data/num_tracks-50.csv')
-
 cond_num = 10
 gen_num = 250
 num_runs = 500
