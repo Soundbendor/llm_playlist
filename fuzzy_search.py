@@ -13,6 +13,7 @@ def fuzzy_match(row, track_name, artist_name, threshold):
     
     if track_score >= threshold or artist_score >= threshold:
         return {
+            'id': row['id'],
             'uri': row['uri'],
             'track_name': row['track_name'],
             'artist_name': row['artist_name'],
@@ -34,14 +35,21 @@ def fuzzy_search_song(track_name, artist_name, song_df, threshold=70):
     if len(initial_candidates) == 0:
         initial_candidates = song_df
 
-    # Prepare arguments for parallel processing
-    args = [(row, track_name, artist_name, threshold) for _, row in initial_candidates.iterrows()]
+    # # Prepare arguments for parallel processing
+    # args = [(row, track_name, artist_name, threshold) for _, row in initial_candidates.iterrows()]
 
-    # Use multiprocessing to speed up fuzzy matching
-    with Pool(cpu_count()) as pool:
-        results = pool.starmap(fuzzy_match, args)
+    # # Use multiprocessing to speed up fuzzy matching
+    # with Pool(cpu_count()) as pool:
+    #     results = pool.starmap(fuzzy_match, args)
 
-    # Filter out None results
+    # # Filter out None results
+    # results = [result for result in results if result]
+    
+    results = []
+
+    for _, row in initial_candidates.iterrows():
+        results.append(fuzzy_match(row, track_name, artist_name, threshold))
+
     results = [result for result in results if result]
 
     # Sort results by the average score in descending order

@@ -68,25 +68,32 @@ songs_path = "/nfs/guille/eecs_research/soundbendor/datasets/playlist_completion
 song_df = pd.read_csv(songs_path)
 starting_threshold = 80
 
+print(song_df.info())
+
 start_time = time.time()
 for i, pred in enumerate(preds):
+    print(i)
     file, idx, tracks = pred['file'], pred['idx'], pred['tracks']
-    print(f"file: {file}")
-    print(f"idx: {idx}")
-    uris = []
+    # print(f"file: {file}")
+    # print(f"idx: {idx}")
+    songs = []
 
     for track_name, artist_name in tracks:
-        print("track:", track_name)
-        print("artist:", artist_name)
-        matches = FZ.iter_fuzzy_search_song(track_name, artist_name, song_df, threshold=starting_threshold)
-        top_match = matches[0]
-        # for match in matches:
-        #     print(f"Track ID: {match['uri']}, Track Name: {match['track_name']}, Artist Name: {match['artist_name']}, Track Score: {match['track_score']}, Artist Score: {match['artist_score']}, Average Score: {match['average_score']}")
-        uris.append(top_match['uri'])
-    pred[i]['uris'] = uris
-    break
+        # print("track:", track_name)
+        # print("artist:", artist_name)
+        try:
+            matches = FZ.iter_fuzzy_search_song(track_name, artist_name, song_df, threshold=starting_threshold)
+            top_match = matches[0]
+            songs.append(top_match)
+            # for match in matches:
+            #     print(f"Track ID: {match['uri']}, Track Name: {match['track_name']}, Artist Name: {match['artist_name']}, Track Score: {match['track_score']}, Artist Score: {match['artist_score']}, Average Score: {match['average_score']}")
+        except Exception as e:
+            print(f"Error parsing line: {track_name}{artist_name}\nException: {e}")
+            songs.append(song_df[0])
+    preds[i]['songs'] = songs
+
 end_time = time.time()
 
-print(preds[0])
-
+with open('gpt-preds.json', 'w') as json_file:
+    json.dump(preds, json_file)
 print(f"Execution time: {end_time - start_time} seconds")
