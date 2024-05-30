@@ -97,7 +97,7 @@ def all_songs_tx(df, normalize=True, pca = 3, seed=5):
 # input: all songs feature df
 # returns all songs feature df with 'count' column
 # default_count: default to put in case of missing count
-def add_pop_to_feat(df, pop_path=os.path.join(G.num_tracks_path, 'stats', 'popularity_1_trimmed.csv'), default_count = 1):
+def add_pop_to_feat(df, pop_path=os.path.join(G.num_tracks_path, 'stats', 'popularity_trimmed.csv'), default_count = 1):
     pop_df = pd.read_csv(pop_path)
     df = pd.merge(df, pop_df, how='left')
     df.loc[df['count'].isna(), 'count'] = default_count
