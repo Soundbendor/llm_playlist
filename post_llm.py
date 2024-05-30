@@ -7,10 +7,10 @@ import numpy as np
 import pandas as pd
 
 import getter as UG
-import glob as G
+import routes as G
 
-jsonl_file_path = 'gpt_ouput/gpt4_output.jsonl'
-res_path = 'res/gpt-preds/gpt4-preds.json'
+jsonl_file_path = 'gpt_ouput/gpt3-5_output.jsonl'
+res_path = 'res/gpt-preds/gpt3-5-preds.json'
 
 print(jsonl_file_path)
 print(res_path)
