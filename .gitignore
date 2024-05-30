@@ -1,5 +1,6 @@
 __pycache__/
 glob.py
+routes.py
 slurm*
 env/
 *.err

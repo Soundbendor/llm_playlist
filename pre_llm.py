@@ -1,31 +1,9 @@
 import getter as UG
 import numpy as np
 import sklearn.metrics as SKM
-import sklearn.preprocessing as SKP
 import sklearn.cluster as SKC
-import sklearn.decomposition as SKD
 # input: playlist, output: candidate song ids
 from collections import defaultdict
-
-
-# input is the database connection, returns full dataframe, (numpy) features and scaler
-def load_all_songs(cnx, normalize=True, pca = 3, seed=5):
-    all_feat = UG.get_feat_all_songs(cnx)
-    mmscl = None
-    np_all_feat = None
-    if normalize == True:
-        mmscl = SKP.MinMaxScaler()
-        np_all_feat = mmscl.fit_transform(all_feat[UG.comp_feat].to_numpy())
-    else:
-        np_all_feat = all_feat[UG.comp_feat].to_numpy()
-    pcaer = None
-    if pca > 0:
-        pcaer = SKD.PCA(n_components=pca, whiten=True, random_state=seed)
-        np_all_feat = pcaer.fit_transform(np_all_feat)
-    txdict = defaultdict(lambda: None)
-    txdict['scaler'] = mmscl
-    txdict['pca'] = pcaer
-    return all_feat, np_all_feat, txdict
 
     #print("all songs scaling", mmscl_all.scale_)
 # options for metric: cityblock, cosine, euclidean, l1, l2, manhattan
@@ -68,9 +46,10 @@ def get_closest_songs_to_playlist(_cnx, playlist, all_song_feat, all_song_df, me
 
 if __name__ == "__main__":
     cnx, cursor = UG.connect_to_nct()
-    all_song_df, all_song_feat, txs = load_all_songs(cnx, normalize=True, pca=3)
+    all_song_df = UG.get_feat_all_songs(cnx)
+    np_all_song, txs = UG.all_songs_tx(all_song_df, normalize=True, pca=3)
     playlist = UG.get_playlist('mpd.slice.549000-549999.json', 793)
-    pl_songs, top_songs, top_dist = get_closest_songs_to_playlist(cnx, playlist, all_song_feat, all_song_df, k=10, tx=txs)
+    pl_songs, top_songs, top_dist = get_closest_songs_to_playlist(cnx, playlist, np_all_song, all_song_df, k=10, tx=txs)
     print(top_songs)
     print(top_dist)
     
