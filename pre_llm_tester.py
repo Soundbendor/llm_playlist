@@ -1,5 +1,5 @@
 import os,csv,json
-import glob as G
+import routes as G
 import numpy as np
 import getter as UG
 import metrics as UM

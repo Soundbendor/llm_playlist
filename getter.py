@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os, json,csv,sqlite3
 import numpy as np
 import pandas as pd
-import glob as G
+import routes as G
 # joined.db new_combined_table has duplicates so need to use select distinct in queries
 # for example: select * from new_combined_table where (artist_name="Prince") and track_name="Little Red Corvette";
 # returns two entries
