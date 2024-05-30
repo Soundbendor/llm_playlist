@@ -84,11 +84,12 @@ def rec_songs_clicks(g_arr, r_arr, max_clicks = 50):
     r_in_g = np.isin(r_arr, g_arr)
     # get the true indices
     where_in = np.nonzero(r_in_g)[0]
-    ret = max_clicks + 1 # the default if no r in g
     if where_in.shape[0] > 0:
         # original formulation has -1, but we are already 0-indexed
         first_idx = where_in[0]
-        ret = int(first_idx/10.)
+    else:
+        first_idx = max_clicks # already 0-indexed
+    ret = int(first_idx/10.)
 
     return ret
 

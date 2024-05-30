@@ -45,6 +45,40 @@ def get_closest_tracks_by_artists_songs(df,artist,track, k=5, artist_wt = 1., tr
     return ret
 
 
+# expand input by finding similar songs by given metric
+def expand_songs(df,metric='euclidean', k=500,
+        weights = None,tx = defaultdict(lambda: None)):
+    playlist_feat = UG.get_feat_playlist(_cnx, playlist)
+    # results will be i,j for ith playlist song and jth song (from everything)
+    has_weights = weights != None
+    np_pl = None 
+    pwdist = None   
+    has_scaler = tx['scaler'] != None
+    has_pca = tx['pca'] != None
+    if has_scaler == True:
+        np_pl = tx['scaler'].transform(playlist_feat[UG.comp_feat].to_numpy()[:mask])
+    else:
+        np_pl = playlist_feat[UG.comp_feat].to_numpy()[:mask]
+    if has_pca == True:
+        np_pl = tx['pca'].transform(np_pl)
+    if has_weights == True:
+        np_weights = None
+        if 'dict' in type(weights).__name__:
+            np_weights = np.array([[weights[i]] for i in UG.comp_feat])
+        else:
+            np_weights = np.array([[i] for i in weights])
+        pwdist = SKM.pairwise_distances(np.multiply(np_pl, np_weights.T), np.multiply(all_song_feat, np_weights.T))
+    else:
+        pwdist = SKM.pairwise_distances(np_pl, all_song_feat)
+    # average over all playlist songs to get average distances to each song
+    all_song_dist = np.mean(pwdist,axis=0)
+    sorted_idx = np.argsort(all_song_dist)
+    if metric == 'cosine':
+        sorted_idx = sorted_idx[::-1]
+    top_dist = all_song_dist[sorted_idx[:k]]
+    top_songs = all_song_df.iloc[sorted_idx[:k]]
+    return playlist_feat, top_songs, top_dist
+
 
 
 # returns dataframe
