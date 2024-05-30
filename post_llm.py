@@ -164,12 +164,10 @@ if __name__ == "__main__":
             
             top_match = matches.iloc[0]  # NOTE: change this to pick the most popular match (Search subset where track distance is min and the same)
             # NOTE: I think we should weigh track title more than artist name. While debugging I found that track title was more accurate
-            songs.append(top_match)
+            songs.append(top_match.to_dict())
             # except Exception as e:
             #     print(f"Error parsing line: {track_name} - {artist_name}\nException: {e}")
         res.append(songs)
-
-        # exit(0)
 
     with open(res_path, 'w') as json_file:
         json.dump(res, json_file)
