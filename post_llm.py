@@ -1,11 +1,76 @@
+import nltk, re, json
+
+from tqdm import tqdm
+
+import gensim.similarities.fastss as GSF
+import numpy as np
+import pandas as pd
+
 import getter as UG
 import glob as G
-import numpy as np
-import nltk
-import gensim.similarities.fastss as GSF
-import pandas as pd
+
+res_path = 'res/gpt-preds/c10_d50_g100.json'
+
 pd.options.mode.chained_assignment = None 
 _artists = np.load(G.artists_path, allow_pickle=True)
+
+def clean_track_name(text):
+    cleaned_text = re.sub(r'^\d+\.\s+', '', text)
+    return cleaned_text
+
+
+def extract_tracks_from_response(response_content):
+    """
+    Extracts track names and artist names from the assistant's response content.
+    """
+    tracks_and_artists = []
+    # response_content = response_content[response_content.find('1.'):]
+    
+    for line in response_content.split('\n'):
+        if len(line) > 0 and line[0].isdigit():
+            try:
+                parts = re.split(r' - | – ', line, maxsplit=1)
+                if len(parts) == 2:
+                    track, artist = parts
+                else:
+                    parts = re.split(r'-|–', line, maxsplit=1)
+                    if len(parts) == 2:
+                        track, artist = parts
+                    else:
+                        track, artist = str(parts), ""
+                tracks_and_artists.append((clean_track_name(track), artist.strip()))
+
+            except ValueError:
+                print(f"Could not parse line: {line}")
+    return tracks_and_artists
+
+def process_gpt_jsonl(jsonl_file_path):
+    # List to hold all extracted track and artist names for each seed playlist
+    preds = []
+
+    # Read and process the JSONL file
+    with open(jsonl_file_path, 'r') as file:
+        for line in file:
+            # Load the JSON object from the line
+            json_object = json.loads(line)
+
+            file, idx = json_object['custom_id'].split('_')
+
+            # print(file)
+            # print(idx)
+
+            # pprint.pprint(json_object, compact=False)
+            
+            # Extract the response content from the assistant
+            response_content = json_object['response']['body']['choices'][0]['message']['content']
+
+            # print(response_content)
+            
+            # Extract track names and artist names
+            tracks = extract_tracks_from_response(response_content)
+            preds.append({"file": file, "idx": idx, "tracks": tracks})
+        
+    return preds
 
 # get_closest_tracks_by_artists_songs(df,artist,track, k=5, artist_wt = 1., track_wt = 1.) gets the closest tracks by artists and songs, see def below
 def get_closest_artists(artist, k=5):
@@ -39,13 +104,10 @@ def get_closest_tracks_by_artists_songs(df,artist,track, k=5, artist_wt = 1., tr
     for _track,dist in zip(top_tracks, top_track_dists):
         filt_artists.loc[filt_artists['track_name'] == _track, 'track_dist'] = dist * track_wt
     filt_artists = filt_artists.assign(total_dist = filt_artists['artist_dist'] + filt_artists['track_dist']).reset_index(drop=True)
-    print(filt_artists)
+    # print(filt_artists)
     top_idxs = np.argsort(filt_artists['total_dist'].to_numpy())[:k]
     ret = filt_artists.iloc[top_idxs].reset_index(drop=True)
     return ret
-
-
-
 
 # returns dataframe
 def get_closest_songs_by_artist(cnx, artist, song, k=1):
@@ -63,5 +125,30 @@ if __name__ == "__main__":
     #print(ret_songs[['track_name', 'dist']])
     #top_artists = get_closest_artists('jemmy hindrickss')
     _df = pd.read_csv(G.joined_csv_path)
-    ret = get_closest_tracks_by_artists_songs(_df,'jemmy hindrix','teh bird crys barry', k=5, artist_wt = 1., track_wt = 1.)
-    print(ret)
+    # ret = get_closest_tracks_by_artists_songs(_df,'jemmy hindrix','teh bird crys barry', k=5, artist_wt = 1., track_wt = 1.)
+    # print(ret)
+
+    jsonl_file_path = 'gpt_ouput/batch_qFsLkwWLlpH7F53pMorfrlzA_output.jsonl'
+    playlist_preds = process_gpt_jsonl(jsonl_file_path)
+    # print(preds[0]['tracks'])
+
+    res = []
+
+    for i, playlist_pred in tqdm(enumerate(playlist_preds), total=len(playlist_preds), desc="Processing predictions"):
+        file, idx, tracks = playlist_pred['file'], playlist_pred['idx'], playlist_pred['tracks']
+    
+        songs = []
+
+        for track_name, artist_name in tracks:
+            # try:
+            matches = get_closest_tracks_by_artists_songs(_df,artist_name,track_name, k=5)
+            # print(f"{track_name} - {artist_name}")
+            # print(matches)
+            top_match = matches.iloc[0]
+            songs.append(top_match)
+            # except Exception as e:
+            #     print(f"Error parsing line: {track_name} - {artist_name}\nException: {e}")
+        res.append(songs)
+
+    with open(res_path, 'w') as json_file:
+        json.dump(res, json_file)

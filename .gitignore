@@ -1,2 +1,4 @@
 __pycache__/
 glob.py
+slurm*
+env/

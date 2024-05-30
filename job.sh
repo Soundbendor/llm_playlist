@@ -4,12 +4,11 @@
 #SBATCH -A soundbendor
 #SBATCH --job-name=llm_playlist
 #SBATCH -t 4-00:00:00
-#SBATCH -c 8
+#SBATCH -c 1
 #SBATCH --mem=90G
-#SBATCH --gres=gpu:0
 #SBATCH --export=ALL
 
 # activate env
-source ../env/bin/activate
+source env/bin/activate
 
-python process_gpt_output.py
+python post_llm.py
