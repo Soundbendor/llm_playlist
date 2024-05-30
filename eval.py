@@ -9,8 +9,8 @@ import metrics as UM
 import pre_llm as PL
 
 pl_csv_path = 'data/num_tracks-250.csv'
-preds_path = 'res/gpt_preds/gpt3-5-preds.json'
-res_path = 'res/gpt_results/gpt_preds_res.csv'
+preds_path = 'res/gpt_preds/gpt4-preds.json'
+res_path = 'res/gpt_results/gpt4_preds_res.csv'
 
 rec_cols = ['artist_name', 'track_name', 'id']
 mheader = ['expr_idx', 'pl_idx', 'r_prec', 'dcg', 'idcg', 'ndcg', 'clicks']
