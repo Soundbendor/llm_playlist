@@ -91,12 +91,13 @@ if __name__ == "__main__":
     #weights = None
     cond_num = 10
     gen_num = 100
-    res_dir2 = os.path.join(__file__.split(os.sep)[0], 'res', f'prellm_test9-{cond_num}_{gen_num}')
-    pl = get_playlists(sample_num = 500)
+    sample_num = 1000
+    res_dir2 = os.path.join(__file__.split(os.sep)[0], 'res', f'prellm_test0-{cond_num}_{gen_num}_{sample_num}')
+    pl = get_playlists(sample_num = sample_num)
     num_runs = 1000
     mheader = ['expr_idx', 'pl_idx', 'r_prec', 'dcg', 'idcg', 'ndcg', 'clicks']
-    r2_path = os.path.join(res_dir2, f'metrics-{cond_num}_{gen_num}.csv')
-    w_path = os.path.join(res_dir2, f'weights-{cond_num}_{gen_num}.csv')
+    r2_path = os.path.join(res_dir2, f'metrics-{cond_num}_{gen_num}_{sample_num}.csv')
+    w_path = os.path.join(res_dir2, f'weights-{cond_num}_{gen_num}_{sample_num}.csv')
 
     #weights = [1.0, 0.8,0.6,0.4,0.2]
     if os.path.exists(res_dir2) == False:
@@ -139,8 +140,8 @@ if __name__ == "__main__":
             idcg = UM.idcg(truth_ids, retr_ids)
             ndcg = UM.ndcg(truth_ids, retr_ids)
             clicks = UM.rec_songs_clicks(truth_ids, retr_ids, max_clicks=99998)
-            g_path = os.path.join(res_dir2, f'ground_truth-{cond_num}_{gen_num}-{pl_i}.csv')
-            r_path = os.path.join(res_dir2, f'retrieved-{cond_num}_{gen_num}-{pl_i}.csv')
+            g_path = os.path.join(res_dir2, f'ground_truth-{cond_num}_{gen_num}_{sample_num}-{pl_i}.csv')
+            r_path = os.path.join(res_dir2, f'retrieved-{cond_num}_{gen_num}_{sample_num}-{pl_i}.csv')
             pl_songs[cond_num:][rec_cols].to_csv(g_path)
             res_songs = res_songs.assign(dist = res_cos_sim)
             res_songs[rec_cols2].to_csv(r_path)
