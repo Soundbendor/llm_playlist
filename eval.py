@@ -9,7 +9,7 @@ import metrics as UM
 import pre_llm as PL
 
 pl_csv_path = 'data/num_tracks-250.csv'
-preds_path = 'res/gpt-preds/gpt4-preds.json'
+preds_path = 'res/gpt-preds/gpt4-preds1.json'
 res_path = 'res/gpt-test-1/test.csv'
 
 rec_cols = ['artist_name', 'track_name', 'id']
@@ -46,13 +46,13 @@ for pl_i, playlist in enumerate(pl):
     file = playlist['file']
     playlist_idx = int(playlist['idx'])
     gt = UG.get_playlist(file, playlist_idx)
-    gt_tracks = gt['tracks']
+    gt_tracks = gt['tracks'][cond_num:]
 
 
     gt_names = [ track['track_name'] for track in gt_tracks ]
     retr_names = [ track['track_name'] for track in preds[pl_i] ]
-    print(gt_names)
-    print(retr_names)
+    # print(gt_names)
+    # print(retr_names)
 
     gt_ids = [ track['track_uri'] for track in gt_tracks ]
     retr_ids = [ track['uri'] for track in preds[pl_i] ]
