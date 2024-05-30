@@ -1,9 +1,11 @@
-from collections import Counter
+from collections import Counter,defaultdict
 import matplotlib.pyplot as plt
 import os, json,csv,sqlite3
 import numpy as np
 import pandas as pd
 import routes as G
+import sklearn.preprocessing as SKP
+import sklearn.decomposition as SKD
 # joined.db new_combined_table has duplicates so need to use select distinct in queries
 # for example: select * from new_combined_table where (artist_name="Prince") and track_name="Little Red Corvette";
 # returns two entries
@@ -71,6 +73,28 @@ def get_feat_playlist(cnx, playlist):
     songstr = '","'.join(songids)
     cur_q = f'select distinct * from new_combined_table where uri in ("{songstr}")'
     return pd.read_sql(cur_q, cnx)
+
+
+
+# input is a dataframe with all features, (numpy) features and scaler
+def all_songs_tx(df, normalize=True, pca = 3, seed=5):
+    mmscl = None
+    np_all_feat = None
+    if normalize == True:
+        mmscl = SKP.MinMaxScaler()
+        np_all_feat = mmscl.fit_transform(df[comp_feat].to_numpy())
+    else:
+        np_all_feat = df[comp_feat].to_numpy()
+    pcaer = None
+    if pca > 0:
+        pcaer = SKD.PCA(n_components=pca, whiten=True, random_state=seed)
+        np_all_feat = pcaer.fit_transform(np_all_feat)
+    txdict = defaultdict(lambda: None)
+    txdict['scaler'] = mmscl
+    txdict['pca'] = pcaer
+    return np_all_feat, txdict
+
+
 
 if __name__ == "__main__":
     res = get_playlist('mpd.slice.549000-549999.json', 333)
