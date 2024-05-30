@@ -27,9 +27,14 @@ def load_playlist(plpath):
 
 for cur_path in tqdm(all_files, desc="Processing files"):
     with open(cur_path, 'r') as file:
-        csvr = csv.DictReader(file)
+        csv_reader = csv.DictReader(file)
+
+        if 'file' not in csv_reader.fieldnames or 'idx' not in csv_reader.fieldnames:
+            print(f"Missing required columns in {cur_path}")
+            continue
+        
         i = 0
-        for row in csvr:
+        for row in csv_reader:
             plfile = row['file']
             plidx = int(row['idx'])
             plpath = os.path.join(G.data_dir, plfile)
@@ -38,15 +43,14 @@ for cur_path in tqdm(all_files, desc="Processing files"):
                 continue
 
             cur_pl = cur_json['playlists'][plidx]
-            trk_ids = [trk['track_uri'] for trk in cur_pl['tracks']]
-            ctr.update(trk_ids)
+            ctr.update(trk['track_uri'] for trk in cur_pl['tracks'])
             i+=1
             if i % 1000 == 0:
                 print(i)
 
 # Write the popularity counts to file
-output_file = os.path.join(G.num_tracks_path, 'popularity.csv')
+output_file = os.path.join(G.num_tracks_path, 'stats/popularity.csv')
 with open(output_file, 'w', newline='') as f:
     csvw = csv.writer(f)
-    csvw.writerow(['id', 'count'])
+    csvw.writerow(['uri', 'count'])
     csvw.writerows(ctr.items())

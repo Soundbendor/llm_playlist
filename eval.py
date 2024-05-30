@@ -9,15 +9,15 @@ import metrics as UM
 import pre_llm as PL
 
 pl_csv_path = 'data/num_tracks-250.csv'
-preds_path = 'res/gpt-preds/gpt4-preds1.json'
-res_path = 'res/gpt-test-1/test.csv'
+preds_path = 'res/gpt_preds/gpt3-5-preds.json'
+res_path = 'res/gpt_results/gpt_preds_res.csv'
 
 rec_cols = ['artist_name', 'track_name', 'id']
 mheader = ['expr_idx', 'pl_idx', 'r_prec', 'dcg', 'idcg', 'ndcg', 'clicks']
 
 cond_num = 10
 gen_num = 250
-sample_num = 1
+sample_num = 500
 
 def get_playlists(csv_path, sample_num=500):
     df = pd.read_csv(csv_path)
@@ -64,7 +64,7 @@ for pl_i, playlist in enumerate(pl):
     dcg = UM.dcg(gt_ids, retr_ids)
     idcg = UM.idcg(gt_ids, retr_ids)
     ndcg = UM.ndcg(gt_ids, retr_ids)
-    clicks = UM.rec_songs_clicks(gt_ids, retr_ids, max_clicks=99998)
+    clicks = UM.rec_songs_clicks(gt_ids, retr_ids, max_clicks=501)
     
     mdict = {'expr_idx': pl_i, 'pl_idx': playlist_idx, 'r_prec': r_prec, 'dcg': dcg, 'idcg': idcg, 'ndcg': ndcg, 'clicks': clicks}
     runs.append(mdict)
