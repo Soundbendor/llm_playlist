@@ -54,7 +54,7 @@ def get_bm25(playlists):
     corpus = []
     for playlist in playlists:
         cfile = playlist['file']
-        cidx = playlist['idx']
+        cidx = int(playlist['idx'])
         cur_pid = playlist['pid']
         cur_slice = cfile.split('.')[-2].strip()
         if cur_slice not in slices.keys():
@@ -70,6 +70,15 @@ def get_bm25(playlists):
 
 
 if __name__ == "__main__":
+    pgen = UG.playlist_csv_generator('train_set.csv')
+    playlists = []
+    for i,pldict in enumerate(pgen):
+        if i < 3:
+            playlists.append(pldict)
+        else:
+            break
+    bm25, tdict = get_bm25(playlists)
+
     #cnx, cursor = UG.connect_to_nct()
     #all_song_df = UG.get_feat_all_songs(cnx)
     #np_all_song, txs = UG.all_songs_tx(all_song_df, normalize=True, pca=3)
