@@ -4,24 +4,20 @@ import os,csv,json,datetime
 import getter as UG
 
 cond_num = 10
-gen_num = 250
-num_runs = 500
+gen_num = 500
+num_samples = 500
 
-system_message = """You are an AI playlist completer. 
-Given a playlist name and list of song names and artists, you will generate 250 unique recommendations to complete the playlist. 
-Ensure the recommendations span various genres and artists to provide a diverse musical experience.
-Avoid repeating any songs within a playlist.
-Follow this format without deviation:
-1. track name - artist
-2. track name - artist
-...
-250. track name - artist
-"""
+system_message = f"You are an AI playlist completer.\n\
+Given a Spotify playlist name and list of song names and artists, you will generate {gen_num} unique recommendations to complete the playlist.\n\
+Ensure that you only recomend songs from before 2018.\n\
+Avoid repeating any songs within a playlist.\n\
+Follow this format without deviation:\n\
+1. track name - artist\n\
+...\n\
+"
 
-csv_dir = os.path.join(__file__.split(os.sep)[0], 'data')
-res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
-playlist_csvs = ['num_splits/num_tracks-250.csv']
-csv_path = os.path.join(csv_dir, playlist_csvs[0])
+train_path = "data/train_set.csv"
+results_dir = "res/"
 
 def get_playlists(csv_path, sample_num=500):
     df = pd.read_csv(csv_path)
@@ -29,11 +25,11 @@ def get_playlists(csv_path, sample_num=500):
     
     return cur_playlists[:sample_num]
 
-playlists = get_playlists(csv_path, sample_num = 500)
+playlists = get_playlists(train_path, sample_num = num_samples)
 
 requests = []
 
-for idx, playlist in enumerate(playlists[:num_runs]):
+for playlist in playlists:
     print(playlist)
     name = playlist['name']
     file = playlist['file']
@@ -49,14 +45,14 @@ for idx, playlist in enumerate(playlists[:num_runs]):
         seed_tracks.append(track_name + " - " + artist_name)
         # print(f"Artist: {artist_name}, Track: {track_name}")
     # print(seed_tracks)
-    input_message = f"Playlist name: {name}\nInput songs and artists: {', '.join(seed_tracks)}\nUSER: Please recommend {gen_num} songs."
+    input_message = f"Playlist name: {name}\n\Input songs and artists: {', '.join(seed_tracks)}\nUSER: Please recommend {gen_num} songs."
     
     request = {
         "custom_id": f"{file}_{playlist_idx}",
         "method": "POST",
         "url": "/v1/chat/completions",
         "body": {
-            "model": "gpt-3.5-turbo",
+            "model": "gpt-4",
             "messages": [
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": input_message}
@@ -74,4 +70,4 @@ with open(filename, 'w') as f:
         json.dump(request, f)
         f.write('\n')
 
-print("JSONL file created successfully.")
+print(f"JSONL file created successfully {filename}.")
