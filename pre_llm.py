@@ -54,7 +54,7 @@ def get_bm25(playlists):
     corpus = []
     for playlist in playlists:
         cfile = playlist['file']
-        cidx = playlist['idx']
+        cidx = int(playlist['idx'])
         cur_pid = playlist['pid']
         cur_slice = cfile.split('.')[-2].strip()
         if cur_slice not in slices.keys():
