@@ -1,0 +1,217 @@
+import nltk, re, json
+
+from tqdm import tqdm
+
+import gensim.similarities.fastss as GSF
+import sklearn.metrics as SKM
+import numpy as np
+import pandas as pd
+
+import getter as UG
+import routes as G
+from collections import defaultdict
+jsonl_file_path = 'gpt_ouput/gpt3-5_output.jsonl'
+res_path = 'res/gpt-preds/gpt3-5-preds.json'
+
+#print(jsonl_file_path)
+#print(res_path)
+
+pd.options.mode.chained_assignment = None 
+_artists = np.load(G.artists_path, allow_pickle=True)
+
+def clean_track_name(text):
+    cleaned_text = re.sub(r'^\d+\.\s+', '', text)
+    return cleaned_text
+
+
+def extract_tracks_from_response(response_content):
+    """
+    Extracts track names and artist names from the assistant's response content.
+    """
+    tracks_and_artists = []
+    # response_content = response_content[response_content.find('1.'):]
+    
+    for line in response_content.split('\n'):
+        if len(line) > 0 and line[0].isdigit():
+            try:
+                parts = re.split(r' - | – ', line, maxsplit=1)
+                if len(parts) == 2:
+                    track, artist = parts
+                else:
+                    parts = re.split(r'-|–', line, maxsplit=1)
+                    if len(parts) == 2:
+                        track, artist = parts
+                    else:
+                        track, artist = str(parts), ""
+                # Remove leading numbers and dots
+                track = re.sub(r'^\d+\.\s*', '', track)
+                # Remove surrounding quotation marks if they are there
+                track = re.sub(r'^"(.*)"$', r'\1', track)
+
+                tracks_and_artists.append((clean_track_name(track), artist.strip()))
+
+            except ValueError:
+                print(f"Could not parse line: {line}")
+
+    #         print(f"LINE: {line}")
+    #         print(f"TRACK: {track} - ARTIST: {artist}")
+    #         print()
+    # exit(0)
+
+    return tracks_and_artists
+
+def process_gpt_jsonl(jsonl_file_path):
+    # List to hold all extracted track and artist names for each seed playlist
+    preds = []
+
+    # Read and process the JSONL file
+    with open(jsonl_file_path, 'r') as file:
+        for i, line in enumerate(file):
+            # Load the JSON object from the line
+            json_object = json.loads(line)
+
+            file, idx = json_object['custom_id'].split('_')
+
+            # print(file)
+            # print(idx)
+
+            # pprint.pprint(json_object, compact=False)
+            
+            # Extract the response content from the assistant
+            response_content = json_object['response']['body']['choices'][0]['message']['content']
+
+            # print(response_content)
+            
+            # Extract track names and artist names
+            tracks = extract_tracks_from_response(response_content)
+
+            preds.append({"file": file, "idx": idx, "tracks": tracks})
+        
+    return preds
+
+# get_closest_tracks_by_artists_songs(df,artist,track, k=5, artist_wt = 1., track_wt = 1.) gets the closest tracks by artists and songs, see def below
+def get_closest_artists(artist, k=5):
+    comp = artist.lower().strip()
+    edit_dists = np.array([GSF.editdist(comp, x.lower().strip()) for x in _artists])
+    top_idxs = np.argsort(edit_dists)
+    top_artists = _artists[top_idxs][:k]
+    top_dists = edit_dists[top_idxs][:k]
+    return top_artists, top_dists
+
+def get_closest_tracks_by_artists(df,artists, track,k=5):
+     filt_artists = df[df['artist_name'].isin(artists)].reset_index(drop=True)
+     filt_tracks = filt_artists['track_name'].astype(str).unique()
+     comp = track.lower().strip()
+     edit_dists = np.array([GSF.editdist(comp, x.lower().strip()) for x in filt_tracks])
+     top_idxs = np.argsort(edit_dists)
+     top_tracks = filt_tracks[top_idxs][:k]
+     top_dists = edit_dists[top_idxs][:k]
+     return top_tracks, top_dists, filt_artists
+
+# df is the track_features dataframe (like the results from 'select * from new_combined_table' from joined.db into a pandas df)
+# calculates  and filters top k artists by smallest edit dist, calculates top k track names by this filtered result
+# returns top k results as smallest total_dist (artist_wt * artist_editdist) + (track_wt * track_editdist) 
+def get_closest_tracks_by_artists_songs(df,artist,track, k=5, artist_wt = 1., track_wt = 1.):
+    top_artists, top_artist_dists = get_closest_artists(artist, k=k)
+    top_tracks, top_track_dists, filt_artists = get_closest_tracks_by_artists(df, top_artists, track, k=k)
+    filt_artists.assign(artist_dist= np.inf)
+    for _artist,dist in zip(top_artists, top_artist_dists):
+        filt_artists.loc[filt_artists['artist_name'] == _artist, 'artist_dist'] = dist * artist_wt
+    filt_artists.assign(track_dist=np.inf)
+    for _track,dist in zip(top_tracks, top_track_dists):
+        filt_artists.loc[filt_artists['track_name'] == _track, 'track_dist'] = dist * track_wt
+    filt_artists = filt_artists.assign(total_dist = filt_artists['artist_dist'] + filt_artists['track_dist']).reset_index(drop=True)
+    # print(filt_artists)
+    top_idxs = np.argsort(filt_artists['total_dist'].to_numpy())[:k]
+    ret = filt_artists.iloc[top_idxs].reset_index(drop=True)
+    return ret
+
+
+# expand input by finding similar songs by given metric
+# df should be dataframe with closest matches with features
+# filters out songs already retrieved
+# does not combine with input dataframe (for flexibility)
+def expand_tracks(df,all_song_feat, all_song_df, metric='euclidean', k=50,
+        weights = None,tx = defaultdict(lambda: None)):
+    #playlist_feat = UG.get_feat_playlist(_cnx, playlist)
+     
+    # results will be i,j for ith playlist song and jth song (from everything)
+    has_weights = weights != None
+    np_df = None 
+    pwdist = None   
+    # get retrieved artists and tracks
+    retr_artists = pd.unique(df['artist_name'])
+    retr_tracks = pd.unique(df['track_name'])
+    # get indices to include from all songs (exclude already retrieved artists + tracks)
+    use_idxs = all_song_df.loc[~(all_song_df['artist_name'].isin(retr_artists) & all_song_df['track_name'].isin(retr_tracks))].index
+    has_scaler = tx['scaler'] != None
+
+    has_pca = tx['pca'] != None
+    if has_scaler == True:
+        np_df = tx['scaler'].transform(df[UG.comp_feat].to_numpy())
+    else:
+        np_df = df[UG.comp_feat].to_numpy()
+    if has_pca == True:
+        np_df = tx['pca'].transform(np_df)
+    if has_weights == True:
+        np_weights = None
+        if 'dict' in type(weights).__name__:
+            np_weights = np.array([[weights[i]] for i in UG.comp_feat])
+        else:
+            np_weights = np.array([[i] for i in weights])
+        pwdist = SKM.pairwise_distances(np.multiply(np_df, np_weights.T), np.multiply(all_song_feat[use_idxs.to_numpy().astype(int)], np_weights.T))
+    else:
+        pwdist = SKM.pairwise_distances(np_df, all_song_feat[use_idxs.to_numpy().astype(int)])
+    # average over all playlist songs to get average distances to each song
+    all_song_dist = np.mean(pwdist,axis=0)
+    sorted_idx = np.argsort(all_song_dist)
+    if metric == 'cosine':
+        sorted_idx = sorted_idx[::-1]
+    top_dist = all_song_dist[sorted_idx[:k]]
+    top_songs = all_song_df.iloc[use_idxs].reset_index(drop=True).iloc[sorted_idx[:k]]
+    #top_songs = top_songs.assign(dist=top_dist)
+    return top_songs, top_dist
+
+
+
+# returns dataframe
+def get_closest_songs_by_artist(cnx, artist, song, k=1):
+    artist_songs = UG.get_features_by_artist(cnx,artist.strip())
+    edit_dists = np.array([nltk.distance.edit_distance(song.strip(), x ) for x in artist_songs['track_name']])
+    sorted_dists = np.argsort(edit_dists)
+    smallest_dists = edit_dists[sorted_dists]
+    top_songs = artist_songs.iloc[sorted_dists]
+    top_songs = top_songs.assign(dist = smallest_dists)
+    return top_songs[:k]
+
+comp_weights = {'danceability':1.0,
+            'energy':1.0,
+            'key':0.0,
+            'loudness':0.0,
+            'mode':0.0,
+            'speechiness':1.0,
+            'acousticness':1.0,
+            'instrumentalness':1.0,
+            'liveness':1.0,
+            'valence':1.0,
+            'tempo': 1.0,
+            'count': 1.0}
+
+
+if __name__ == "__main__":
+    cnx, cursor = UG.connect_to_nct()
+    #ret_songs = get_closest_songs_by_artist(cnx, "Prince", "Little Red Beret", k=5)
+    #print(ret_songs[['track_name', 'dist']])
+    #top_artists = get_closest_artists('jemmy hindrickss')
+    #_df = pd.read_csv(G.joined_csv_path, index_col=[0])
+    _df = UG.get_feat_all_songs(cnx)
+    _df = UG.add_pop_to_feat(_df)
+    np_all_song, txs = UG.all_songs_tx(_df, normalize=True, pca=0)
+    ret = get_closest_tracks_by_artists_songs(_df,'jemmy hindrix','teh bird crys barry', k=5, artist_wt = 1., track_wt = 1.)
+    top_songs, top_dist = expand_tracks(ret, np_all_song, _df, k = 10, weights = comp_weights, tx = txs)
+    print(ret)
+    print(top_songs)
+    #playlist_preds = process_gpt_jsonl(jsonl_file_path)
+    # print(preds[0]['tracks'])
+
+
