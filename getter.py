@@ -94,6 +94,16 @@ def all_songs_tx(df, normalize=True, pca = 3, seed=5):
     txdict['pca'] = pcaer
     return np_all_feat, txdict
 
+# pl_file is json file 
+def get_playlist_json(pl_file):
+    cpath = os.path.join(G.data_dir, pl_file)
+    ret = None
+    with open(cpath, 'r') as f:
+        ret = json.load(f)
+    return ret
+    
+
+
 # input: all songs feature df
 # returns all songs feature df with 'count' column
 # default_count: default to put in case of missing count

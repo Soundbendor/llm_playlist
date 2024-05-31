@@ -1,7 +1,10 @@
 import getter as UG
 import numpy as np
+import routes as G
 import sklearn.metrics as SKM
 import sklearn.cluster as SKC
+import gensim.corpora as GC
+import gensim.models as GM
 # input: playlist, output: candidate song ids
 from collections import defaultdict
 
@@ -43,15 +46,37 @@ def get_closest_songs_to_playlist(_cnx, playlist, all_song_feat, all_song_df, me
     top_songs = all_song_df.iloc[sorted_idx[:k]]
     return playlist_feat, top_songs, top_dist
 
+# playlists should be containing at least ['file'] and ['idx'] keys
+# returns bm25 model and bow dictionary
+def get_bm25(playlists):
+    slices = {}
+    gdict = GC.Dictionary()
+    corpus = []
+    for playlist in playlists:
+        cfile = playlist['file']
+        cidx = playlist['idx']
+        cur_pid = playlist['pid']
+        cur_slice = cfile.split('.')[-2].strip()
+        if cur_slice not in slices.keys():
+            slices[cur_slice] = UG.get_playlist_json(cfile)
+        cur_pl = slices[cur_slice]['playlists'][cidx]
+        cur_uris = [x['track_uri'] for x in cur_pl['tracks']]
+        gdict.add_documents([cur_uris])
+        bow = gdict.doc2bow(cur_uris)
+        corpus.append(bow)
+    cur_m = GM.OkapiBM25Model(corpus)
+    return cur_m, gdict
+
+
 
 if __name__ == "__main__":
-    cnx, cursor = UG.connect_to_nct()
-    all_song_df = UG.get_feat_all_songs(cnx)
-    np_all_song, txs = UG.all_songs_tx(all_song_df, normalize=True, pca=3)
-    playlist = UG.get_playlist('mpd.slice.549000-549999.json', 793)
-    pl_songs, top_songs, top_dist = get_closest_songs_to_playlist(cnx, playlist, np_all_song, all_song_df, k=10, tx=txs)
-    print(top_songs)
-    print(top_dist)
+    #cnx, cursor = UG.connect_to_nct()
+    #all_song_df = UG.get_feat_all_songs(cnx)
+    #np_all_song, txs = UG.all_songs_tx(all_song_df, normalize=True, pca=3)
+    #playlist = UG.get_playlist('mpd.slice.549000-549999.json', 793)
+    #pl_songs, top_songs, top_dist = get_closest_songs_to_playlist(cnx, playlist, np_all_song, all_song_df, k=10, tx=txs)
+    #print(top_songs)
+    #print(top_dist)
     
     
 
