@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 import routes as G
 
-exclude_pattern = "num_tracks-{250,300,350,400}.csv"
+exclude_pattern = "num_splits/num_tracks-{250,300,350,400}.csv"
 file_pattern = os.path.join(G.num_tracks_path, "*.csv")
 all_files = set(glob.glob(file_pattern)) - set(glob.glob(os.path.join(G.num_tracks_path, exclude_pattern)))
 
@@ -54,3 +54,21 @@ with open(output_file, 'w', newline='') as f:
     csvw = csv.writer(f)
     csvw.writerow(['uri', 'count'])
     csvw.writerows(ctr.items())
+
+# ==========================================
+#               GPT-3.5
+# ==========================================
+# Average R-Precision: 0.005194369973190343
+# Average DCG: 0.3028171112828822
+# Average IDCG: 1.5419510201942437
+# Average NDCG: 0.10703044983499345
+# Average Clicks: 33.34048257372654
+
+# ==========================================
+#               GPT-4
+# ==========================================
+# Average R-Precision: 0.046715817694369915
+# Average DCG: 2.5058006113749993
+# Average IDCG: 5.0890395306519265
+# Average NDCG: 0.41323149562533745
+# Average Clicks: 3.6380697050938338

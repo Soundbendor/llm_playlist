@@ -12,7 +12,7 @@ cur_seed = 5
 csv_dir = os.path.join(__file__.split(os.sep)[0], 'data')
 res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
 #playlist_csvs = list(os.listdir(csv_dir))
-playlist_csvs = ['num_tracks-50.csv']
+playlist_csvs = ['num_splits/num_tracks-50.csv']
 num_csvs = len(playlist_csvs)
 rec_cols = ['artist_name', 'track_name', 'id']
 rec_cols2 = rec_cols + ['dist']
@@ -34,13 +34,13 @@ def sample_playlists(_rng, min_length = 20, sample_num=500, max_tries=10):
             while pl_len < min_length and cur_tries < max_tries:
                 pl_idx = rng.integers(num_playlists)
                 cur_pl = cur_playlists[pl_idx]
-                cur_len = int(cur_pl['num_tracks'])
+                cur_len = int(cur_pl['num_splits/num_tracks'])
                 cur_id = int(cur_pl['pid'])
                 if cur_len < min_length or cur_id in pl_pid:
                     max_tries += 1
                 else:
                     pl_pid.add(cur_id)
-                    cur_dict = {'file': playlist_csvs[0], 'idx': pl_idx, 'num_tracks': cur_len, 'pid': cur_id}
+                    cur_dict = {'file': playlist_csvs[0], 'idx': pl_idx, 'num_splits/num_tracks': cur_len, 'pid': cur_id}
                     playlists.append(cur_dict)
                     cur_num += 1
                     pl_len = cur_len
@@ -57,7 +57,7 @@ def get_playlists(sample_num=500):
 
 if __name__ == "__main__":
     """
-    cur_header = ['file', 'idx', 'num_tracks', 'pid']
+    cur_header = ['file', 'idx', 'num_splits/num_tracks', 'pid']
     res = sample_playlists(rng, sample_num=500)
     with open(os.path.join(res_dir, 'pre_llm_test_playlists.csv'), 'w') as f:
         csvw = csv.DictWriter(f, fieldnames=cur_header)

@@ -43,8 +43,8 @@ for i,mpdslice in enumerate(os.listdir(datadir)):
         j = json.load(f)
         #print(j.keys())
         for playlist in j['playlists']:
-            #print(playlist['num_tracks'])
-            cur_tracks = playlist['num_tracks']
+            #print(playlist['num_splits/num_tracks'])
+            cur_tracks = playlist['num_splits/num_tracks']
             cur_follow = playlist['num_followers']
             cur_albums = playlist['num_albums']
             track_ctr.update([cur_tracks])

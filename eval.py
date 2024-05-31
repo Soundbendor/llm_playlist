@@ -8,7 +8,7 @@ import getter as UG
 import metrics as UM
 import pre_llm as PL
 
-pl_csv_path = 'data/num_tracks-250.csv'
+pl_csv_path = 'data/num_splits/num_tracks-250.csv'
 preds_path = 'res/gpt_preds/gpt4-preds.json'
 res_path = 'res/gpt_results/gpt4_preds_res.csv'
 

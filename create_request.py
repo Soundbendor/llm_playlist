@@ -20,7 +20,7 @@ Follow this format without deviation:
 
 csv_dir = os.path.join(__file__.split(os.sep)[0], 'data')
 res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
-playlist_csvs = ['num_tracks-250.csv']
+playlist_csvs = ['num_splits/num_tracks-250.csv']
 csv_path = os.path.join(csv_dir, playlist_csvs[0])
 
 def get_playlists(csv_path, sample_num=500):
