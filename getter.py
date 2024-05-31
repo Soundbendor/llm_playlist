@@ -94,6 +94,22 @@ def all_songs_tx(df, normalize=True, pca = 3, seed=5):
     txdict['pca'] = pcaer
     return np_all_feat, txdict
 
+# pl_file is json file 
+def get_playlist_json(pl_file):
+    cpath = os.path.join(G.data_dir, pl_file)
+    ret = None
+    with open(cpath, 'r') as f:
+        ret = json.load(f)
+    return ret
+    
+# pl_csv is a csv listing playlists
+# csv_path is the path to csvs
+def playlist_csv_generator(pl_csv, csv_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data')):
+    with open(os.path.join(csv_path, pl_csv), 'r') as f:
+        csvr = csv.DictReader(f)
+        for row in csvr:
+            yield row
+
 # input: all songs feature df
 # returns all songs feature df with 'count' column
 # default_count: default to put in case of missing count
