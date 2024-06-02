@@ -8,6 +8,7 @@ joined_csv_path = os.path.join(db_dir, 'joined.csv')
 artists_path = os.path.join(db_dir, 'artists.npy')
 tracks_path = os.path.join(db_dir, 'tracks.npy')
 #num_tracks_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data')
+model_dir = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'models')
 """
 
 db_dir = "/nfs/guille/eecs_research/soundbendor/datasets/playlist_completion/spotify_track_features"
@@ -21,3 +22,5 @@ fsongs_path = os.path.join(db_dir, "filtered_songs.csv")
 joined_csv_path = os.path.join(db_dir, 'joined.csv')
 num_tracks_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data')
 track_pop_path = os.path.join(num_tracks_path, "stats/popularity.csv")
+
+model_dir = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'models')
