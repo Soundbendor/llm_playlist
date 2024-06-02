@@ -5,3 +5,4 @@ slurm*
 env/
 *.err
 *.out
+models/bm25.dict
