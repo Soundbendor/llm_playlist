@@ -4,8 +4,8 @@ import os,csv,json,datetime
 import getter as UG
 
 cond_num = 10
-gen_num = 500
-num_samples = 500
+gen_num = 250
+num_samples = 100
 
 system_message = f"You are an AI playlist completer.\n\
 Given a Spotify playlist name and list of song names and artists, you will generate {gen_num} unique recommendations to complete the playlist.\n\
@@ -13,10 +13,10 @@ Ensure that you only recomend songs from before 2018.\n\
 Avoid repeating any songs within a playlist.\n\
 Follow this format without deviation:\n\
 1. track name - artist\n\
-...\n\
+2. track name - artist\n\
 "
 
-train_path = "data/train_set.csv"
+train_path = "data/validation_set.csv"
 results_dir = "res/"
 
 def get_playlists(csv_path, sample_num=500):

@@ -9,8 +9,8 @@ import pandas as pd
 import getter as UG
 import routes as G
 
-jsonl_file_path = 'gpt_ouput/gpt3-5_output.jsonl'
-res_path = 'res/gpt_preds/testing.json'
+jsonl_file_path = 'gpt_ouput/gpt4_val_100.jsonl'
+res_path = 'res/gpt_preds/gpt4_val_100.json'
 
 print(jsonl_file_path)
 print(res_path)
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     #ret_songs = get_closest_songs_by_artist(cnx, "Prince", "Little Red Beret", k=5)
     #print(ret_songs[['track_name', 'dist']])
     #top_artists = get_closest_artists('jemmy hindrickss')
-    _df = pd.read_csv(G.joined_csv_path)
+    _df = pd.read_csv(G.fsongs_path)
     # ret = get_closest_tracks_by_artists_songs(_df,'jemmy hindrix','teh bird crys barry', k=5, artist_wt = 1., track_wt = 1.)
     # print(ret)
 
@@ -168,7 +168,6 @@ if __name__ == "__main__":
             # except Exception as e:
             #     print(f"Error parsing line: {track_name} - {artist_name}\nException: {e}")
         res.append(songs)
-        break
 
     with open(res_path, 'w') as json_file:
         json.dump(res, json_file)
