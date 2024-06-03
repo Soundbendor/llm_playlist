@@ -51,6 +51,10 @@ def connect_to_nct():
 def get_features_by_id(cnx,_id):
     return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE id="{_id}"', cnx)
 
+def get_features_by_ids(cnx, _ids):
+    idstr = "(" + f"{_ids}"[1:-1] + ")"
+    q =f"select distinct * from new_combined_table where id in {idstr}"
+    return pd.read_sql(q, cnx)
 
 def get_features_by_artist_and_trackname(cnx,_artist, _track):
     return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE artist_name="{_artist}" AND track_name="{_track}"', cnx)
