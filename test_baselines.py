@@ -17,7 +17,7 @@ cur_seed = 5
 # condition on 10, generate 100, should be at least 20 songs length
 # 500 samples
 data_dir = os.path.join(__file__.split(os.sep)[0], 'data')
-eval_csv = os.path.join(data_dir, 'validation_set.csv')
+eval_csv = os.path.join(data_dir, 'filtered_validation_set.csv')
 pop_dir = os.path.join(data_dir, 'stats')
 #res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
 res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
@@ -27,7 +27,7 @@ res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 gen_num = 100
 cond_num = 10
 test_num = 100
-pl_sampnum = 200
+pl_sampnum = 300
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 idx_path = os.path.join(G.model_dir, 'bm25.index')
@@ -79,8 +79,15 @@ def get_popularity_uris(pop_file = 'popularity.csv', csv_dir = pop_dir):
     return np.array(uris)
 
 
-def sample_from_playlists(_rng, _idxs, _sims, _plinfo, sample_num = 100, playlist_num = 10):
+# sampling given bm25 results
+# _rng: numpy rng, _idxs: indices returned from playlist ranking (probably not important, unused here),
+# _sims: bm25 similarities (playlist level)
+# _plinfo: ranked playlist info (file, idx, pid), ipt_uris, tracks in the input playlist
+# sample_num = number of songs to sample
+# playlist_num: top k playlists to sample from
+def sample_from_playlists(_rng, _idxs, _sims, _plinfo, ipt_uris, sample_num = 100, playlist_num = 10):
     songs = {}
+    ignore_uris = set([x.strip() for x in ipt_uris])
     for plidx, playlist in enumerate(_plinfo[:playlist_num]):
         cur_sim = _sims[plidx]
         cfile = playlist['file']
@@ -89,19 +96,20 @@ def sample_from_playlists(_rng, _idxs, _sims, _plinfo, sample_num = 100, playlis
         pl_json = UG.get_playlist_json(cfile)
 
         cur_pl = pl_json['playlists'][cidx]
-        add_track = False
-        score_to_add = cur_sim
         for track in cur_pl['tracks']:
+            score_to_add = cur_sim
+            add_track = False
             cur_uri = track['track_uri']
-            if cur_uri not in songs.keys():
-                add_track = True
-            else:
-                add_track = True
-                comp_score = songs[cur_uri]
-                score_to_add = cur_sim + comp_score
-        if add_track == True:
-            song_info = score_to_add
-            songs[cur_uri] = song_info
+            if cur_uri not in ipt_uris:
+                if cur_uri not in songs.keys():
+                    add_track = True
+                else:
+                    add_track = True
+                    comp_score = songs[cur_uri]
+                    score_to_add = cur_sim + comp_score
+            if add_track == True:
+                song_info = score_to_add
+                songs[cur_uri] = song_info
     uris = []
     scores = []
     for _uri, _score in songs.items():
@@ -125,8 +133,10 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
 
         #print(top_idx, top_sim, top_pl)
         print('sampling from playlists')
-        unranked = sample_from_playlists(_rng, top_idx, top_sim, top_pl, sample_num = guess_num, playlist_num = pl_sampnum)
+        #unranked = sample_from_playlists(_rng, top_idx, top_sim, top_pl, playlist_uris, sample_num = guess_num, playlist_num = pl_sampnum)
+        guess = sample_from_playlists(_rng, top_idx, top_sim, top_pl, playlist_uris, sample_num = guess_num, playlist_num = pl_sampnum)
         #print(unranked)
+        """
         unranked_ids = [x.split(':')[-1].strip() for x in unranked]
         playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
         num_unranked = len(unranked_ids)
@@ -141,6 +151,7 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
         print('ranking songs')
         top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[unranked_loc], mdict['song_feat'][unranked_loc], metric='euclidean', weights = None,tx = mdict['txs'])
         guess = np.array([f'spotify:track:{_id}' for _id in top_songs['id'].values] + lost_songs)
+        """
         #print(_guess)
     elif expr_type == 'cossim':
         playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
@@ -193,7 +204,7 @@ for expr in exprs:
             bstuff['plinfo'] = np.array([row for row in csvr])
 
     val_idx = 0
-    res_path = os.path.join(res_dir, f'baseline_{expr}')
+    res_path = os.path.join(res_dir, f'baseline_{expr}_filt')
 
     if os.path.exists(res_path) == False:
         os.mkdir(res_path)
@@ -214,6 +225,7 @@ for expr in exprs:
                 idcg = UM.idcg(ground_truth, guess)
                 ndcg = UM.ndcg(ground_truth, guess)
                 rsc = UM.rec_songs_clicks(ground_truth, guess, max_clicks = gen_num)
+                print(f'r_prec: {r_prec}, dcg: {dcg}, idcg: {idcg}, rsc: {rsc}')
                 r_precs.append(r_prec)
                 dcgs.append(dcg)
                 idcgs.append(idcg)
