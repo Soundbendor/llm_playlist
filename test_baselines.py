@@ -27,7 +27,7 @@ res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 gen_num = 100
 cond_num = 10
 test_num = 100
-pl_sampnum = 500
+pl_sampnum = 200
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 idx_path = os.path.join(G.model_dir, 'bm25.index')
@@ -124,7 +124,7 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
 
         #print(top_idx, top_sim, top_pl)
         print('sampling from playlists')
-        unranked = sample_from_playlists(_rng, top_idx, top_sim, top_pl, sample_num = gen_num, playlist_num = pl_sampnum)
+        unranked = sample_from_playlists(_rng, top_idx, top_sim, top_pl, sample_num = guess_num, playlist_num = pl_sampnum)
         #print(unranked)
         unranked_ids = [x.split(':')[-1].strip() for x in unranked]
         playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
@@ -141,10 +141,10 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
         top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[unranked_loc], mdict['song_feat'][unranked_loc], metric='euclidean', weights = None,tx = mdict['txs'])
         guess = np.array([f'spotify:track:{_id}' for _id in top_songs['id'].values] + lost_songs)
         #print(_guess)
-    elif expr_type == 'cos-sim':
+    elif expr_type == 'cossim':
         playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
         use_locs = [mdict['ididx'].get_loc(x) for x in mdict['ididx'] if x not in playlist_ids]
-        top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[use_locs], mdict['song_feat'][use_locs], metric='euclidean', weights = None,tx = mdict['txs'], k = gen_num)
+        top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[use_locs], mdict['song_feat'][use_locs], metric='euclidean', weights = None,tx = mdict['txs'], k = guess_num)
         guess = np.array([f'spotify:track:{_id}' for _id in top_songs['id'].values])
     return guess
     
@@ -154,7 +154,9 @@ res_header = ['R_Precision', 'DCG', 'IDCG', 'NDCG', 'Recommended_Songs_Clicks']
 all_uris = get_popularity_uris()
 #exprs = ['random']
 #test_num = 1
-exprs = ['bm25', 'random', 'cos-sim']
+#exprs = ['cossim', 'random']
+#exprs = ['cossim']
+exprs = ['bm25']
 for expr in exprs:
     rng = np.random.default_rng(seed=cur_seed)
     r_precs = []
@@ -168,7 +170,7 @@ for expr in exprs:
     song_df = None
     txs = None
     bstuff = {}
-    if expr in ['bm25','cos-sim']:
+    if expr in ['bm25','cossim']:
         bstuff['cnx'], _ = UG.connect_to_nct()
         bstuff['song_df'] = pd.read_csv(G.joined_csv2_path, index_col=[0])
         bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(bstuff['song_df'], normalize=True, pca = 0, seed=cur_seed)
@@ -191,6 +193,9 @@ for expr in exprs:
 
     val_idx = 0
     res_path = os.path.join(res_dir, f'baseline_{expr}')
+
+    if os.path.exists(res_path) == False:
+        os.mkdir(res_path)
     for val_pl in val_plgen:
         if val_idx < test_num:
             cfile = val_pl['file']
@@ -231,8 +236,6 @@ for expr in exprs:
     avg_ndcg = np.mean(ndcgs)
     avg_rsc = np.mean(rscs)
 
-    if os.path.exists(res_path) == False:
-        os.mkdir(res_path)
     res_per_expr_path = os.path.join(res_path, 'metrics_by_expr.csv')
     with open(res_per_expr_path, 'w') as f:
         csvr = csv.writer(f, delimiter=',')
