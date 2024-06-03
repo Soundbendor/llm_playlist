@@ -31,21 +31,26 @@ def get_popularity_uris(pop_file = 'popularity.csv', csv_dir = pop_dir):
     return np.array(uris)
 
 all_uris = get_popularity_uris()
-cnx, cur = UG.connect_to_nct()
-track_ids = [x.split(':')[-1] for x in all_uris]
+track_ids = [x.split(':')[-1].strip() for x in all_uris]
 print('got track_ids')
-num_tracks = len(track_ids)
-for ididx, _id in enumerate(track_ids):
-    print(f'getting {ididx+1}/{num_tracks}')
-    if ididx == 0:
-        song_feat = UG.get_features_by_id(cnx, _id)
-        #print(song_feat)
-    else:
-        cur_feat = UG.get_features_by_id(cnx, _id)
-        #print(cur_feat)
-        song_feat = pd.concat([song_feat, cur_feat]).reset_index(drop=True)
-        #print(song_feat)
-#song_feat = [UG.get_features_by_id(cnx, _id) for _id in track_ids]
+song_feat = pd.read_csv(G.joined_csv_path, index_col=[0])
+song_feat = song_feat.set_index('id')
+groups = song_feat.groupby(level=0)
+song_feat = groups.first()
+#not_in = [x for x in track_ids if x not in song_feat.index]
+#print(len(not_in))
+track_ids = [x for x in track_ids if x in song_feat.index]
+song_feat = song_feat.loc[track_ids].reset_index()
 song_feat.to_csv(G.joined_csv2_path)
-print('got features')
+#song_feat = [UG.get_features_by_id(cnx, _id) for _id in track_ids]
+#song_feat.to_csv(G.joined_csv2_path)
+#print('got features')
+#song_feat = pd.concat([song_feat])
+#print('concat')
+#track_idxloc =  [song_feat.loc[song_feat['id'] == y].index[0] for y in track_ids]
+#print('got locations')
+#song_feat = song_feat.iloc[track_idxloc].reset_index(drop=True)
+#print(track_ids)
+#print(song_feat)
+#print(song_feat['id'])
 

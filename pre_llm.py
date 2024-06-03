@@ -147,7 +147,7 @@ if __name__ == "__main__":
         bsim.check_moved()
         pl_info = []
         cur_uri = "spotify:track:6fndSocvpEUYd5OFDGNYzj"
-        testing_playlists = False
+        testing_playlists = True
         with open(pl_path, 'r') as f:
             csvr = csv.DictReader(f)
             pl_info = np.array([row for row in csvr])
