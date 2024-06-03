@@ -141,7 +141,7 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
         top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[unranked_loc], mdict['song_feat'][unranked_loc], metric='euclidean', weights = None,tx = mdict['txs'])
         guess = np.array([f'spotify:track:{_id}' for _id in top_songs['id'].values] + lost_songs)
         #print(_guess)
-    elif expr_type == 'cos_sim':
+    elif expr_type == 'cos-sim':
         playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
         use_locs = [mdict['ididx'].get_loc(x) for x in mdict['ididx'] if x not in playlist_ids]
         top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[use_locs], mdict['song_feat'][use_locs], metric='euclidean', weights = None,tx = mdict['txs'], k = gen_num)
@@ -154,7 +154,7 @@ res_header = ['R_Precision', 'DCG', 'IDCG', 'NDCG', 'Recommended_Songs_Clicks']
 all_uris = get_popularity_uris()
 #exprs = ['random']
 #test_num = 1
-exprs = ['bm25', 'cos-sim', 'random']
+exprs = ['bm25', 'random', 'cos-sim']
 for expr in exprs:
     rng = np.random.default_rng(seed=cur_seed)
     r_precs = []
