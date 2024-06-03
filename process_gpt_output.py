@@ -9,8 +9,8 @@ import pandas as pd
 import getter as UG
 import routes as G
 
-jsonl_file_path = 'gpt_ouput/gpt4_val_100.jsonl'
-res_path = 'res/gpt_preds/gpt4_val_100.json'
+jsonl_file_path = 'gpt_ouput/gpt4o_filtered.jsonl'
+res_path = 'res/gpt_preds/gpt4o_filtered.json'
 
 print(jsonl_file_path)
 print(res_path)
@@ -42,6 +42,8 @@ def extract_tracks_from_response(response_content):
                         track, artist = parts
                     else:
                         track, artist = str(parts), ""
+                # Remove anything after 'ft.' in the artist string
+                artist = re.split(r' ft\.| Ft\.', artist, maxsplit=1)[0]
                 # Remove leading numbers and dots
                 track = re.sub(r'^\d+\.\s*', '', track)
                 # Remove surrounding quotation marks if they are there
@@ -52,9 +54,9 @@ def extract_tracks_from_response(response_content):
             except ValueError:
                 print(f"Could not parse line: {line}")
 
-    #         print(f"LINE: {line}")
-    #         print(f"TRACK: {track} - ARTIST: {artist}")
-    #         print()
+            print(f"LINE: {line}")
+            print(f"TRACK: {track} - ARTIST: {artist}")
+            print()
     # exit(0)
 
     return tracks_and_artists
@@ -97,9 +99,12 @@ def get_closest_artists(artist, k=5):
     top_dists = edit_dists[top_idxs][:k]
     return top_artists, top_dists
 
+def clean_track(track):
+    return re.split(r' ft\.| Ft\.| feat\. |Feat\.', track, maxsplit=1)[0]
+
 def get_closest_tracks_by_artists(df,artists, track,k=5):
      filt_artists = df[df['artist_name'].isin(artists)].reset_index(drop=True)
-     filt_tracks = filt_artists['track_name'].astype(str).unique()
+     filt_tracks = filt_artists['track_name'].astype(str).apply(lambda x: clean_track(x)).unique()
      comp = track.lower().strip()
      edit_dists = np.array([GSF.editdist(comp, x.lower().strip()) for x in filt_tracks])
      top_idxs = np.argsort(edit_dists)
@@ -158,9 +163,9 @@ if __name__ == "__main__":
             # try:
             matches = get_closest_tracks_by_artists_songs(_df,artist_name,track_name, k=5)
             
-            # print(f"TRACK: {track_name} - ARTIST: {artist_name}")
-            # print(matches)
-            # print()
+            print(f"TRACK: {track_name} - ARTIST: {artist_name}")
+            print(matches)
+            print()
             
             top_match = matches.iloc[0]  # NOTE: change this to pick the most popular match (Search subset where track distance is min and the same)
             # NOTE: I think we should weigh track title more than artist name. While debugging I found that track title was more accurate

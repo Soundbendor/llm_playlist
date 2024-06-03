@@ -8,11 +8,11 @@ import getter as UG
 import metrics as UM
 import pre_llm as PL
 
-expr_name = "gpt4_new_filtered"
+expr_name = "gpt4o_val_100"
 
 # pl_csv_path = 'data/num_splits/num_tracks-250.csv'
-playlists_pth = "data/train_set.csv"
-# playlists_pth = "data/validation_set.csv"
+# playlists_pth = "data/train_set.csv"
+playlists_pth = "data/validation_set.csv"
 
 preds_path = f'res/gpt_preds/{expr_name}.json'
 res_path = f'res/gpt_results/{expr_name}_res.csv'
@@ -21,12 +21,23 @@ res_track_names_path = f'res/gpt_results/{expr_name}_track_names_res.csv'
 
 songs_pth = G.fsongs_path
 
-
 rec_cols = ['artist_name', 'track_name', 'id']
 mheader = ['expr_idx', 'pl_idx', 'r_prec', 'dcg', 'idcg', 'ndcg', 'clicks']
 
 cond_num = 10
-gen_num = 250
+gen_num = 100
+
+# results saved to         Metric   Average
+# 0  R-Precision  0.042122
+# 1          DCG  1.028230
+# 2         IDCG  2.378920
+# 3         NDCG  0.289734
+# 4       Clicks  1.063830
+# Average R-Precision: 0.04212188186435864
+# Average DCG: 1.0282300211773296
+# Average IDCG: 2.3789199893065223
+# Average NDCG: 0.2897342069702966
+# Average Clicks: 1.0638297872340425
 
 songs_df = pd.read_csv(songs_pth, index_col=None, header=0)
 with open(preds_path, 'r') as pred_file:
@@ -49,7 +60,7 @@ for pl_i, playlist in enumerate(pls):
     gt_ids = [ track['track_uri'] for track in gt_tracks ]
     if len(gt_ids) == 0:
         continue
-    retr_ids = preds[pl_i]
+    retr_ids = preds[pl_i][:gen_num]
     # print(gt_ids)
     # print(retr_ids)
 
@@ -67,7 +78,7 @@ for pl_i, playlist in enumerate(pls):
     dcg = UM.dcg(gt_ids, retr_ids)
     idcg = UM.idcg(gt_ids, retr_ids)
     ndcg = UM.ndcg(gt_ids, retr_ids)
-    clicks = UM.rec_songs_clicks(gt_ids, retr_ids, max_clicks=501)
+    clicks = UM.rec_songs_clicks(gt_ids, retr_ids, max_clicks=(gen_num//10)+1)
 
     mdict = {'expr_idx': pl_i, 'pl_idx': playlist_idx, 'r_prec': r_prec, 'dcg': dcg, 'idcg': idcg, 'ndcg': ndcg, 'clicks': clicks}
     runs.append(mdict)

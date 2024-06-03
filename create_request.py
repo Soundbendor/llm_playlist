@@ -4,20 +4,20 @@ import os,csv,json,datetime
 import getter as UG
 
 cond_num = 10
-gen_num = 250
+gen_num = 100
 num_samples = 100
 
 system_message = f"You are an AI playlist completer.\n\
-Given a Spotify playlist name and list of song names and artists, you will generate {gen_num} unique recommendations to complete the playlist.\n\
-Ensure that you only recomend songs from before 2018.\n\
-Avoid repeating any songs within a playlist.\n\
-Follow this format without deviation:\n\
+Given a Spotify playlist name and list of tracks and artists, you will generate {gen_num} unique recommendations to complete the playlist.\n\
+Only recomend songs released before 2018.\n\
+Follow this format:\n\
 1. track name - artist\n\
 2. track name - artist\n\
 "
 
-train_path = "data/validation_set.csv"
+train_path = "data/filtered_validation_set.csv"
 results_dir = "res/"
+model = "gpt-4o"
 
 def get_playlists(csv_path, sample_num=500):
     df = pd.read_csv(csv_path)
@@ -52,7 +52,7 @@ for playlist in playlists:
         "method": "POST",
         "url": "/v1/chat/completions",
         "body": {
-            "model": "gpt-4",
+            "model": model,
             "messages": [
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": input_message}
@@ -63,7 +63,7 @@ for playlist in playlists:
 
 # Write the JSON objects to a file
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-filename = f'gpt_requests/requests_{timestamp}.jsonl'
+filename = f'gpt_requests/{model}_{timestamp}.jsonl'
 
 with open(filename, 'w') as f:
     for request in requests:

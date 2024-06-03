@@ -11,8 +11,6 @@ pop_df = pd.read_csv("data/stats/popularity.csv")
 merged_df = pd.merge(songs_df, pop_df, on='uri', how='inner')
 filtered_df = merged_df[merged_df['count'] > 0]
 
-print(filtered_df.head())
-
 # filtered_df.to_csv(G.fsongs_path, index=False)
 
 filtered_df['track_artist'] = filtered_df['track_name'] + ' - ' + filtered_df['artist_name']
