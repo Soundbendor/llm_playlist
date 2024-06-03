@@ -27,7 +27,7 @@ res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 gen_num = 100
 cond_num = 10
 test_num = 100
-pl_sampnum = 300
+pl_sampnum = 25
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 idx_path = os.path.join(G.model_dir, 'bm25.index')
@@ -85,9 +85,9 @@ def get_popularity_uris(pop_file = 'popularity.csv', csv_dir = pop_dir):
 # _plinfo: ranked playlist info (file, idx, pid), ipt_uris, tracks in the input playlist
 # sample_num = number of songs to sample
 # playlist_num: top k playlists to sample from
-def sample_from_playlists(_rng, _idxs, _sims, _plinfo, ipt_uris, sample_num = 100, playlist_num = 10):
+def sample_from_playlists(_rng, _idxs, _sims, _plinfo, ipt_uris, sample_num = 100, playlist_num = 10, mask=99999):
     songs = {}
-    ignore_uris = set([x.strip() for x in ipt_uris])
+    ignore_uris = set(ipt_uris[:mask])
     for plidx, playlist in enumerate(_plinfo[:playlist_num]):
         cur_sim = _sims[plidx]
         cfile = playlist['file']
@@ -98,28 +98,28 @@ def sample_from_playlists(_rng, _idxs, _sims, _plinfo, ipt_uris, sample_num = 10
         cur_pl = pl_json['playlists'][cidx]
         for track in cur_pl['tracks']:
             score_to_add = cur_sim
-            add_track = False
             cur_uri = track['track_uri']
-            if cur_uri not in ipt_uris:
-                if cur_uri not in songs.keys():
-                    add_track = True
-                else:
-                    add_track = True
-                    comp_score = songs[cur_uri]
-                    score_to_add = cur_sim + comp_score
-            if add_track == True:
-                song_info = score_to_add
-                songs[cur_uri] = song_info
+            if cur_uri not in ignore_uris:
+                if cur_uri in songs.keys():
+                    old_score = songs[cur_uri]
+                    score_to_add = cur_sim + old_score
+                songs[cur_uri] = score_to_add
     uris = []
     scores = []
     for _uri, _score in songs.items():
         uris.append(_uri)
         scores.append(_score)
 
-    scores = np.array(scores)/np.sum(scores)
-    print(scores.shape[0])
-    unranked_guess = _rng.choice(uris, size= sample_num, replace=False, p=scores)
-    return unranked_guess
+    #scores = np.array(scores)/np.sum(scores)
+    scores = np.array(scores)
+
+    top_idxs = np.argsort(scores)[::-1][:sample_num]
+    top_uris = np.array(uris)[top_idxs]
+    top_scores = scores[top_idxs]
+    print(scores.shape[0], top_scores[:5])
+    #unranked_guess = _rng.choice(uris, size= sample_num, replace=False, p=scores)
+    #return unranked_guess
+    return top_idxs, top_scores, top_uris
     
 
 def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type = 'random', mdict = None, playlist = None):
@@ -134,7 +134,7 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
         #print(top_idx, top_sim, top_pl)
         print('sampling from playlists')
         #unranked = sample_from_playlists(_rng, top_idx, top_sim, top_pl, playlist_uris, sample_num = guess_num, playlist_num = pl_sampnum)
-        guess = sample_from_playlists(_rng, top_idx, top_sim, top_pl, playlist_uris, sample_num = guess_num, playlist_num = pl_sampnum)
+        top_idxs2, top_scores2, guess = sample_from_playlists(_rng, top_idx, top_sim, top_pl, playlist_uris, sample_num = guess_num, playlist_num = pl_sampnum, mask = mdict['mask'])
         #print(unranked)
         """
         unranked_ids = [x.split(':')[-1].strip() for x in unranked]
@@ -214,8 +214,9 @@ for expr in exprs:
             cidx = int(val_pl['idx'])
             pl_json = UG.get_playlist_json(cfile)
             query_pl = pl_json['playlists'][cidx]
-            cur_uris = [x['track_uri'] for x in query_pl['tracks']]
+            cur_uris = [x['track_uri'].strip() for x in query_pl['tracks']]
             ground_truth = np.array(cur_uris[cond_num:])
+            #print(ground_truth)
             ground_truth_len = ground_truth.shape[0]
             if ground_truth_len > 0:
                 print(f'running experiment {expr} {val_idx+1}/{test_num}')
