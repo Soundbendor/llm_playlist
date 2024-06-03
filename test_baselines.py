@@ -8,6 +8,7 @@ import sklearn.cluster as SKC
 import gensim.corpora as GC
 import gensim.models as GM
 import pandas as pd
+import pre_llm as PL
 cur_seed = 5
 
 # condition on 10, generate 100, should be at least 20 songs length
@@ -24,6 +25,11 @@ gen_num = 100
 cond_num = 10
 test_num = 100
 
+model_path = os.path.join(G.model_dir, 'bm25.model')
+dict_path = os.path.join(G.model_dir, 'bm25.dict' )
+idx_path = os.path.join(G.model_dir, 'bm25.index')
+pl_path = os.path.join(G.model_dir, 'bm25.playlist')
+
 # popularity csv format: uri, count
 def get_popularity_uris(pop_file = 'popularity.csv', csv_dir = pop_dir):
     uris = []
@@ -33,11 +39,13 @@ def get_popularity_uris(pop_file = 'popularity.csv', csv_dir = pop_dir):
         uris = [x['uri'] for x in csvr]
     return np.array(uris)
 
-def get_guess(candidate_songs, _rng, guess_num = 100, expr_type = 'random'):
+def get_guess(candidate_songs, _rng, guess_num = 100, expr_type = 'random', mdict = None):
     guess = None
     num_uris = candidate_songs.shape[0]
     if expr_type == 'random':
         guess = _rng.choice(candidate_songs, size=num_uris, replace=False)
+    elif expr_type == 'bm25':
+        
     return guess
     
 
@@ -45,8 +53,8 @@ res_header = ['R_Precision', 'DCG', 'IDCG', 'NDCG', 'Recommended_Songs_Clicks']
 # validation_set.csv format, name,num_tracks,idx,file,pid,modified_at,collaborative,num_albums,num_followers
 all_uris = get_popularity_uris()
 #exprs = ['random']
-test_num = 0
-exprs = ['cos_sim']
+test_num = 1
+exprs = ['bm25']
 for expr in exprs:
     rng = np.random.default_rng(seed=cur_seed)
     r_precs = []
@@ -59,6 +67,7 @@ for expr in exprs:
     song_feat = None
     track_ids = None
     track_idxloc = None
+    """
     if expr in ['cos_sim']:
         cnx, cur = UG.connect_to_nct()
         track_ids = [x.split(':')[-1] for x in all_uris]
@@ -86,6 +95,16 @@ for expr in exprs:
         #song_feat = song_feat.iloc[track_idxloc].reset_index(drop=True)
         print(track_ids)
         print(song_feat)
+    """
+    bstuff = {}
+    if expr in ['bm25']:
+        bstuff['model'] = GM.OkapiBM25Model.load(model_path)
+        bstuff['dict'] = GC.Dictionary.load(dict_path)
+        bstuff['tmp'] = GT.get_tmpfile(idx_path)
+        #bsim = GS.Similarity.
+        bstuff['sim'] = GS.Similarity(bstuff['tmp'], bdict, len(bdict))
+        bstuff['sim'].check_moved()
+
     val_idx = 0
     res_path = os.path.join(res_dir, f'baseline_{expr}')
     for val_pl in val_plgen:
@@ -99,7 +118,7 @@ for expr in exprs:
             ground_truth_len = ground_truth.shape[0]
             if ground_truth_len > 0:
                 print(f'running experiment {expr} {val_idx+1}/{test_num}')
-                guess = get_guess(all_uris, rng, expr_type = expr, guess_num = gen_num)
+                guess = get_guess(all_uris, rng, expr_type = expr, guess_num = gen_num, m_dict = bstuff)
                 r_prec = UM.r_precision(ground_truth, guess)
                 dcg = UM.dcg(ground_truth, guess)
                 idcg = UM.idcg(ground_truth, guess)
