@@ -24,10 +24,13 @@ res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 #playlist_csvs = list(os.listdir(csv_dir))
 #num_csvs = len(playlist_csvs)
 
-gen_num = 100
 cond_num = 10
 test_num = 100
-pl_sampnum = 25
+#gen_num = 100
+#pl_sampnum = 25
+gen_num = 500
+pl_sampnum = 100
+
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 idx_path = os.path.join(G.model_dir, 'bm25.index')
@@ -204,7 +207,7 @@ for expr in exprs:
             bstuff['plinfo'] = np.array([row for row in csvr])
 
     val_idx = 0
-    res_path = os.path.join(res_dir, f'baseline_{expr}_filt')
+    res_path = os.path.join(res_dir, f'baseline_{expr}_filt_{gen_num}')
 
     if os.path.exists(res_path) == False:
         os.mkdir(res_path)
