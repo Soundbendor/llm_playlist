@@ -90,16 +90,17 @@ def sample_from_playlists(_rng, _idxs, _sims, _plinfo, sample_num = 100, playlis
 
         cur_pl = pl_json['playlists'][cidx]
         add_track = False
+        score_to_add = cur_sim
         for track in cur_pl['tracks']:
             cur_uri = track['track_uri']
             if cur_uri not in songs.keys():
                 add_track = True
             else:
+                add_track = True
                 comp_score = songs[cur_uri]
-                if comp_score < cur_sim:
-                    add_track = True
+                score_to_add = cur_sim + comp_score
         if add_track == True:
-            song_info = cur_sim
+            song_info = score_to_add
             songs[cur_uri] = song_info
     uris = []
     scores = []
