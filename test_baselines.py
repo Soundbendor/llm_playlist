@@ -26,10 +26,10 @@ res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 
 cond_num = 10
 test_num = 100
-#gen_num = 100
-#pl_sampnum = 25
-gen_num = 500
-pl_sampnum = 100
+gen_num = 100
+pl_sampnum = 25
+#gen_num = 500
+#pl_sampnum = 100
 
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
@@ -187,6 +187,7 @@ all_uris = get_popularity_uris()
 #exprs = ['cossim', 'random']
 #exprs = ['cossim']
 exprs = ['bm25']
+#exprs = ['bm25','cossim','random']
 for expr in exprs:
     rng = np.random.default_rng(seed=cur_seed)
     r_precs = []
