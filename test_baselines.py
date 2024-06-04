@@ -256,6 +256,8 @@ for expr in exprs:
                         f.write('\n')
 
                 val_idx += 1
+            else:
+                print("skip")
     r_precs = np.array(r_precs)
     dcgs = np.array(dcgs)
     idcgs = np.array(idcgs)
