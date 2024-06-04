@@ -32,7 +32,7 @@ def get_mask_vector(mask, model):
 # ==================================
 print("dfs loading...")
 train_gen = UG.playlist_csv_generator("train_set.csv")
-val_gen = UG.playlist_csv_generator("validation_set.csv")
+val_gen = UG.playlist_csv_generator("filtered_validation_set.csv")
 print("dfs loaded")
 # train_df = pd.read_csv(train_path)
 # val_df = pd.read_csv(val_path)

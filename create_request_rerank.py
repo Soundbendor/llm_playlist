@@ -1,5 +1,5 @@
 import pandas as pd
-import os,csv,json,datetime
+import os,csv,json,datetime,re
 
 import getter as UG
 import routes as G
@@ -9,41 +9,51 @@ gen_num = 100
 num_samples = 100
 context_num = 100
 
-train_path = "data/filtered_validation_set.csv"
+val_path = "data/filtered_validation_set.csv"
 results_dir = "res/"
 model = "gpt-4o"
 songs_pth = G.songs_path
-context_dir = "res/baseline_bm25_filt_100/"
+context_dir = "res/baseline_bm25_filt_100_real"
 
-system_message = f"You are an AI playlist completer.\n\
-Reorder the following {context_num} songs to complete the playlist.\n\
+system_message = f"You are an AI playlist completer. \n\
+Reorder the following {context_num} songs to complete the playlist. \n\
 Follow this format:\n\
 1. track name - artist\n\
 2. track name - artist\n\
-...\n\
+... \n\
+100. track name - artist\n\
 "
 
 songs_df = pd.read_csv(songs_pth, index_col=None, header=0)
-
+songs_df.set_index(["uri"], inplace=True)
 # Initialize a list to store the lists of URLs
-candidates = []
+candidates = {}
 
 # Loop through each .txt file in the context directory
 for filename in os.listdir(context_dir):
     if filename.endswith('.txt'):
         print(filename)
+        match = re.search(r'\d+', filename)
+        if match:
+            idx = int(match.group(0))
+            print(idx)
+        else:
+            print("No number found in filename.")
+
         file_path = os.path.join(context_dir, filename)
         with open(file_path, 'r', encoding='utf-8') as file:
             pl_cands = []
             for line in file:
                 uri = line[:-1]
-                track = songs_df[songs_df["uri"] == uri]
-                track_name = track["track_name"].values[0]
-                artist_name = track["artist_name"].values[0]
+                track = songs_df.loc[uri]
+                track_name = track["track_name"]
+                artist_name = track["artist_name"]
                 str_track_artist = f"{track_name} - {artist_name}"
                 pl_cands.append(str_track_artist)
-            print('\n'.join(pl_cands))
-            candidates.append('\n'.join(pl_cands))
+            cand_text = '\n'.join(pl_cands)
+            print("\n\ntext:\n", cand_text)
+            print("idx:", idx)
+            candidates[idx] = cand_text
 
 def get_playlists(csv_path, sample_num=500):
     df = pd.read_csv(csv_path)
@@ -51,7 +61,7 @@ def get_playlists(csv_path, sample_num=500):
     
     return cur_playlists[:sample_num]
 
-playlists = get_playlists(train_path, sample_num = num_samples)
+playlists = get_playlists(val_path, sample_num = num_samples)
 
 requests = []
 
@@ -69,10 +79,10 @@ for idx, playlist in enumerate(playlists):
         artist_name = track['artist_name']
         track_name = track['track_name']
         seed_tracks.append(track_name + " - " + artist_name)
-        # print(f"Artist: {artist_name}, Track: {track_name}")
-    # print(seed_tracks)
+        print(f"Artist: {artist_name}, Track: {track_name}")
+    print(seed_tracks)
     seed_str = ', '.join(seed_tracks)
-    input_message = f"Candidates: {candidates[idx]}\nPlaylist name: {name}\n\nBegining of playlist:\n{seed_str}\nplease continue this playlist with {gen_num} additional songs from the candidates."
+    input_message = f"Order these songs: {candidates[idx]} to complete this playlist:\nPlaylist name: {name} Begining of playlist:{seed_str}\nOrder the list of 100 songs provided by relivence to begining of playlist."
     print(input_message)
     request = {
         "custom_id": f"{file}_{playlist_idx}",

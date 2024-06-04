@@ -8,7 +8,7 @@ import getter as UG
 import metrics as UM
 import pre_llm as PL
 
-expr_name = "bm25_100_gpt4o_filtered"
+expr_name = "bm25_100_gpt4o_corrected"
 
 # pl_csv_path = 'data/num_splits/num_tracks-250.csv'
 # playlists_pth = "data/train_set.csv"
@@ -20,7 +20,7 @@ res_path = f'res/gpt_results/{expr_name}_res.csv'
 avg_res_path = f'res/gpt_results/{expr_name}_avg_res.csv'
 res_track_names_path = f'res/gpt_results/{expr_name}_track_names_res.csv'
 
-songs_pth = G.fsongs_path
+songs_pth = G.songs_path
 
 rec_cols = ['artist_name', 'track_name', 'id']
 mheader = ['expr_idx', 'pl_idx', 'r_prec', 'dcg', 'idcg', 'ndcg', 'clicks']
