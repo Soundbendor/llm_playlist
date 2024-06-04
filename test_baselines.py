@@ -26,16 +26,17 @@ res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 
 cond_num = 10
 test_num = 100
-gen_num = 100
-pl_sampnum = 25
-#gen_num = 500
-#pl_sampnum = 100
+#gen_num = 100
+#pl_sampnum = 25
+gen_num = 500
+pl_sampnum = 100
 
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 idx_path = os.path.join(G.model_dir, 'bm25.index')
 pl_path = os.path.join(G.model_dir, 'bm25.playlist')
 
+"""
 cs_weights = {'danceability': 0.75,
             'energy':1.0,
             'key':0.0,
@@ -47,7 +48,19 @@ cs_weights = {'danceability': 0.75,
             'liveness':0.25,
             'valence':1.0,
             'tempo': 2.5}
+"""
 
+cs_weights = {'danceability': 1.0,
+            'energy':1.0,
+            'key':0.0,
+            'loudness':0.0,
+            'mode':1.0,
+            'speechiness':1.0,
+            'acousticness':1.0,
+            'instrumentalness':1.0,
+            'liveness':1.0,
+            'valence':1.0,
+            'tempo': 1.0}
 
 def get_closest_songs_to_playlist(_cnx,playlist_ids,all_song_df, all_song_feat, metric='euclidean', k=99999,
     weights = None,tx = defaultdict(lambda: None)):
@@ -184,9 +197,9 @@ res_header = ['R_Precision', 'DCG', 'IDCG', 'NDCG', 'Recommended_Songs_Clicks']
 all_uris = get_popularity_uris()
 #exprs = ['random']
 #test_num = 1
-#exprs = ['cossim', 'random']
+exprs = ['cossim', 'random']
 #exprs = ['cossim']
-exprs = ['bm25']
+#exprs = ['bm25']
 #exprs = ['bm25','cossim','random']
 for expr in exprs:
     rng = np.random.default_rng(seed=cur_seed)
