@@ -129,7 +129,10 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
     guess = None
     num_uris = candidate_songs.shape[0]
     if expr_type == 'random':
-        guess = _rng.choice(candidate_songs, size=gen_num, replace=False)
+        playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
+        use_songs = [x for x in mdict['ididx'] if x.strip() not in playlist_ids]
+        guess_ids = _rng.choice(use_songs, size=guess_num, replace=False)
+        guess = np.array([f'spotify:track:{_id}' for x in guess_ids])
     elif expr_type == 'bm25':
         print('ranking playlists')
         top_idx, top_sim, top_pl = PL.rank_train_playlists_by_playlist(playlist,mdict['model'], mdict['dict'], mdict['sim'], mdict['plinfo'], mask = mdict['mask'])
@@ -158,7 +161,7 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
         #print(_guess)
     elif expr_type == 'cossim':
         playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
-        use_locs = [mdict['ididx'].get_loc(x) for x in mdict['ididx'] if x not in playlist_ids]
+        use_locs = [mdict['ididx'].get_loc(x) for x in mdict['ididx'] if x.strip() not in playlist_ids]
         top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[use_locs], mdict['song_feat'][use_locs], metric='euclidean', weights = None,tx = mdict['txs'], k = guess_num)
         guess = np.array([f'spotify:track:{_id}' for _id in top_songs['id'].values])
     return guess
@@ -185,13 +188,12 @@ for expr in exprs:
     song_df = None
     txs = None
     bstuff = {}
-    if expr in ['bm25','cossim']:
-        bstuff['cnx'], _ = UG.connect_to_nct()
-        bstuff['song_df'] = pd.read_csv(G.joined_csv2_path, index_col=[0])
-        bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(bstuff['song_df'], normalize=True, pca = 0, seed=cur_seed)
-        bstuff['ididx'] = pd.Index(bstuff['song_df']['id'])
-        #bstuff['song_df'] = bstuff['song_df'].set_index('id')
-        bstuff['mask'] = cond_num
+    bstuff['cnx'], _ = UG.connect_to_nct()
+    bstuff['song_df'] = pd.read_csv(G.joined_csv2_path, index_col=[0])
+    bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(bstuff['song_df'], normalize=True, pca = 0, seed=cur_seed)
+    bstuff['ididx'] = pd.Index(bstuff['song_df']['id'])
+    #bstuff['song_df'] = bstuff['song_df'].set_index('id')
+    bstuff['mask'] = cond_num
     #print('got here')
     if expr in ['bm25']:
         bstuff['model'] = GM.OkapiBM25Model.load(model_path)
