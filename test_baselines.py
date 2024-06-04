@@ -26,15 +26,27 @@ res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 
 cond_num = 10
 test_num = 100
-#gen_num = 100
-#pl_sampnum = 25
-gen_num = 500
-pl_sampnum = 100
+gen_num = 100
+pl_sampnum = 25
+#gen_num = 500
+#pl_sampnum = 100
 
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 idx_path = os.path.join(G.model_dir, 'bm25.index')
 pl_path = os.path.join(G.model_dir, 'bm25.playlist')
+
+cs_weights = {'danceability': 0.75,
+            'energy':1.0,
+            'key':0.0,
+            'loudness':0.0,
+            'mode':0.5,
+            'speechiness':1.0,
+            'acousticness':1.5,
+            'instrumentalness':1.5,
+            'liveness':0.25,
+            'valence':1.0,
+            'tempo': 2.5}
 
 
 def get_closest_songs_to_playlist(_cnx,playlist_ids,all_song_df, all_song_feat, metric='euclidean', k=99999,
@@ -129,7 +141,10 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
     guess = None
     num_uris = candidate_songs.shape[0]
     if expr_type == 'random':
-        guess = _rng.choice(candidate_songs, size=gen_num, replace=False)
+        playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
+        use_songs = [x for x in mdict['ididx'] if x.strip() not in playlist_ids]
+        guess_ids = _rng.choice(use_songs, size=guess_num, replace=False)
+        guess = np.array([f'spotify:track:{_id}' for _id in guess_ids])
     elif expr_type == 'bm25':
         print('ranking playlists')
         top_idx, top_sim, top_pl = PL.rank_train_playlists_by_playlist(playlist,mdict['model'], mdict['dict'], mdict['sim'], mdict['plinfo'], mask = mdict['mask'])
@@ -158,8 +173,8 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
         #print(_guess)
     elif expr_type == 'cossim':
         playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
-        use_locs = [mdict['ididx'].get_loc(x) for x in mdict['ididx'] if x not in playlist_ids]
-        top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[use_locs], mdict['song_feat'][use_locs], metric='euclidean', weights = None,tx = mdict['txs'], k = guess_num)
+        use_locs = [mdict['ididx'].get_loc(x) for x in mdict['ididx'] if x.strip() not in playlist_ids]
+        top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[use_locs], mdict['song_feat'][use_locs], metric='euclidean', weights = cs_weights,tx = mdict['txs'], k = guess_num)
         guess = np.array([f'spotify:track:{_id}' for _id in top_songs['id'].values])
     return guess
     
@@ -172,6 +187,7 @@ all_uris = get_popularity_uris()
 #exprs = ['cossim', 'random']
 #exprs = ['cossim']
 exprs = ['bm25']
+#exprs = ['bm25','cossim','random']
 for expr in exprs:
     rng = np.random.default_rng(seed=cur_seed)
     r_precs = []
@@ -180,18 +196,17 @@ for expr in exprs:
     ndcgs = []
     rscs = []
     times = []
-    val_plgen = UG.playlist_csv_generator('validation_set.csv', csv_path = data_dir)
+    val_plgen = UG.playlist_csv_generator('filtered_validation_set.csv', csv_path = data_dir)
     song_feat = None
     song_df = None
     txs = None
     bstuff = {}
-    if expr in ['bm25','cossim']:
-        bstuff['cnx'], _ = UG.connect_to_nct()
-        bstuff['song_df'] = pd.read_csv(G.joined_csv2_path, index_col=[0])
-        bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(bstuff['song_df'], normalize=True, pca = 0, seed=cur_seed)
-        bstuff['ididx'] = pd.Index(bstuff['song_df']['id'])
-        #bstuff['song_df'] = bstuff['song_df'].set_index('id')
-        bstuff['mask'] = cond_num
+    bstuff['cnx'], _ = UG.connect_to_nct()
+    bstuff['song_df'] = pd.read_csv(G.joined_csv2_path, index_col=[0])
+    bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(bstuff['song_df'], normalize=True, pca = 0, seed=cur_seed)
+    bstuff['ididx'] = pd.Index(bstuff['song_df']['id'])
+    #bstuff['song_df'] = bstuff['song_df'].set_index('id')
+    bstuff['mask'] = cond_num
     #print('got here')
     if expr in ['bm25']:
         bstuff['model'] = GM.OkapiBM25Model.load(model_path)
@@ -207,7 +222,7 @@ for expr in exprs:
             bstuff['plinfo'] = np.array([row for row in csvr])
 
     val_idx = 0
-    res_path = os.path.join(res_dir, f'baseline_{expr}_filt_{gen_num}')
+    res_path = os.path.join(res_dir, f'baseline_{expr}_filt_{gen_num}_real')
 
     if os.path.exists(res_path) == False:
         os.mkdir(res_path)
@@ -242,6 +257,8 @@ for expr in exprs:
                         f.write('\n')
 
                 val_idx += 1
+            else:
+                print("skip")
     r_precs = np.array(r_precs)
     dcgs = np.array(dcgs)
     idcgs = np.array(idcgs)
