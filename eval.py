@@ -8,7 +8,7 @@ import getter as UG
 import metrics as UM
 import pre_llm as PL
 
-expr_name = "gpt4o_val_100"
+expr_name = "gpt4o_filtered"
 
 # pl_csv_path = 'data/num_splits/num_tracks-250.csv'
 # playlists_pth = "data/train_set.csv"

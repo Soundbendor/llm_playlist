@@ -6,3 +6,4 @@ env/
 *.err
 *.out
 models/bm25.dict
+gound_gpt_output.py

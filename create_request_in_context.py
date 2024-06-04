@@ -6,13 +6,11 @@ import getter as UG
 cond_num = 10
 gen_num = 100
 num_samples = 100
+context_num = 100
 
 system_message = f"You are an AI playlist completer.\n\
-Given a Spotify playlist name and list of tracks and artists, you will generate {gen_num} unique recommendations to complete the playlist.\n\
-Only recomend songs released before 2018.\n\
-Follow this format:\n\
-1. track name - artist\n\
-2. track name - artist\n\
+Given the first {cond_num} songs of a playlist and {context_num} cannidates to choose from, reorder the cannidates to make a playlist.
+
 "
 
 train_path = "data/filtered_validation_set.csv"
