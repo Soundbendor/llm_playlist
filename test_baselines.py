@@ -26,10 +26,10 @@ res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 
 cond_num = 10
 test_num = 100
-gen_num = 100
-pl_sampnum = 25
-#gen_num = 500
-#pl_sampnum = 100
+#gen_num = 100
+#pl_sampnum = 25
+gen_num = 500
+pl_sampnum = 100
 
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
@@ -195,9 +195,9 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
 res_header = ['R_Precision', 'DCG', 'IDCG', 'NDCG', 'Recommended_Songs_Clicks']
 # validation_set.csv format, name,num_tracks,idx,file,pid,modified_at,collaborative,num_albums,num_followers
 all_uris = get_popularity_uris()
-exprs = ['random']
+#exprs = ['random']
 #test_num = 1
-#exprs = ['cossim', 'random']
+exprs = ['cossim', 'random']
 #exprs = ['cossim']
 #exprs = ['bm25']
 #exprs = ['bm25','cossim','random']
