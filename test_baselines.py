@@ -26,15 +26,27 @@ res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 
 cond_num = 10
 test_num = 100
-#gen_num = 100
-#pl_sampnum = 25
-gen_num = 500
-pl_sampnum = 100
+gen_num = 100
+pl_sampnum = 25
+#gen_num = 500
+#pl_sampnum = 100
 
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 idx_path = os.path.join(G.model_dir, 'bm25.index')
 pl_path = os.path.join(G.model_dir, 'bm25.playlist')
+
+cs_weights = {'danceability': 0.75,
+            'energy':1.0,
+            'key':0.0,
+            'loudness':0.0,
+            'mode':0.5,
+            'speechiness':1.0,
+            'acousticness':1.5,
+            'instrumentalness':1.5,
+            'liveness':0.25,
+            'valence':1.0,
+            'tempo': 2.5}
 
 
 def get_closest_songs_to_playlist(_cnx,playlist_ids,all_song_df, all_song_feat, metric='euclidean', k=99999,
@@ -132,7 +144,7 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
         playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
         use_songs = [x for x in mdict['ididx'] if x.strip() not in playlist_ids]
         guess_ids = _rng.choice(use_songs, size=guess_num, replace=False)
-        guess = np.array([f'spotify:track:{_id}' for x in guess_ids])
+        guess = np.array([f'spotify:track:{_id}' for _id in guess_ids])
     elif expr_type == 'bm25':
         print('ranking playlists')
         top_idx, top_sim, top_pl = PL.rank_train_playlists_by_playlist(playlist,mdict['model'], mdict['dict'], mdict['sim'], mdict['plinfo'], mask = mdict['mask'])
@@ -162,7 +174,7 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
     elif expr_type == 'cossim':
         playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
         use_locs = [mdict['ididx'].get_loc(x) for x in mdict['ididx'] if x.strip() not in playlist_ids]
-        top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[use_locs], mdict['song_feat'][use_locs], metric='euclidean', weights = None,tx = mdict['txs'], k = guess_num)
+        top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[use_locs], mdict['song_feat'][use_locs], metric='euclidean', weights = cs_weights,tx = mdict['txs'], k = guess_num)
         guess = np.array([f'spotify:track:{_id}' for _id in top_songs['id'].values])
     return guess
     
@@ -173,8 +185,8 @@ all_uris = get_popularity_uris()
 #exprs = ['random']
 #test_num = 1
 #exprs = ['cossim', 'random']
-#exprs = ['cossim']
-exprs = ['bm25']
+exprs = ['cossim']
+#exprs = ['bm25']
 for expr in exprs:
     rng = np.random.default_rng(seed=cur_seed)
     r_precs = []
@@ -209,7 +221,7 @@ for expr in exprs:
             bstuff['plinfo'] = np.array([row for row in csvr])
 
     val_idx = 0
-    res_path = os.path.join(res_dir, f'baseline_{expr}_filt_{gen_num}')
+    res_path = os.path.join(res_dir, f'baseline_{expr}_filt_{gen_num}_w')
 
     if os.path.exists(res_path) == False:
         os.mkdir(res_path)
