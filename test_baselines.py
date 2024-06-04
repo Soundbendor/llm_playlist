@@ -26,10 +26,10 @@ res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 
 cond_num = 10
 test_num = 100
-gen_num = 100
-pl_sampnum = 25
-#gen_num = 500
-#pl_sampnum = 100
+#gen_num = 100
+#pl_sampnum = 25
+gen_num = 500
+pl_sampnum = 100
 
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
@@ -185,8 +185,8 @@ all_uris = get_popularity_uris()
 #exprs = ['random']
 #test_num = 1
 #exprs = ['cossim', 'random']
-exprs = ['cossim']
-#exprs = ['bm25']
+#exprs = ['cossim']
+exprs = ['bm25']
 for expr in exprs:
     rng = np.random.default_rng(seed=cur_seed)
     r_precs = []
@@ -195,7 +195,7 @@ for expr in exprs:
     ndcgs = []
     rscs = []
     times = []
-    val_plgen = UG.playlist_csv_generator('validation_set.csv', csv_path = data_dir)
+    val_plgen = UG.playlist_csv_generator('filtered_validation_set.csv', csv_path = data_dir)
     song_feat = None
     song_df = None
     txs = None
@@ -221,7 +221,7 @@ for expr in exprs:
             bstuff['plinfo'] = np.array([row for row in csvr])
 
     val_idx = 0
-    res_path = os.path.join(res_dir, f'baseline_{expr}_filt_{gen_num}_w')
+    res_path = os.path.join(res_dir, f'baseline_{expr}_filt_{gen_num}_real')
 
     if os.path.exists(res_path) == False:
         os.mkdir(res_path)
