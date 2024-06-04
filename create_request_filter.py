@@ -2,20 +2,48 @@ import pandas as pd
 import os,csv,json,datetime
 
 import getter as UG
+import routes as G
 
 cond_num = 10
 gen_num = 100
 num_samples = 100
 context_num = 100
 
-system_message = f"You are an AI playlist completer.\n\
-Given the first {cond_num} songs of a playlist and {context_num} cannidates to choose from, reorder the cannidates to make a playlist.
-
-"
-
 train_path = "data/filtered_validation_set.csv"
 results_dir = "res/"
-model = "gpt-3.5-turbo"
+model = "gpt-4o"
+songs_pth = G.songs_path
+context_dir = "res/baseline_bm25_filt_100/"
+
+system_message = f"You are an AI playlist completer.\n\
+Reorder the following {context_num} songs to complete the playlist.\n\
+Follow this format:\n\
+1. track name - artist\n\
+2. track name - artist\n\
+...\n\
+"
+
+songs_df = pd.read_csv(songs_pth, index_col=None, header=0)
+
+# Initialize a list to store the lists of URLs
+candidates = []
+
+# Loop through each .txt file in the context directory
+for filename in os.listdir(context_dir):
+    if filename.endswith('.txt'):
+        print(filename)
+        file_path = os.path.join(context_dir, filename)
+        with open(file_path, 'r', encoding='utf-8') as file:
+            pl_cands = []
+            for line in file:
+                uri = line[:-1]
+                track = songs_df[songs_df["uri"] == uri]
+                track_name = track["track_name"].values[0]
+                artist_name = track["artist_name"].values[0]
+                str_track_artist = f"{track_name} - {artist_name}"
+                pl_cands.append(str_track_artist)
+            print('\n'.join(pl_cands))
+            candidates.append('\n'.join(pl_cands))
 
 def get_playlists(csv_path, sample_num=500):
     df = pd.read_csv(csv_path)
@@ -27,7 +55,7 @@ playlists = get_playlists(train_path, sample_num = num_samples)
 
 requests = []
 
-for playlist in playlists:
+for idx, playlist in enumerate(playlists):
     print(playlist)
     name = playlist['name']
     file = playlist['file']
@@ -43,8 +71,9 @@ for playlist in playlists:
         seed_tracks.append(track_name + " - " + artist_name)
         # print(f"Artist: {artist_name}, Track: {track_name}")
     # print(seed_tracks)
-    input_message = f"Playlist name: {name}\n\Input songs and artists: {', '.join(seed_tracks)}\nUSER: Please recommend {gen_num} songs."
-    
+    seed_str = ', '.join(seed_tracks)
+    input_message = f"Candidates: {candidates[idx]}\nPlaylist name: {name}\n\nBegining of playlist:\n{seed_str}\nplease continue this playlist with {gen_num} additional songs from the candidates."
+    print(input_message)
     request = {
         "custom_id": f"{file}_{playlist_idx}",
         "method": "POST",

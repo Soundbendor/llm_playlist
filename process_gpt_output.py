@@ -9,8 +9,8 @@ import pandas as pd
 import getter as UG
 import routes as G
 
-jsonl_file_path = 'gpt_ouput/gpt4_filtered.jsonl'
-res_path = 'res/gpt_preds/gpt4_filtered.json'
+jsonl_file_path = 'gpt_ouput/bm25_100_gpt4o_filtered.jsonl'
+res_path = 'res/gpt_preds/bm25_100_gpt4o_filtered.json'
 
 print(jsonl_file_path)
 print(res_path)
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     #ret_songs = get_closest_songs_by_artist(cnx, "Prince", "Little Red Beret", k=5)
     #print(ret_songs[['track_name', 'dist']])
     #top_artists = get_closest_artists('jemmy hindrickss')
-    _df = pd.read_csv(G.fsongs_path)
+    _df = pd.read_csv(G.songs_path)
     # ret = get_closest_tracks_by_artists_songs(_df,'jemmy hindrix','teh bird crys barry', k=5, artist_wt = 1., track_wt = 1.)
     # print(ret)
 
@@ -161,7 +161,7 @@ if __name__ == "__main__":
 
         for track_name, artist_name in tracks:
             # try:
-            matches = get_closest_tracks_by_artists_songs(_df,artist_name,track_name, k=5)
+            matches = get_closest_tracks_by_artists_songs(_df,artist_name,track_name, k=10)
             
             # print(f"TRACK: {track_name} - ARTIST: {artist_name}")
             # print(matches)
