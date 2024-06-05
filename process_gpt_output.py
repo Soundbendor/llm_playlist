@@ -12,7 +12,7 @@ import routes as G
 jsonl_file_path = 'gpt_ouput/bm25_500_gpt4o_corrected.jsonl'
 res_path = 'res/gpt_preds/bm25_500_gpt4o_corrected.json'
 
-songs_path = G.songs_path
+songs_path = G.fsongs_path
 
 print(jsonl_file_path)
 print(res_path)

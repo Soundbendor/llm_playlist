@@ -20,7 +20,7 @@ res_path = f'res/gpt_results/{expr_name}_res.csv'
 avg_res_path = f'res/gpt_results/{expr_name}_avg_res.csv'
 res_track_names_path = f'res/gpt_results/{expr_name}_track_names_res.csv'
 
-songs_pth = G.songs_path
+songs_pth = G.fsongs_path
 
 rec_cols = ['artist_name', 'track_name', 'id']
 mheader = ['expr_idx', 'pl_idx', 'r_prec', 'dcg', 'idcg', 'ndcg', 'clicks']
