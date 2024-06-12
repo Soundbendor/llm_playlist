@@ -1,5 +1,5 @@
 import pandas as pd
-import os,csv,json,datetime
+import os,csv,json,datetime,re
 
 import getter as UG
 import routes as G
@@ -28,12 +28,19 @@ songs_df = pd.read_csv(songs_pth, index_col=None, header=0)
 songs_df.set_index(["uri"], inplace=True)
 
 # Initialize a list to store the lists of URLs
-candidates = []
+candidates = {}
 
 # Loop through each .txt file in the context directory
 for filename in os.listdir(context_dir):
     if filename.endswith('.txt'):
         print(filename)
+        match = re.search(r'\d+', filename)
+        if match:
+            idx = int(match.group(0))
+            print(idx)
+        else:
+            print("No number found in filename.")
+
         file_path = os.path.join(context_dir, filename)
         with open(file_path, 'r', encoding='utf-8') as file:
             pl_cands = []
@@ -44,8 +51,10 @@ for filename in os.listdir(context_dir):
                 artist_name = track["artist_name"]
                 str_track_artist = f"{track_name} - {artist_name}"
                 pl_cands.append(str_track_artist)
-            print('\n'.join(pl_cands))
-            candidates.append('\n'.join(pl_cands))
+            cand_text = '\n'.join(pl_cands)
+            print("\n\ntext:\n", cand_text)
+            print("idx:", idx)
+            candidates[idx] = cand_text
 
 def get_playlists(csv_path, sample_num=500):
     df = pd.read_csv(csv_path)
@@ -74,7 +83,7 @@ for idx, playlist in enumerate(playlists):
         # print(f"Artist: {artist_name}, Track: {track_name}")
     print(seed_tracks)
     seed_str = ', '.join(seed_tracks)
-    input_message = f"Pick from these songs: {candidates[idx]} to complete this playlist:\nPlaylist name: {name} Begining of playlist:{seed_str}\n List 100 songs by relivence to begining of playlist."
+    input_message = f"Pick from these songs: {candidates[idx]} to complete this playlist:\nPlaylist name: {name} Begining of playlist: {seed_str}\n List 100 songs by relivence to begining of playlist."
     print(input_message)
     request = {
         "custom_id": f"{file}_{playlist_idx}",
