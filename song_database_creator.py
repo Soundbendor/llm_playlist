@@ -12,8 +12,11 @@ seen_uri = set()
 
 out_file = os.path.join(G.db_dir, 'song_db.csv')
 for ij,j in enumerate(os.listdir(G.data_dir)):
+    """
     if ij >= 1:
         break
+    """
+    print(f"processing {j}")
     cur_j = UG.get_playlist_json(j)
     cur_pls = cur_j['playlists']
     for ipl, pl in enumerate(cur_pls):
