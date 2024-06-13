@@ -1,5 +1,8 @@
-import pandas as pd
 import os,csv,json,datetime,re
+
+import torch
+import transformers
+import pandas as pd
 
 import getter as UG
 import routes as G
@@ -10,25 +13,23 @@ num_samples = 100
 context_num = 500
 
 val_path = "data/filtered_validation_set.csv"
-model = "llama3"
+model = "llama"
 songs_pth = G.songs_path
 res_dir = "res/"
 context_dir = f"baseline_bm25_filt_500_real"
-res_path = f"llama_preds/{context_dir}_{model}.json"
+res_path = f"{res_dir}/llama_preds/{context_dir}_{model}.json"
 context_dir = f"{res_dir}{context_dir}"
 
-import transformers
-import torch
-
-transformers.logging.set_verbosity_error()
+# transformers.logging.set_verbosity_error()
 
 os.environ['HF_HOME'] = '/nfs/guille/eecs_research/soundbendor/zontosj/.cache/'
 os.environ['TRANSFORMERS_CACHE'] = '/nfs/guille/eecs_research/soundbendor/zontosj/.cache/'
 
 # model_id = "meta-llama/Llama-2-13b-hf"
 model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+# model_id = "meta-llama/Meta-Llama-3-70B-Instruct"
 # model_id = "unsloth/llama-3-8b-bnb-4bit"
-hf_token = ""
+hf_token = "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"
 
 pipeline = transformers.pipeline(
     "text-generation",
@@ -175,11 +176,11 @@ for idx, gt_pl in enumerate(playlists):
     pl_candidates = candidates[idx]
     mask_tracks = UG.get_playlist(gt_pl['file'], int(gt_pl['idx']))['tracks'][:cond_num]
 
-    for t in mask_tracks:
-        print(f"{t['track_name']} - {t['artist_name']}")
-    for uri, track in pl_candidates:
-        print(uri)
-        print(track)
+    # for t in mask_tracks:
+    #     print(f"{t['track_name']} - {t['artist_name']}")
+    # for uri, track in pl_candidates:
+    #     print(uri)
+    #     print(track)
     start_time = datetime.datetime.now()
     sorted_pl_candidates = merge_sort(pl_candidates, mask_tracks)
     end_time = datetime.datetime.now()

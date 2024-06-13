@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH -p preempt
-#SBATCH -c 6
+#SBATCH -p dgx2
+#SBATCH -c 8
 #SBATCH --gres=gpu:4
-#SBATCH --mem=100G
-#SBATCH --job-name=llama100test
-#SBATCH -t 1-00:00:00
+#SBATCH --mem=500G
+#SBATCH --job-name=llama500
+#SBATCH -t 2-00:00:00
 #SBATCH --export=ALL
-#SBATCH -o llama100test.out
-#SBATCH -e llama100test.err
+#SBATCH -o llama500.out
+#SBATCH -e llama500.err
 
 module load openssl/1.1.1w python/3.12 cuda/12.2
 
