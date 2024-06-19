@@ -5,7 +5,14 @@ import numpy as np
 cj = None
 
 # max lengths conditioning on...
-# 0: 50, 1: 78, < 0.5: 199 (0.49749), >= 0.5: 250 (0.90000)
+# 0: 50, 1: 78,
+
+# conditioning on length
+# < 0.5: 199 (0.49749), >= 0.5: 250 (0.90000)
+
+# conditioning on ratio
+#< 0.5: 199 (0.49749), >= 0.5: 100 (0.95000)
+
 
 
 out_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data')
@@ -34,11 +41,11 @@ with open(out_file, 'w') as f:
         elif nc == 1:
             max_len_cond_1 = max(max_len_cond_1, nt)
         elif r < 0.5:
-            if nt > max_len_cond_lt50:
+            if r > max_r_lt50:
                 max_len_cond_lt50 = nt
                 max_r_lt50 = r
         else:
-            if nt > max_len_cond_gt50:
+            if r > max_r_gt50:
                 max_len_cond_gt50 = nt
                 max_r_gt50 = r
  
