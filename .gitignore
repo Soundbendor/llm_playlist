@@ -3,6 +3,7 @@ glob.py
 routes.py
 slurm*
 env/
+new_env/
 *.err
 *.out
 models/bm25.dict

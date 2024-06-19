@@ -8,17 +8,19 @@ import getter as UG
 import metrics as UM
 import pre_llm as PL
 
-expr_name = "bm25_100_gpt4o_corrected"
+# bm25_100_gpt4o_corrected_res.csv
+expr_name = "baseline_bm25_filt_100_real_llama3"
 
 # pl_csv_path = 'data/num_splits/num_tracks-250.csv'
 # playlists_pth = "data/train_set.csv"
 # playlists_pth = "data/validation_set.csv"
 playlists_pth = "data/filtered_validation_set.csv"
 
-preds_path = f'res/gpt_preds/{expr_name}.json'
-res_path = f'res/gpt_results/{expr_name}_res.csv'
-avg_res_path = f'res/gpt_results/{expr_name}_avg_res.csv'
-res_track_names_path = f'res/gpt_results/{expr_name}_track_names_res.csv'
+model = "llama"
+preds_path = f'res/{model}_preds/{expr_name}.json'
+res_path = f'res/{model}_results/{expr_name}_res.csv'
+avg_res_path = f'res/{model}_results/{expr_name}_avg_res.csv'
+res_track_names_path = f'res/{model}_results/{expr_name}_track_names_res.csv'
 
 songs_pth = G.fsongs_path
 
@@ -67,7 +69,7 @@ for pl_i, playlist in enumerate(pls):
     dcg = UM.dcg(gt_ids, retr_ids)
     idcg = UM.idcg(gt_ids, retr_ids)
     ndcg = UM.ndcg(gt_ids, retr_ids)
-    clicks = UM.rec_songs_clicks(gt_ids, retr_ids, max_clicks=(gen_num//10)+1)
+    clicks = UM.rec_songs_clicks(gt_ids, retr_ids, max_clicks=gen_num)
 
     mdict = {'expr_idx': pl_i, 'pl_idx': playlist_idx, 'r_prec': r_prec, 'dcg': dcg, 'idcg': idcg, 'ndcg': ndcg, 'clicks': clicks}
     runs.append(mdict)
