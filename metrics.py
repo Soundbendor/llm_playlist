@@ -104,6 +104,9 @@ def reciprocal_rank(g_arr, r_arr):
 
     return ret
 
+# wait, isn't this just r-precision
+# but not cutting off r
+# (or r-precision is just recall-ish)
 def recall(g_arr, r_arr):
     g_in_r = np.isin(g_arr, r_arr)
     return np.mean(g_in_r)
@@ -119,16 +122,25 @@ def calc_metrics(g_arr, r_arr, max_clicks=50):
            'recall': _recall}
     return ret
 
+# expects array of results dicts (see above)
+def get_mean_metrics(res_arr):
+    h = ['r_precision', 'ndcg', 'clicks', 'rr', 'recall']
+    h_arr = [[x[y] for y in h] for x in res_arr]
+    h_means = np.mean(h_arr, axis=0)
+    ret = {x:y for (x,y) in zip(h,h_means)}
+    return ret
+
 if __name__ == "__main__":
     p1 = np.array(['spotify:track:4vv1KjUzPwrtDbozizSfQc', 'spotify:track:0Ws8D3EWUDgY962Xftb0h5', 'spotify:track:0lMbuWUpfTWhEmOKxppEau', 'spotify:track:4KaIJ1FWXUoAAnOts1YWjD', 'spotify:track:60APt5N2NRaKWf5xzJdzyC', 'spotify:track:4c1BAfuPGZSun6aAvmmoHs', 'spotify:track:25oOaleife6E2MIKmFkPvg', 'spotify:track:1UAmQe8EwpxQ80OfYVD13z', 'spotify:track:2e3OgIbfZw5deCjLMGatSS', 'spotify:track:5de7ci7TFqbQ1PFgKAD7MR', 'spotify:track:29BXCsh4lGLrndprkgYL6O', 'spotify:track:1jQsKN68yE94tMYml0wHMd', 'spotify:track:59J5nzL1KniFHnU120dQzt', 'spotify:track:1e1JKLEDKP7hEQzJfNAgPl', 'spotify:track:5CtI0qwDJkDQGwXD1H1cLb', 'spotify:track:152lZdxL1OR0ZMW6KquMif', 'spotify:track:3DXncPQOG4VBw3QHh3S817', 'spotify:track:2of5xn0GU0TdFneR1saRLH', 'spotify:track:2INqEk4ko5AsGVLBsiKiQe', 'spotify:track:3LRddJIw2ymm1CHIO9xlkC', 'spotify:track:4uTTsXhygWzSjUxXLHZ4HW', 'spotify:track:1jNyxG5S2P9gztbfAnrq85', 'spotify:track:4HW5kSQ8M2IQWZhSxERvla', 'spotify:track:3nVDOYBJpdCkRR6r1DbZum', 'spotify:track:1rsAFUCa6BVMgRQ3FCQQsi', 'spotify:track:6kig1UFggPUyZBCvXD3Wod'])
     p2 = p1.copy()
-    #p2 = np.concatenate((p1,p1))
+    p2 = np.concatenate((p1,p1))
     p1len = p1.shape[0]
     #p1idx = np.arange(0,p1len)
     p2[0:5] = 'spotify:track:4vv1KjUzPwrtDbozizSfQd'
     res = calc_metrics(p1, p2, max_clicks=p1len)
     for x,r in res.items():
         print(x,':', r)
+    get_mean_metrics([res, res, res])
     #_dcg = ndcg(p1,p1[::-2])
     #_rr = reciprocal_rank(p1, p2)
     #_pr = recall(p1, p2)
