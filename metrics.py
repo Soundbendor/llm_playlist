@@ -95,10 +95,26 @@ def rec_songs_clicks(g_arr, r_arr, max_clicks = 50):
 
     return ret
 
+def reciprocal_rank(g_arr, r_arr):
+    ret = 0
+    r_in_g = np.isin(r_arr, g_arr)
+    where_in = np.nonzero(r_in_g)[0]
+    if where_in.shape[0] > 0:
+        ret = 1./(where_in[0]+1.)
+
+    return ret
 
 if __name__ == "__main__":
     p1 = np.array(['spotify:track:4vv1KjUzPwrtDbozizSfQc', 'spotify:track:0Ws8D3EWUDgY962Xftb0h5', 'spotify:track:0lMbuWUpfTWhEmOKxppEau', 'spotify:track:4KaIJ1FWXUoAAnOts1YWjD', 'spotify:track:60APt5N2NRaKWf5xzJdzyC', 'spotify:track:4c1BAfuPGZSun6aAvmmoHs', 'spotify:track:25oOaleife6E2MIKmFkPvg', 'spotify:track:1UAmQe8EwpxQ80OfYVD13z', 'spotify:track:2e3OgIbfZw5deCjLMGatSS', 'spotify:track:5de7ci7TFqbQ1PFgKAD7MR', 'spotify:track:29BXCsh4lGLrndprkgYL6O', 'spotify:track:1jQsKN68yE94tMYml0wHMd', 'spotify:track:59J5nzL1KniFHnU120dQzt', 'spotify:track:1e1JKLEDKP7hEQzJfNAgPl', 'spotify:track:5CtI0qwDJkDQGwXD1H1cLb', 'spotify:track:152lZdxL1OR0ZMW6KquMif', 'spotify:track:3DXncPQOG4VBw3QHh3S817', 'spotify:track:2of5xn0GU0TdFneR1saRLH', 'spotify:track:2INqEk4ko5AsGVLBsiKiQe', 'spotify:track:3LRddJIw2ymm1CHIO9xlkC', 'spotify:track:4uTTsXhygWzSjUxXLHZ4HW', 'spotify:track:1jNyxG5S2P9gztbfAnrq85', 'spotify:track:4HW5kSQ8M2IQWZhSxERvla', 'spotify:track:3nVDOYBJpdCkRR6r1DbZum', 'spotify:track:1rsAFUCa6BVMgRQ3FCQQsi', 'spotify:track:6kig1UFggPUyZBCvXD3Wod'])
+    p2 = p1.copy()
+    p1len = p1.shape[0]
+    p1idx = np.arange(0,p1len)
+    p2[0:3] = 'spotify:track:4vv1KjUzPwrtDbozizSfQd'
     _dcg = ndcg(p1,p1[::-2])
+    _rr = reciprocal_rank(p1, p2)
+    #print(p1)
+    print(_rr)
+    #print(p1[::-2])
     #print(_dcg)
 
 
