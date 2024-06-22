@@ -1,0 +1,101 @@
+,artist_name,track_name,in_gt,danceability,energy,key,loudness,mode,speechiness,acousticness,instrumentalness,liveness,valence,tempo
+0,Billo's Caracas Boys,Quisqueya,False,0.505,0.222,5,-12.104,1,0.0315,0.861,2.49e-05,0.169,0.473,113.6
+1,Grateful Dead,"Dark Star [Live At Kings Beach Bowl, Kings Beach Lake Tahoe, CA, February 23-24, 1968]",False,0.508,0.142,2,-18.717,1,0.0422,0.891,0.0543,0.159,0.498,93.529
+2,Dudu Tassa,Im Guitar,False,0.504,0.161,9,-11.384,1,0.037,0.876,0.0,0.103,0.493,104.884
+3,George Jones,A Lifetime Left Together,False,0.509,0.175,8,-15.479,1,0.0273,0.846,0.000292,0.118,0.558,94.983
+4,Henry Purcell,"The Fairy Queen, Z. 629, Suite I: I. Air",False,0.505,0.19,10,-15.106,1,0.0301,0.854,0.000192,0.155,0.525,103.116
+5,Barbara Cook,"The King and I: Shall We Dance? (Barbara Cook, Theodore Bikel) - Voice",False,0.499,0.221,5,-12.464,1,0.0367,0.873,4.66e-05,0.151,0.563,103.494
+6,Carrie Newcomer,This Too Will Pass,False,0.474,0.216,0,-12.212,1,0.0311,0.838,0.0,0.152,0.55,97.065
+7,Gene Autry,"Old Soldiers Never Die, They Just Fade Away",False,0.533,0.199,8,-14.95,1,0.0368,0.913,0.0,0.146,0.489,99.826
+8,Roy Orbison,I´ll Say It´s My Fault,False,0.454,0.196,7,-15.855,1,0.027,0.908,8.05e-05,0.142,0.531,96.457
+9,Hallal Music,He Is Exalted,False,0.573,0.161,7,-10.486,1,0.0389,0.843,0.0,0.199,0.527,102.357
+10,SWEET SORROW,Love Is ... (사랑이란)愛とは,False,0.468,0.215,7,-15.115,1,0.0333,0.817,1.83e-06,0.143,0.537,100.185
+11,Ayana Haviv,Beyond My Wildest Dreams,False,0.501,0.165,5,-13.212,1,0.0452,0.831,0.0,0.136,0.543,105.176
+12,Dexys,Lost,False,0.451,0.13,2,-11.89,1,0.0724,0.849,0.000122,0.122,0.503,110.596
+13,David Wakeling,Who Comes This Night?,False,0.512,0.172,4,-16.636,1,0.0453,0.87,5.98e-06,0.145,0.437,102.018
+14,Redwood Tango Ensemble,Volver,False,0.462,0.198,2,-9.245,1,0.0302,0.856,0.00125,0.251,0.53,105.616
+15,David Newman,Hanuman Chalisa 1,False,0.481,0.204,11,-15.419,1,0.0421,0.857,0.000118,0.119,0.522,114.946
+16,Antonio Vivaldi,"Introduzione al Gloria, RV 642 : 1. Allegro: Ostro picta",False,0.494,0.149,2,-19.793,1,0.044,0.909,0.003,0.224,0.445,102.635
+17,Jonny Corndawg,Silver Panty Liners,False,0.544,0.162,3,-8.431,1,0.0368,0.915,0.0,0.161,0.477,102.804
+18,Antonio Aguilar,Ya Ni Las Copas,False,0.507,0.231,7,-10.933,1,0.0349,0.853,0.0,0.177,0.473,93.545
+19,Michael Tomlinson,Run Like the River Runs,False,0.546,0.195,7,-13.638,1,0.0307,0.899,2.44e-05,0.219,0.496,112.102
+20,The Corries,The Braes O' Killiecrankie,False,0.471,0.218,7,-12.311,1,0.0415,0.834,0.0,0.148,0.541,110.029
+21,Hindsight,The Boys,False,0.481,0.148,11,-11.95,1,0.0479,0.892,0.0,0.118,0.504,117.512
+22,Hobart Smith,Railroad Bill - Remastered,False,0.525,0.171,1,-21.167,1,0.0481,0.893,0.000614,0.178,0.538,121.631
+23,Ezra Howlett Shelton,Gonna Quit That Man And How!,False,0.519,0.184,0,-11.516,1,0.0338,0.908,0.0,0.129,0.518,114.235
+24,Tu'imala Kaho & Feleti Kaufisi,Lile O Aotearoa,False,0.501,0.122,3,-16.254,1,0.0348,0.846,3.19e-05,0.137,0.52,105.221
+25,Ray Charles,Take These Chains From My Heart,False,0.464,0.141,5,-11.241,1,0.0295,0.875,0.0,0.121,0.457,101.639
+26,Au,Dreaming,False,0.469,0.175,4,-14.882,1,0.0764,0.877,0.000389,0.15,0.493,119.277
+27,Cliff Richard,It's All In The Game,False,0.429,0.208,2,-16.07,1,0.0301,0.891,4.67e-05,0.158,0.485,107.618
+28,George Jones,Worst Of Luck,False,0.484,0.204,6,-13.068,1,0.0296,0.855,0.0,0.156,0.503,112.762
+29,Dean Martin,My One And Only Love,False,0.451,0.151,0,-17.574,1,0.0391,0.896,0.0091,0.211,0.532,92.108
+30,Ray Price,Funny How Time Slips Away,False,0.521,0.185,2,-14.873,1,0.0289,0.841,0.05,0.209,0.548,102.765
+31,The Cluster Pluckers,When They Ring Those Golden Bells,False,0.515,0.152,11,-13.789,1,0.0415,0.897,0.0,0.161,0.508,124.782
+32,Abdullah Basfar,Sourat Az Zumar,False,0.514,0.156,7,-11.804,1,0.0456,0.941,0.0,0.165,0.521,106.947
+33,Abdellah Basfar,Sourate Al Ma'arij - Les voies d'ascension,False,0.469,0.182,7,-11.081,1,0.0706,0.873,0.0,0.164,0.511,85.435
+34,Willie Nelson,When I've Sang My Last Hillbilly Song,False,0.505,0.223,1,-9.738,1,0.0493,0.822,0.0,0.168,0.574,97.048
+35,Straight No Chaser,Africa,False,0.51,0.167,10,-12.637,1,0.03,0.877,0.0,0.116,0.555,94.515
+36,Roger Miller,Am I All Alone (Or Is It Only Me) - Intro,False,0.505,0.158,3,-11.741,1,0.0344,0.876,0.000195,0.125,0.578,103.5
+37,Nat King Cole,You Are My Love,False,0.515,0.185,3,-14.847,1,0.0422,0.794,0.0,0.175,0.52,108.209
+38,Nat King Cole,Walkin' My Baby Back Home,False,0.519,0.189,1,-15.591,1,0.0508,0.822,0.0,0.161,0.465,108.456
+39,Peter Himmelman,Phone Call from Chicago,False,0.475,0.139,5,-19.241,1,0.036,0.82,1.76e-05,0.108,0.508,104.741
+40,The Clancy Brothers,McPherson's Lament,False,0.49,0.176,2,-13.275,1,0.0372,0.878,0.0,0.156,0.45,88.756
+41,L'Homme,Focus,False,0.486,0.192,3,-19.625,1,0.0289,0.794,0.0,0.162,0.471,100.043
+42,Ruth Fernandez,Cielito Nublado,False,0.456,0.142,0,-17.399,1,0.045,0.887,0.0,0.118,0.512,94.608
+43,Johnny Otis,Faraway Christmas Blues,False,0.52,0.165,10,-9.712,1,0.0719,0.896,4.35e-06,0.18,0.514,120.584
+44,Pat Boone,Remember You're Mine - Single Version,False,0.427,0.17,4,-13.953,1,0.0293,0.827,3.78e-05,0.159,0.457,97.782
+45,David Choi,The Way You Are (Live),False,0.498,0.168,0,-13.256,1,0.0379,0.911,5.88e-05,0.179,0.478,116.3
+46,Alfred Apaka,Lovely Hula Hands,False,0.518,0.164,5,-14.639,1,0.0435,0.902,0.000145,0.205,0.452,106.457
+47,Charles Brown,Merry Christmas Baby,False,0.512,0.192,5,-16.622,1,0.0398,0.806,0.0104,0.227,0.489,95.544
+48,Crossroads,Bread and Gravy,False,0.479,0.2,5,-6.425,1,0.0328,0.869,0.0,0.146,0.461,112.479
+49,Ziad Rahbani,Oum Fout Nam,False,0.492,0.188,5,-15.76,1,0.0388,0.808,3.19e-06,0.114,0.498,94.844
+50,Penelope Beaux,Rock a Bye Baby,False,0.508,0.186,0,-11.232,1,0.0294,0.852,2.25e-06,0.155,0.554,112.538
+51,Tammy Wynette,Stand By Your Man,False,0.522,0.222,9,-14.309,1,0.0316,0.877,0.0259,0.129,0.495,105.875
+52,Amalia Mendoza,Te Parto el Alma,False,0.462,0.159,9,-15.601,1,0.054,0.819,0.0,0.243,0.518,90.723
+53,Elvis Presley,Lonesome Cowboy,False,0.497,0.17,3,-15.148,1,0.0387,0.908,0.000316,0.208,0.489,94.403
+54,Jesse Belvin,(I Love You) For Sentimental Reasons,False,0.489,0.177,0,-14.644,1,0.0362,0.833,0.0,0.212,0.581,114.783
+55,Miguel Aceves Mejia,El rebelde,False,0.496,0.163,1,-8.705,1,0.0458,0.919,0.0,0.159,0.522,91.818
+56,OC Times,"You're Sixteen, You're Beautiful, and You're Mine",False,0.521,0.177,2,-9.735,1,0.0333,0.897,0.0,0.145,0.519,103.19
+57,Paul Desmond,The Night Has a Thousand Eyes,False,0.487,0.198,7,-17.862,1,0.035,0.909,0.0111,0.143,0.523,92.356
+58,Säkert!,Är du fortfarande arg?,False,0.452,0.214,0,-14.887,1,0.0413,0.867,0.000465,0.235,0.519,113.619
+59,Tammy Wynette,Someone I Used To Know,False,0.435,0.16,3,-16.096,1,0.0288,0.867,8.23e-05,0.158,0.431,104.194
+60,Clayton Pixton,I’ll Go Where You Want Me To Go,False,0.458,0.224,9,-11.437,1,0.0366,0.849,0.0,0.178,0.477,111.717
+61,Ruben Juarez,Toda Mi Vida,False,0.511,0.181,2,-18.086,1,0.0924,0.844,0.0,0.11,0.51,105.335
+62,The Winter Crooners,The First Noel,False,0.492,0.178,5,-14.405,1,0.0252,0.827,1.66e-06,0.142,0.538,98.917
+63,Richard Chamberlain,All I Have To Do Is Dream,False,0.474,0.203,1,-13.792,1,0.0292,0.87,3.01e-06,0.126,0.509,98.622
+64,Lucio Alves,Este Seu Olhar / Só Em Teus Braços,False,0.498,0.171,0,-14.109,1,0.0327,0.867,0.000172,0.175,0.464,87.553
+65,Hope Vista,Hearts of Darkness,False,0.513,0.168,0,-12.808,1,0.0385,0.901,0.0,0.152,0.486,98.93
+66,Antonio Vivaldi,"Concerto For 2 Violins, Strings And Continuo In G Major, RV 516: 1. Allegro molto",False,0.49,0.175,1,-18.611,1,0.0536,0.867,0.000124,0.147,0.473,121.242
+67,Glenn Miller,On a Little Street in Singapore - Remastered,False,0.498,0.156,1,-11.039,1,0.0278,0.83,0.00336,0.174,0.431,109.658
+68,The Passions,You Don't Love Me Anymore,False,0.456,0.2,2,-15.134,1,0.0264,0.806,0.0,0.164,0.46,95.468
+69,Original London Cast,I Enjoy Being A Girl - From 'Flower Drum Song',False,0.539,0.176,2,-13.442,1,0.0353,0.853,0.0,0.113,0.546,99.729
+70,Greg Davis,Vincent,False,0.519,0.195,7,-14.766,1,0.0313,0.824,0.0,0.18,0.464,97.883
+71,Georg Philipp Telemann,"Tafelmusik - Banquet Music In 3 Parts / Production 2 - 3. Concert In F Major, TWV53:A2: 1. Allegro",False,0.53,0.164,4,-18.032,1,0.0429,0.821,0.00429,0.116,0.529,104.607
+72,Nat King Cole,Walkin' My Baby Back Home,False,0.472,0.194,1,-14.263,1,0.0451,0.849,0.0,0.176,0.431,100.908
+73,Doc & Merle Watson,Miss the Mississippi & You,False,0.535,0.154,2,-17.388,1,0.0492,0.821,5.3e-06,0.113,0.501,101.485
+74,Jerry Garcia,Drifting Too Far From The Shore,False,0.477,0.209,7,-13.573,1,0.0365,0.903,9.4e-05,0.209,0.484,93.193
+75,Acapella Praise,Mourning Into Dancing,False,0.501,0.148,2,-13.594,1,0.0429,0.825,0.0,0.126,0.535,87.396
+76,Resound,Lift Every Voice,False,0.429,0.196,0,-8.407,1,0.0361,0.882,0.0,0.206,0.487,116.168
+77,Brenda Lee,I Want To Be Wanted (Per Tutta La Vita) - Single Version,False,0.492,0.227,8,-15.485,1,0.0299,0.799,0.0,0.17,0.51,108.493
+78,Original Cast Of The King And I,"Song of the King (From ""The King and I"")",False,0.554,0.166,5,-17.752,1,0.0715,0.902,1.74e-06,0.19,0.561,105.929
+79,Flor Silvestre,Cielo Rojo,False,0.46,0.194,0,-10.958,1,0.0385,0.896,0.0,0.165,0.458,96.935
+80,MAYBEBOP,Hark! The Herold Angels Sing,False,0.514,0.177,3,-12.404,1,0.0505,0.917,0.0,0.146,0.502,117.688
+81,Lola Beltrán,Cucurrucucú Paloma,False,0.534,0.199,1,-9.977,1,0.0387,0.868,0.00137,0.154,0.446,105.176
+82,La Paquera De Jerez,En Tus Palabras Creí,False,0.483,0.199,0,-16.233,1,0.0788,0.883,0.00235,0.183,0.462,115.735
+83,George Jones,Least of All - 1988 - Remaster,False,0.473,0.165,9,-13.736,1,0.0275,0.89,0.0,0.177,0.515,90.324
+84,Doris Day,Makin' Whoopee!,False,0.513,0.173,0,-13.2,1,0.075,0.879,3.72e-06,0.128,0.525,101.764
+85,Ray Conniff,Silver Bells,False,0.464,0.184,9,-18.943,1,0.0283,0.859,0.0,0.201,0.426,106.273
+86,Julie Andrews,Shall We Dance? [The King and I],False,0.497,0.198,3,-19.858,1,0.089,0.886,0.0,0.247,0.525,109.528
+87,George Jones,Keep the Change,False,0.455,0.215,0,-14.38,1,0.0305,0.853,1.82e-05,0.2,0.488,103.47
+88,Devon Marie McDaniel,The Distance,False,0.478,0.193,10,-17.671,1,0.051,0.834,0.00224,0.118,0.526,108.1
+89,Joan Baez,Colours,False,0.485,0.131,7,-19.541,1,0.0307,0.841,3.8e-06,0.116,0.54,100.786
+90,Selena,Feelings,False,0.478,0.2,0,-9.47,1,0.0286,0.843,0.0,0.186,0.434,92.6
+91,America,The First Noel,False,0.475,0.13,0,-14.227,1,0.0293,0.91,0.0,0.135,0.508,101.658
+92,Harry Belafonte,Train Song (Mbombela),False,0.509,0.18,7,-15.652,1,0.0334,0.891,0.0,0.163,0.491,118.635
+93,Paper Aeroplanes,Painkiller,False,0.425,0.149,9,-13.999,1,0.0366,0.83,2.78e-05,0.175,0.443,100.101
+94,Wild Rivers,Rolling Stone,False,0.455,0.163,0,-14.456,1,0.0405,0.853,9.12e-05,0.113,0.504,92.423
+95,Tatiana Manaois,Choose,False,0.562,0.165,0,-11.373,1,0.0695,0.901,0.0,0.176,0.524,97.154
+96,The High Kings,Red Is The Rose,False,0.498,0.138,4,-10.817,1,0.0448,0.881,0.0,0.169,0.47,110.976
+97,Brenda Lee,Silver Bells,False,0.479,0.167,5,-9.882,1,0.0268,0.88,0.0,0.104,0.503,94.541
+98,Harry Belafonte,Bally Mena,False,0.493,0.189,4,-13.853,1,0.0298,0.898,0.0,0.149,0.507,97.758
+99,Simon & Garfunkel,"Wednesday Morning, 3 A.M.",False,0.497,0.194,5,-17.237,1,0.0364,0.828,1.88e-05,0.102,0.511,105.656

@@ -72,6 +72,11 @@ def get_features_by_trackname(cnx,_track, group = True):
     else:
         return pd.read_sql(f'SELECT DISTINCT * FROM new_combined_table WHERE track_name="{_track}"', cnx)
 
+def get_feat_from_uris(cnx, uris):
+    ids = [x.split(":")[-1] for x in uris]
+    idstr = '","'.join(ids)
+    cur_q = f'select distinct * from new_combined_table where id in ("{idstr}")'
+    return pd.read_sql(cur_q, cnx)
 
 def get_track_uri_from_playlist(playlist):
     return [x['track_uri'] for x in playlist['tracks']]

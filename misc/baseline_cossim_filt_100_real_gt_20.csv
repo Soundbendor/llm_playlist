@@ -1,0 +1,188 @@
+,artist_name,track_name,danceability,energy,key,loudness,mode,speechiness,acousticness,instrumentalness,liveness,valence,tempo
+10,Frank Sinatra,That Old Black Magic,0.447,0.13,3,-15.194,0,0.0604,0.983,0.424,0.0901,0.403,93.643
+11,Dean Martin,Come Back To Sorrento,0.179,0.152,9,-15.837,1,0.038,0.938,5.74e-06,0.122,0.227,79.554
+12,Frank Sinatra,Nancy (With The Laughing Face),0.265,0.103,1,-19.601,1,0.0353,0.986,0.000429,0.117,0.159,86.241
+13,Frank Sinatra,Ol' Man River,0.211,0.11,0,-13.209,1,0.0344,0.924,8.55e-06,0.274,0.115,68.295
+14,Frank Sinatra,When You're Smiling (The Whole World Smiles With You) - 1998 Digital Remaster,0.565,0.329,10,-12.222,0,0.0475,0.436,0.0,0.29,0.702,79.054
+15,Michael Bublé,I'm Beginning To See The Light,0.557,0.504,9,-6.997,0,0.218,0.472,0.0,0.162,0.452,143.748
+16,Michael Bublé,Mack The Knife,0.514,0.493,6,-6.704,1,0.159,0.688,3.27e-06,0.125,0.699,163.661
+17,Michael Bublé,Orange Colored Sky,0.513,0.495,0,-7.511,1,0.133,0.615,0.0,0.188,0.305,131.467
+18,Michael Bublé,The More I See You,0.483,0.38,8,-8.097,1,0.0391,0.21,0.0,0.21,0.372,118.177
+19,Michael Bublé,My Funny Valentine - Live,0.255,0.366,3,-9.858,1,0.043,0.315,9.88e-05,0.729,0.125,88.287
+20,Michael Bublé,Mack The Knife - Live,0.492,0.579,0,-7.471,0,0.0698,0.609,0.0,0.973,0.462,91.916
+21,Michael Bublé,You'll Never Know - Live,0.328,0.253,0,-15.304,0,0.0488,0.738,0.00972,0.982,0.149,60.61
+22,Michael Bublé,For Once In My Life - Live,0.442,0.548,7,-6.319,0,0.0461,0.588,0.0,0.936,0.411,90.586
+23,Michael Bublé,Moondance - Live,0.479,0.734,5,-5.505,0,0.0644,0.436,0.0,0.984,0.513,75.577
+24,Michael Bublé,How Can You Mend A Broken Heart,0.285,0.325,1,-10.54,1,0.0355,0.825,8.17e-05,0.126,0.0718,94.648
+25,Michael Bublé,That's How It Goes,0.496,0.439,2,-8.934,0,0.0369,0.671,0.0,0.225,0.7,119.746
+26,Michael Bublé,Love At First Sight,0.31,0.161,10,-14.139,1,0.03,0.907,9.3e-06,0.106,0.193,173.072
+27,Michael Bublé,Anyone To Love,0.378,0.0368,3,-17.121,1,0.0366,0.986,2.39e-05,0.169,0.122,81.72
+28,Michael Bublé,Guess I'm Falling 4 U,0.52,0.241,7,-14.239,1,0.0372,0.925,0.0,0.119,0.2,96.735
+29,Michael Bublé,Nevertheless [I'm In Love With You] - feat. The Puppini Sisters,0.521,0.305,7,-7.493,1,0.0271,0.835,0.0,0.111,0.289,113.66
+30,Michael Bublé,I Got It Easy,0.274,0.525,8,-6.183,1,0.0335,0.461,0.0,0.089,0.297,122.895
+31,Michael Bublé,My Melancholy Baby,0.206,0.246,11,-10.643,1,0.0305,0.612,0.021,0.104,0.106,140.035
+32,Dean Martin,Who's Got the Action?,0.4,0.447,8,-10.991,1,0.0797,0.73,0.0,0.368,0.819,181.589
+33,Dean Martin,Baby-O,0.364,0.42,6,-10.237,0,0.0331,0.87,0.0,0.154,0.502,149.187
+34,Dean Martin,You Belong To Me,0.182,0.123,5,-16.237,0,0.0427,0.93,0.0492,0.106,0.238,73.389
+35,Dean Martin,Cha Cha Cha D'Amour (Melodie D'Amour),0.763,0.366,5,-13.532,1,0.0568,0.687,0.00288,0.111,0.793,128.173
+36,Harry James & His Orchestra,"Moon Love (Adapted From Tchaikovsky's 5th Symphony, 2nd Movement)",0.315,0.361,8,-12.534,1,0.039,0.986,0.238,0.64,0.458,123.144
+37,Frank Sinatra,She's Funny That Way,0.271,0.0636,0,-19.402,1,0.0404,0.976,0.000125,0.277,0.182,90.893
+38,Frank Sinatra,I Don't Believe in Rumors,0.227,0.193,3,-16.152,1,0.0388,0.966,0.00401,0.334,0.346,82.614
+39,Michael Bublé,To Be Loved,0.427,0.589,11,-4.815,1,0.0274,0.583,0.0,0.191,0.418,95.754
+40,Michael Bublé,Kissing a Fool,0.564,0.202,5,-11.881,0,0.0346,0.698,5.05e-06,0.0938,0.193,74.899
+41,Dean Martin,"My Rifle, My Pony And Me",0.473,0.0556,1,-19.592,1,0.0345,0.91,0.0,0.0688,0.403,80.573
+42,Dean Martin,C'est si bon,0.602,0.193,4,-15.28,0,0.048,0.913,0.0,0.347,0.346,119.897
+43,Michael Bublé,You'll Never Find Another Love Like Mine,0.342,0.329,1,-11.202,1,0.0328,0.445,0.000976,0.0939,0.392,179.983
+44,Michael Bublé,For Once in My Life,0.551,0.493,10,-5.685,1,0.0378,0.646,0.0,0.287,0.43,94.415
+45,Dean Martin,Face in a Crowd,0.586,0.295,2,-13.849,1,0.0271,0.917,0.00012,0.242,0.455,102.123
+46,Dean Martin,From the Bottom of My Heart,0.258,0.244,8,-12.089,1,0.0305,0.846,1.72e-06,0.146,0.339,84.191
+47,Dean Martin,Senza fine,0.17,0.232,10,-11.963,0,0.034,0.854,6.23e-05,0.222,0.19,167.779
+48,Michael Bublé,Put Your Head On My Shoulder,0.25,0.253,2,-13.568,1,0.0327,0.78,0.000849,0.14,0.103,119.399
+49,Dean Martin,On The Street Where You Live - 1998 - Remastered,0.64,0.154,6,-14.05,0,0.042,0.768,0.0,0.0551,0.481,126.045
+50,Dean Martin,Send Me the Pillow You Dream On,0.441,0.391,10,-10.129,1,0.031,0.669,1.38e-05,0.347,0.698,104.254
+51,Michael Bublé,Stardust (with Naturally 7) - with Naturally 7 Album Version,0.378,0.158,8,-12.018,1,0.0269,0.956,8.84e-05,0.284,0.159,66.859
+52,Michael Bublé,Can't Buy Me Love,0.401,0.598,10,-6.323,1,0.12,0.552,0.0,0.342,0.594,156.894
+53,Michael Bublé,A Song For You - feat. Chris Botti,0.561,0.366,5,-10.358,0,0.0391,0.882,0.00282,0.129,0.306,110.539
+54,Michael Bublé,Whatever It Takes - with Ron Sexsmith,0.642,0.456,0,-7.923,0,0.0281,0.714,0.00103,0.0988,0.674,119.995
+55,Michael Bublé,Heartache Tonight,0.674,0.82,8,-5.158,1,0.0597,0.0519,0.0,0.377,0.525,121.001
+56,Michael Bublé,Comin' Home Baby - Duet With Boyz II Men,0.624,0.755,5,-7.219,1,0.0757,0.361,2.32e-05,0.108,0.773,144.048
+57,Michael Bublé,These Foolish Things (Remind Me Of You),0.312,0.133,4,-17.037,0,0.0394,0.931,0.00167,0.308,0.199,171.443
+58,Dean Martin,Buona Sera - 1998 Digital Remaster,0.472,0.345,10,-8.387,1,0.0413,0.966,0.0,0.0737,0.696,109.233
+59,Dean Martin,Houston,0.602,0.324,4,-12.497,1,0.0668,0.843,2e-06,0.168,0.332,119.778
+60,Frank Sinatra,They Can't Take That Away From Me,0.465,0.222,2,-11.384,1,0.0407,0.909,0.0,0.161,0.394,108.861
+61,Frank Sinatra,Someone to Watch Over Me - 78rpm Version,0.168,0.147,9,-18.869,1,0.042,0.917,0.0329,0.342,0.105,168.978
+62,Michael Bublé,Young At Heart,0.205,0.288,7,-7.988,1,0.0307,0.526,5.17e-06,0.357,0.158,67.034
+63,Dean Martin,Money Burns A Hole In My Pocket - 1954 Single Version,0.456,0.24,9,-11.328,1,0.0288,0.833,3.06e-06,0.216,0.258,90.779
+64,Michael Bublé,Fever,0.604,0.34,0,-9.571,0,0.0619,0.3,2.5e-05,0.0896,0.36,127.992
+65,Frank Sinatra,Love Is Here To Stay - 2009 Remastered,0.596,0.215,2,-12.582,1,0.0301,0.86,0.0,0.114,0.514,109.345
+66,Michael Bublé,Me And Mrs. You,0.622,0.338,10,-9.302,1,0.032,0.731,0.0,0.229,0.613,117.169
+67,Michael Bublé,You're Nobody Till Somebody Loves You,0.412,0.394,5,-6.341,1,0.0283,0.127,0.0,0.0833,0.359,68.37
+68,Dean Martin,I'd Cry Like A Baby,0.55,0.187,10,-12.406,1,0.0324,0.923,0.0,0.343,0.513,84.868
+69,Michael Bublé,It Had Better Be Tonight [Meglio Stasera],0.677,0.659,2,-6.279,1,0.0521,0.248,1.07e-06,0.332,0.723,108.948
+70,Michael Bublé,I'm Your Man,0.593,0.398,1,-8.214,1,0.0471,0.505,1.52e-06,0.0515,0.431,101.808
+71,Michael Bublé,I've Got The World On A String,0.698,0.506,9,-8.274,1,0.0518,0.314,1.08e-06,0.421,0.472,105.034
+72,Michael Bublé,Come Dance With Me,0.664,0.822,9,-2.711,1,0.0448,0.703,0.0,0.298,0.845,134.084
+73,Michael Bublé,Cry Me A River,0.458,0.483,10,-7.909,1,0.0366,0.624,5.62e-06,0.0754,0.513,104.823
+74,Michael Bublé,Softly As I Leave You,0.273,0.176,5,-12.8,1,0.0333,0.857,7.13e-05,0.288,0.115,72.838
+75,Frank Sinatra,(How Little It Matters) How Little We Know,0.576,0.228,5,-10.054,1,0.0351,0.747,0.0,0.102,0.606,109.107
+76,Michael Bublé,Call Me Irresponsible,0.639,0.43,5,-7.559,1,0.0292,0.585,8.68e-05,0.109,0.39,107.996
+77,Michael Bublé,At This Moment,0.358,0.395,5,-7.493,1,0.033,0.326,8.55e-06,0.307,0.219,88.908
+78,Frank Sinatra,Learnin' The Blues - Remastered,0.497,0.327,9,-8.586,1,0.0354,0.627,0.0,0.0552,0.619,126.644
+79,Frank Sinatra,Nice 'N' Easy - 1999 Digital Remaster,0.536,0.148,0,-14.903,1,0.031,0.772,0.0,0.101,0.509,109.295
+80,Frank Sinatra,I Get A Kick Out Of You - Remastered,0.479,0.204,10,-13.057,0,0.0329,0.89,0.0,0.178,0.542,143.318
+81,Michael Bublé,Summer Wind,0.541,0.6,6,-6.366,1,0.0581,0.633,0.0,0.324,0.415,63.073
+82,Michael Bublé,Wonderful Tonight - Duet With Ivan Lins,0.636,0.314,3,-14.408,1,0.0308,0.86,0.00154,0.0909,0.411,94.985
+83,Michael Bublé,All Of Me,0.536,0.31,0,-8.041,1,0.0492,0.568,0.000145,0.162,0.472,127.597
+84,Dean Martin,Just In Time - 1998 - Remastered,0.57,0.196,2,-14.374,0,0.0442,0.667,0.0,0.104,0.612,127.3
+85,Dean Martin,Innamorata,0.265,0.156,9,-17.515,1,0.0349,0.909,0.00049,0.343,0.163,67.892
+86,Dean Martin,Memories Are Made Of This,0.623,0.162,4,-17.542,1,0.0567,0.913,0.0,0.109,0.537,133.773
+87,Dean Martin,"Tik-A-Tee, Tik-A-Tay",0.661,0.387,9,-12.373,1,0.036,0.581,0.0,0.299,0.866,121.167
+88,Dean Martin,The Door Is Still Open to My Heart,0.239,0.466,3,-11.033,1,0.0397,0.624,0.0,0.145,0.365,84.239
+89,Dean Martin,Under The Bridges Of Paris,0.211,0.0875,5,-16.903,1,0.0341,0.917,1.87e-05,0.118,0.182,168.535
+90,Dean Martin,Somewhere There's a Someone,0.384,0.591,7,-8.34,1,0.0389,0.543,0.0,0.204,0.433,107.477
+91,Frank Sinatra,I'm Gonna Live Till I Die,0.476,0.496,5,-8.978,1,0.171,0.409,0.0,0.118,0.774,140.503
+92,Dean Martin,Gentle on My Mind,0.649,0.429,4,-9.858,1,0.035,0.734,0.0,0.22,0.76,96.592
+93,Michael Bublé,Peroxide Swing,0.745,0.548,9,-10.128,0,0.0571,0.554,0.0,0.0704,0.718,102.089
+94,Dean Martin,Return To Me (Ritorna-Me) - 1997 - Remastered,0.267,0.205,2,-13.75,1,0.0348,0.966,0.00203,0.113,0.178,88.584
+95,Dean Martin,You're Nobody Till Somebody Loves You,0.46,0.55,4,-9.256,1,0.036,0.756,0.0,0.378,0.418,108.026
+96,Michael Bublé,All I Do Is Dream Of You,0.732,0.489,1,-6.28,1,0.035,0.248,2.65e-06,0.188,0.654,119.974
+97,Michael Bublé,Try A Little Tenderness,0.329,0.245,2,-12.176,1,0.0359,0.884,0.000182,0.188,0.14,112.809
+98,Michael Bublé,I've Got You Under My Skin,0.656,0.42,3,-7.459,1,0.0442,0.536,2.26e-06,0.11,0.42,127.853
+99,Michael Bublé,Nice 'N Easy - Album Version Studio,0.591,0.386,0,-6.912,1,0.0407,0.418,4.41e-06,0.201,0.341,116.198
+100,Michael Bublé,Fever - Live,0.563,0.408,10,-9.118,0,0.0549,0.563,9.58e-05,0.986,0.398,127.881
+101,Michael Bublé,Lost,0.518,0.354,11,-9.141,1,0.029,0.764,0.00055,0.114,0.315,137.749
+102,Frank Sinatra,(Love Is) The Tender Trap,0.559,0.334,2,-7.784,0,0.0431,0.714,0.0,0.215,0.546,120.378
+103,Michael Bublé,Crazy Love,0.42,0.548,2,-7.221,1,0.0398,0.478,0.0,0.259,0.471,77.018
+104,Michael Bublé,To Love Somebody,0.525,0.555,6,-6.415,1,0.0273,0.402,0.0,0.143,0.593,90.554
+105,Elvis Presley,Kentucky Rain,0.411,0.374,0,-14.028,1,0.0282,0.427,1.01e-05,0.154,0.558,105.265
+106,Michael Bublé,Come Fly With Me,0.555,0.487,11,-6.48,1,0.0309,0.374,0.0,0.158,0.576,134.044
+107,Michael Bublé,Can't Help Falling In Love - Album Version Studio,0.234,0.316,5,-11.256,1,0.0293,0.74,0.0111,0.0922,0.0969,174.036
+108,Michael Bublé,Always On My Mind,0.33,0.161,2,-15.495,1,0.0355,0.891,0.0191,0.101,0.13,67.398
+109,Michael Bublé,Crazy Little Thing Called Love,0.596,0.844,5,-4.319,1,0.0607,0.131,1.8e-06,0.173,0.872,155.05
+110,Michael Bublé,Me And Mrs. Jones,0.36,0.381,1,-8.666,1,0.0488,0.59,5.15e-05,0.0846,0.346,198.228
+111,Frank Sinatra,My Way,0.28,0.388,2,-7.364,1,0.0314,0.689,0.0,0.122,0.223,148.033
+112,Michael Bublé,How Sweet It Is,0.718,0.624,7,-5.863,1,0.0843,0.092,1.33e-06,0.119,0.297,132.998
+113,Frank Sinatra,In The Wee Small Hours Of The Morning - 1998 Digital Remaster,0.29,0.0874,0,-16.119,1,0.0346,0.856,0.000957,0.109,0.0734,114.997
+114,Michael Bublé,Moondance,0.583,0.614,2,-5.816,0,0.0737,0.627,0.0,0.401,0.482,140.736
+115,Michael Bublé,"Quando, Quando, Quando - with Nelly Furtado",0.643,0.427,9,-9.196,1,0.0391,0.778,9.49e-05,0.136,0.577,116.042
+116,Frank Sinatra,All The Way - Remastered,0.196,0.282,1,-9.833,1,0.0325,0.468,5.49e-06,0.488,0.205,76.157
+117,Frank Sinatra,Angel Eyes - Remastered,0.192,0.135,8,-14.465,1,0.0365,0.952,0.00254,0.338,0.0846,172.631
+118,Michael Bublé,You've Got A Friend In Me,0.461,0.355,2,-8.046,1,0.0354,0.618,0.0,0.634,0.336,112.149
+119,Frank Sinatra,It Had To Be You,0.241,0.253,10,-12.315,1,0.0304,0.852,6.79e-06,0.18,0.157,74.246
+120,Frank Sinatra,Blue Moon - 1998 Digital Remaster,0.644,0.156,1,-16.529,1,0.0329,0.532,0.0,0.105,0.744,113.96
+121,Michael Bublé,You And I,0.334,0.135,3,-12.601,1,0.0359,0.9,0.000718,0.107,0.223,115.305
+122,Michael Bublé,Hold On,0.496,0.423,5,-7.318,1,0.0282,0.277,0.0,0.105,0.258,131.682
+123,Harry James & His Orchestra,All Or Nothing At All,0.35,0.114,2,-15.725,0,0.0332,0.984,0.0101,0.285,0.265,113.382
+124,Frank Sinatra,Somethin' Stupid,0.262,0.328,4,-12.897,1,0.0376,0.753,0.0,0.227,0.533,207.074
+125,Michael Bublé,Something Stupid - feat. Reese Witherspoon,0.573,0.719,5,-5.502,1,0.026,0.572,0.000555,0.332,0.548,99.349
+126,Frank Sinatra,White Christmas - 78rpm Version,0.211,0.309,2,-12.098,1,0.0321,0.839,0.0051,0.332,0.239,93.807
+127,Frank Sinatra,Christmas Dreaming,0.197,0.18,10,-14.385,1,0.0345,0.805,0.000175,0.176,0.186,86.161
+128,Frank Sinatra,It Came Upon the Midnight Clear,0.222,0.129,6,-15.011,1,0.0303,0.828,0.0,0.122,0.151,79.913
+129,Frank Sinatra,Adeste Fideles (O Come All Ye Faithful),0.19,0.209,5,-12.127,1,0.03,0.89,0.0,0.273,0.173,83.111
+130,Michael Bublé,Have I Told You Lately That I Love You - with Naturally 7,0.591,0.416,0,-7.976,1,0.0335,0.656,9.92e-06,0.118,0.462,114.004
+131,Michael Bublé,Dream,0.121,0.149,9,-18.043,1,0.0346,0.767,0.0454,0.125,0.046,72.165
+132,Frank Sinatra,Chicago - 1998 Digital Remaster,0.512,0.457,5,-10.053,1,0.074,0.607,0.0,0.397,0.793,147.588
+133,Frank Sinatra,I'll Never Smile Again,0.248,0.0516,0,-23.194,1,0.0291,0.986,0.0945,0.208,0.102,69.397
+134,Frank Sinatra,It Was A Very Good Year,0.184,0.141,7,-15.369,0,0.0316,0.867,0.0,0.116,0.135,81.779
+135,Frank Sinatra,Just In Time - Alternate Version,0.573,0.332,3,-9.777,1,0.163,0.775,0.0,0.142,0.627,129.089
+136,Frank Sinatra,Love And Marriage,0.711,0.228,10,-10.564,1,0.0319,0.858,0.0,0.121,0.633,110.937
+137,Frank Sinatra,My Kind Of Town,0.39,0.433,5,-7.519,1,0.0329,0.666,0.0,0.133,0.26,76.709
+138,Frank Sinatra,One For My Baby (And One More For The Road) - 1998 Digital Remaster,0.421,0.00983,4,-26.106,1,0.0376,0.975,0.000251,0.112,0.207,136.013
+139,Frank Sinatra,Put Your Dreams Away - Remastered,0.124,0.198,1,-14.649,1,0.0346,0.918,0.000552,0.161,0.155,75.056
+140,Frank Sinatra,Saturday Night - 2003 Remastered Version,0.575,0.493,9,-7.024,0,0.0437,0.717,0.0,0.632,0.634,127.167
+141,Frank Sinatra,Young At Heart - Remastered,0.268,0.248,8,-11.628,1,0.0351,0.766,0.0,0.385,0.408,85.54
+142,Dean Martin,Sway (Quien Sera),0.591,0.246,7,-12.141,0,0.039,0.728,1.01e-06,0.0753,0.56,120.132
+143,Frank Sinatra,The Lady Is A Tramp - 1998 Digital Remaster,0.551,0.144,8,-13.883,0,0.0392,0.515,0.0,0.187,0.648,128.122
+144,Frank Sinatra,That's Life,0.56,0.434,4,-14.151,0,0.0729,0.55,0.0,0.346,0.664,112.803
+145,Michael Bublé,Georgia On My Mind,0.269,0.239,0,-10.522,0,0.03,0.842,0.00194,0.0938,0.162,176.916
+146,Michael Bublé,Home,0.608,0.37,7,-9.207,1,0.0306,0.844,1.87e-05,0.112,0.349,127.631
+147,Dean Martin,Volare (Nel Blu Di Pinto Di Blu) - 1998 - Remastered,0.612,0.144,6,-12.204,0,0.0352,0.88,0.0,0.203,0.343,128.629
+148,Dean Martin,That's Amore,0.471,0.146,10,-13.6,1,0.0309,0.782,0.0,0.0888,0.595,78.554
+149,Dean Martin,White Christmas,0.247,0.109,11,-20.047,1,0.0339,0.939,0.0575,0.135,0.276,99.735
+150,Michael Bublé,That's Life,0.402,0.605,2,-7.257,1,0.0724,0.491,0.0,0.33,0.59,209.648
+151,Nat King Cole,"Unforgettable (Duet with Nat ""King"" Cole) - 2000 Digital Remaster",0.286,0.31,2,-12.368,0,0.0275,0.807,0.000128,0.0988,0.153,86.966
+152,Frank Sinatra,I've Got The World On A String,0.569,0.372,2,-7.022,1,0.0515,0.809,0.0,0.3,0.5,123.411
+153,Frank Sinatra,The Girl From Ipanema,0.542,0.261,5,-15.787,1,0.0457,0.839,0.00114,0.141,0.362,133.682
+154,Frank Sinatra,My Way,0.279,0.454,2,-7.733,1,0.0316,0.395,0.0,0.198,0.216,150.661
+155,Frank Sinatra,Come Fly With Me - 1998 Digital Remaster,0.574,0.338,6,-11.376,1,0.042,0.845,0.0,0.165,0.493,67.008
+156,Michael Bublé,Save The Last Dance For Me,0.745,0.45,4,-9.121,1,0.0354,0.288,0.0,0.0538,0.807,133.952
+157,Michael Bublé,The Way You Look Tonight,0.642,0.483,6,-10.486,1,0.028,0.549,0.000282,0.251,0.452,109.995
+158,Frank Sinatra,"Theme From New York, New York",0.407,0.589,2,-5.32,1,0.03,0.547,0.0,0.281,0.559,109.009
+159,Michael Bublé,That's All,0.257,0.219,9,-14.196,1,0.0327,0.893,0.0311,0.103,0.0767,142.835
+160,Frank Sinatra,Witchcraft - Remastered,0.515,0.32,0,-8.007,1,0.038,0.606,0.0,0.122,0.311,116.293
+161,Frank Sinatra,Luck Be A Lady,0.362,0.398,8,-13.582,1,0.0465,0.737,0.0,0.282,0.5,151.186
+162,Dean Martin,Mambo Italiano,0.752,0.33,1,-13.138,1,0.228,0.792,0.0,0.0574,0.65,76.525
+163,Nat King Cole,Unforgettable,0.349,0.182,5,-13.507,1,0.031,0.92,0.0152,0.143,0.178,136.094
+164,Nat King Cole,Smile,0.226,0.136,5,-19.203,0,0.0327,0.862,8.07e-06,0.302,0.263,79.37
+165,Frank Sinatra,I've Got You Under My Skin,0.585,0.371,1,-7.398,1,0.036,0.508,0.0,0.0957,0.625,127.289
+166,Dean Martin,Ain't That A Kick In The Head,0.586,0.253,6,-11.93,0,0.0538,0.604,0.0,0.3,0.718,108.168
+167,Nat King Cole,L-O-V-E - 2000 Digital Remaster,0.574,0.187,11,-14.762,0,0.0738,0.694,0.0,0.0792,0.727,77.859
+168,Michael Bublé,Everything,0.686,0.688,6,-4.981,0,0.0254,0.39,1.03e-06,0.0924,0.493,123.125
+169,Michael Bublé,You Don't Know Me,0.341,0.359,0,-9.471,1,0.0356,0.844,6.73e-05,0.103,0.301,185.064
+170,Frank Sinatra,Strangers In The Night,0.292,0.487,5,-8.239,1,0.0285,0.615,0.0,0.178,0.531,93.309
+171,Frank Sinatra,The Best Is Yet To Come - 2008 Remastered,0.647,0.338,8,-9.673,1,0.0516,0.481,0.0,0.0879,0.511,109.036
+172,Michael Bublé,The Best Is Yet To Come,0.647,0.347,5,-6.076,1,0.0691,0.355,0.0,0.296,0.484,121.026
+173,Frank Sinatra,Summer Wind,0.444,0.362,5,-9.214,0,0.0296,0.356,0.0,0.17,0.514,88.502
+174,Michael Bublé,Dream A Little Dream Of Me,0.415,0.264,5,-11.968,0,0.0408,0.862,1.52e-05,0.104,0.457,91.958
+175,Frank Sinatra,That's Life,0.458,0.692,2,-5.098,1,0.0485,0.458,0.0,0.587,0.576,112.755
+176,Frank Sinatra,Fly Me To The Moon,0.657,0.26,7,-14.251,1,0.0521,0.474,0.0,0.0656,0.378,119.358
+177,Frank Sinatra,Santa Claus Is Comin' to Town,0.636,0.178,7,-12.179,0,0.0656,0.663,0.0,0.0964,0.643,139.997
+178,Michael Bublé,It's A Beautiful Day,0.532,0.795,1,-3.979,1,0.0358,0.0559,0.0,0.295,0.78,143.837
+179,Dean Martin,Everybody Loves Somebody,0.26,0.49,3,-9.121,0,0.0415,0.806,0.0,0.336,0.399,80.599
+180,Frank Sinatra,You Make Me Feel So Young,0.582,0.323,9,-8.983,1,0.038,0.689,0.0,0.333,0.568,124.819
+181,Frank Sinatra,The Way You Look Tonight,0.589,0.369,5,-8.678,0,0.0321,0.855,0.0,0.352,0.529,132.953
+182,Nat King Cole,L-O-V-E - 1990 Digital Remaster,0.569,0.189,2,-13.996,1,0.0618,0.708,0.0,0.0644,0.734,77.308
+183,Dean Martin,On An Evening In Roma (Sott'er Celo De Roma),0.515,0.117,7,-15.513,1,0.0427,0.866,0.0,0.245,0.753,140.84
+184,Frank Sinatra,Let It Snow! Let It Snow! Let It Snow!,0.603,0.321,2,-11.489,1,0.0599,0.881,0.0,0.34,0.844,143.104
+185,Elton John,Your Song,0.551,0.27,3,-12.808,1,0.0326,0.851,7.04e-06,0.0966,0.289,128.221
+186,Michael Bublé,Feeling Good,0.535,0.548,1,-6.51,1,0.037,0.533,1.48e-06,0.123,0.477,115.144
+187,Michael Bublé,Close Your Eyes,0.309,0.542,7,-6.023,1,0.031,0.43,0.0,0.0954,0.237,137.39
+188,Michael Bublé,Haven't Met You Yet,0.615,0.733,8,-4.808,1,0.0335,0.152,0.0,0.109,0.796,122.58
+189,Michael Bublé,Tell Him He's Yours,0.55,0.482,7,-9.391,0,0.0335,0.617,0.0,0.297,0.599,95.982
+190,Michael Bublé,Sway,0.713,0.639,2,-5.529,0,0.0313,0.753,0.0,0.0878,0.737,125.959
+191,Michael Bublé,Who's Lovin' You,0.534,0.559,9,-5.22,1,0.0358,0.567,0.0,0.111,0.746,69.878
+192,Michael Bublé,You Make Me Feel So Young,0.508,0.537,9,-4.732,1,0.0441,0.702,0.0,0.362,0.644,129.865
+193,Michael Bublé,Baby [You've Got What It Takes] - with Sharon Jones & the Dap-Kings,0.632,0.708,10,-6.165,0,0.0617,0.227,3.55e-05,0.101,0.855,63.136
+194,Michael Bublé,It's A Beautiful Day - Swing Mix,0.455,0.741,2,-4.407,1,0.0587,0.609,0.0,0.15,0.614,120.973
+195,Michael Bublé,Be My Baby,0.522,0.838,10,-4.133,1,0.0321,0.00549,0.0,0.111,0.795,131.088
+196,Michael Bublé,A Foggy Day (In London Town),0.403,0.53,6,-6.094,0,0.0423,0.427,0.0,0.543,0.619,149.191
