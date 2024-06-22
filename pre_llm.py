@@ -14,7 +14,7 @@ from collections import defaultdict
 
 # playlists should be containing at least ['file'] and ['idx'] keys
 # returns bm25 model, bow dictionary, similarity index, and playlist info
-def get_bm25(playlists):
+def get_bm25(playlists, idx_path):
     slices = {}
     gdict = GC.Dictionary()
     corpus = []
@@ -113,12 +113,12 @@ if __name__ == "__main__":
     
     
     #pgen_train = UG.playlist_csv_generator('train_set.csv')
-    pgen_train = UG.playlist_csv_generator('train_pids.txt')
+    pgen_train = UG.playlist_csv_generator('train_pids.csv')
     pgen_valid = UG.playlist_csv_generator('validation_set.csv')
-    model_path = os.path.join(G.model_dir, 'bm25.model')
-    dict_path = os.path.join(G.model_dir, 'bm25.dict' )
-    idx_path = os.path.join(G.model_dir, 'bm25.index')
-    pl_path = os.path.join(G.model_dir, 'bm25.playlist')
+    model_path = os.path.join(G.model_dir, 'retrain_bm25.model')
+    dict_path = os.path.join(G.model_dir, 'retrain_bm25.dict' )
+    idx_path = os.path.join(G.model_dir, 'retrain_bm25.index')
+    pl_path = os.path.join(G.model_dir, 'retrain_bm25.playlist')
     if os.path.exists(model_path) == False:
     #if True:
         print('training models')
@@ -126,7 +126,7 @@ if __name__ == "__main__":
          
         #bdict = GC.Dictionary.load(dict_path)
         #get_similarities_from_corpus(playlists, bdict, idx_path, pl_path)
-        bm25, gdict, sim_idx, pl_info = get_bm25(playlists)
+        bm25, gdict, sim_idx, pl_info = get_bm25(playlists, idx_path)
         #model_dir = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'models')
         bm25.save(model_path)
         gdict.save(dict_path)
