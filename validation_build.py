@@ -11,6 +11,7 @@ if os.path.exists(out_path) == False:
 
 
 used_pid = set()
+unused_pid = set()
 bin_size = 50
 max_sz = 400
 pbins = {k: {} for k in range(0,max_sz + bin_size, bin_size)}
