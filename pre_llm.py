@@ -14,8 +14,10 @@ from collections import defaultdict
 
 # playlists should be containing at least ['file'] and ['idx'] keys
 # returns bm25 model, bow dictionary, similarity index, and playlist info
-def get_bm25(playlists, idx_path):
+def get_bm25(playlists, idx_path, lazy = True):
     slices = {}
+    prev_slice = None
+    prev_cfile = ""
     gdict = GC.Dictionary()
     corpus = []
     pl = [] # playlist info to recorrespond back with corpus
@@ -26,14 +28,25 @@ def get_bm25(playlists, idx_path):
         cidx = int(playlist['idx'])
         cur_pid = playlist['pid']
         pl.append({'file': cfile, 'idx': cidx, 'pid': cur_pid})
-        cur_slice = cfile.split('.')[-2].strip()
-        if cur_slice not in slices.keys():
-            slices[cur_slice] = UG.get_playlist_json(cfile)
-        cur_pl = slices[cur_slice]['playlists'][cidx]
+        cur_pl = None
+        if lazy == False:
+            cur_slice = cfile.split('.')[-2].strip()
+            if cur_slice not in slices.keys():
+                slices[cur_slice] = UG.get_playlist_json(cfile)
+            cur_pl = slices[cur_slice]['playlists'][cidx]
+        else:
+            _slice = None
+            if prev_cfile != cfile:
+                _slice = UG.get_playlist_json(cfile)
+                prev_slice = _slice
+            else:
+                _slice = prev_slice
+            cur_pl = _slice['playlists'][cidx]
         cur_uris = [x['track_uri'] for x in cur_pl['tracks']]
         gdict.add_documents([cur_uris])
         bow = gdict.doc2bow(cur_uris)
         corpus.append(bow)
+        prev_cfile = cfile
     cur_m = GM.OkapiBM25Model(corpus)
     tmp_file = GT.get_tmpfile("bm25_tmp")
     cur_sim = GS.Similarity(tmp_file, cur_m[corpus], len(gdict))
@@ -113,7 +126,7 @@ if __name__ == "__main__":
     
     
     #pgen_train = UG.playlist_csv_generator('train_set.csv')
-    pgen_train = UG.playlist_csv_generator('train_pids.csv')
+    pgen_train = UG.playlist_csv_generator('train_pids_retrain.csv')
     pgen_valid = UG.playlist_csv_generator('validation_set.csv')
     model_path = os.path.join(G.model_dir, 'retrain_bm25.model')
     dict_path = os.path.join(G.model_dir, 'retrain_bm25.dict' )
