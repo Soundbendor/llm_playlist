@@ -9,7 +9,8 @@ import metrics as UM
 import pre_llm as PL
 
 # bm25_100_gpt4o_corrected_res.csv
-expr_name = "baseline_bm25_filt_100_real_llama3"
+expr_name = "baseline_bm25_filt_500_real_llama"
+# expr_name = "gpt4_filtered"
 
 # pl_csv_path = 'data/num_splits/num_tracks-250.csv'
 # playlists_pth = "data/train_set.csv"
@@ -17,6 +18,7 @@ expr_name = "baseline_bm25_filt_100_real_llama3"
 playlists_pth = "data/filtered_validation_set.csv"
 
 model = "llama"
+# model = "gpt"
 preds_path = f'res/{model}_preds/{expr_name}.json'
 res_path = f'res/{model}_results/{expr_name}_res.csv'
 avg_res_path = f'res/{model}_results/{expr_name}_avg_res.csv'
