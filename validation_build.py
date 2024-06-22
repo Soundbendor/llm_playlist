@@ -46,9 +46,9 @@ for cur_f in os.listdir(num_tracks_path):
 #print(no_lens)
 #print(pbins)
 num_chall = 10
-max_tol = 50
+max_tol = 0
 
-header = ['pid', 'file', 'num_tracks', 'tol']
+header = ['pid', 'idx', 'file', 'num_tracks', 'tol']
 
 def playlist_getter(want_len, start_tol = 0):
     cur_tol = start_tol
@@ -102,8 +102,8 @@ for chall_idx in range(num_chall):
     all_pl = []
     failed = False
     #if chall_idx <= 0:
-    if chall_idx > 0:
-        continue
+    #if chall_idx > 0:
+    #    continue
     with open(csv_path, 'r') as f:
         csvr = csv.DictReader(f)
         for row in csvr:
