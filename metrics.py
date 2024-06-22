@@ -104,7 +104,7 @@ def reciprocal_rank(g_arr, r_arr):
 
     return ret
 
-def precision(g_arr, r_arr):
+def recall(g_arr, r_arr):
     g_in_r = np.isin(g_arr, r_arr)
     return np.mean(g_in_r)
 
