@@ -30,7 +30,7 @@ max_len_cond_gt50 = -1
 with open(out_file, 'w') as f:
     csvw = csv.DictWriter(f, fieldnames=header)
     csvw.writeheader()
-    for pl in cj['playlists']:
+    for _pli, pl in enumerate(cj['playlists']):
         name = ''
         nt = pl['num_tracks']
         nh = pl['num_holdouts']
