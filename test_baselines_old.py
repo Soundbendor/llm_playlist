@@ -17,17 +17,17 @@ cur_seed = 5
 # condition on 10, generate 100, should be at least 20 songs length
 # 500 samples
 data_dir = os.path.join(__file__.split(os.sep)[0], 'data')
-#valid_dir = os.path.join(__file__.split(os.sep)[0], 'valid_retrain')
-valid_dir = os.path.join(__file__.split(os.sep)[0], 'valid')
+eval_csv = os.path.join(data_dir, 'filtered_validation_set.csv')
 pop_dir = os.path.join(data_dir, 'stats')
 #res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
 res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 #playlist_csvs = list(os.listdir(csv_dir))
 #num_csvs = len(playlist_csvs)
 
+cond_num = 10
+test_num = 100
 #gen_num = 100
 #pl_sampnum = 25
-test_num = 1000
 gen_num = 500
 pl_sampnum = 100
 
@@ -184,7 +184,7 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
         guess = np.array([f'spotify:track:{_id}' for _id in top_songs['id'].values] + lost_songs)
         """
         #print(_guess)
-    elif expr_type == 'euclid':
+    elif expr_type == 'cossim':
         playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
         use_locs = [mdict['ididx'].get_loc(x) for x in mdict['ididx'] if x.strip() not in playlist_ids]
         top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[use_locs], mdict['song_feat'][use_locs], metric='euclidean', weights = cs_weights,tx = mdict['txs'], k = guess_num)
@@ -195,9 +195,12 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
 res_header = ['R_Precision', 'DCG', 'IDCG', 'NDCG', 'Recommended_Songs_Clicks']
 # validation_set.csv format, name,num_tracks,idx,file,pid,modified_at,collaborative,num_albums,num_followers
 all_uris = get_popularity_uris()
-exprs = ['euclid', 'random']
-#exprs = ['bm25','euclid','random']
-challenges = UG.get_challenges()
+#exprs = ['random']
+#test_num = 1
+exprs = ['cossim', 'random']
+#exprs = ['cossim']
+#exprs = ['bm25']
+#exprs = ['bm25','cossim','random']
 for expr in exprs:
     rng = np.random.default_rng(seed=cur_seed)
     r_precs = []
@@ -206,6 +209,7 @@ for expr in exprs:
     ndcgs = []
     rscs = []
     times = []
+    val_plgen = UG.playlist_csv_generator('filtered_validation_set.csv', csv_path = data_dir)
     song_feat = None
     song_df = None
     txs = None
@@ -233,21 +237,10 @@ for expr in exprs:
     val_idx = 0
     res_path = os.path.join(res_dir, f'baseline_{expr}_filt_{gen_num}_real')
 
-    chall_avgarr = []
-    for chall in challenges:
-        chall_num = chall['challenge']
-        if chall_num <= 1:
-            # non baseline challenge
-            continue
-        cond_num = chall['num_cond']
-        file_idx = chall['file_idx']
-        chall_file = chall['file']
-        val_plgen = UG.playlist_csv_generator(chall_file, csv_path = valid_dir)
-        chall_res = []
-        guess_arr = []
-        for val_pl in val_plgen:
-            if val_idx >= test_num:
-                continue
+    if os.path.exists(res_path) == False:
+        os.mkdir(res_path)
+    for val_pl in val_plgen:
+        if val_idx < test_num:
             cfile = val_pl['file']
             cidx = int(val_pl['idx'])
             pl_json = UG.get_playlist_json(cfile)
@@ -257,28 +250,48 @@ for expr in exprs:
             #print(ground_truth)
             ground_truth_len = ground_truth.shape[0]
             if ground_truth_len > 0:
+                print(f'running experiment {expr} {val_idx+1}/{test_num}')
+                guess = get_guess(all_uris, cur_uris, rng, expr_type = expr, guess_num = gen_num, mdict = bstuff, playlist = val_pl)
+                r_prec = UM.r_precision(ground_truth, guess)
+                dcg = UM.dcg(ground_truth, guess)
+                idcg = UM.idcg(ground_truth, guess)
+                ndcg = UM.ndcg(ground_truth, guess)
+                rsc = UM.rec_songs_clicks(ground_truth, guess, max_clicks = gen_num)
+                print(f'r_prec: {r_prec}, dcg: {dcg}, idcg: {idcg}, rsc: {rsc}')
+                r_precs.append(r_prec)
+                dcgs.append(dcg)
+                idcgs.append(idcg)
+                ndcgs.append(ndcg)
+                rscs.append(rsc)
+                guess_path = os.path.join(res_path, f'guess_{val_idx}.txt')
+                with open(guess_path, 'w') as f:
+                    for guess2 in guess:
+                        f.write(guess2)
+                        f.write('\n')
+
+                val_idx += 1
+            else:
                 print("skip")
-                continue
-            print(f'running experiment {expr} {val_idx+1}/{test_num}')
-            print('---------')
-            guess = get_guess(all_uris, cur_uris, rng, expr_type = expr, guess_num = gen_num, mdict = bstuff, playlist = val_pl)
-            cur_m = UM.calc_metrics(ground_truth, guess, max_clicks=gen_num)
-            chall_res.append(cur_m)
-            metric_arr.append(cur_m)
-            guess_arr.append(guess)
-            UM.metrics_printer(cur_m)
-            val_idx += 1
-        chall_avg = UM.get_mean_metrics(chall_res)
-        chall_avgarr.append(chall_avg)
-        cur_fname = f'chall-bin_{file_idx}-res.csv'
-        cur_fname_avg = f'chall-bin_{file_idx}-resavg.csv'
-        guess_fname = f'chall-bin_{file_idx}-guess.json'
-        UM.metrics_writer(chall_res, fname=cur_fname, fpath=res_path)
-        UM.metrics_writer([chall_avg], fname=cur_fname_avg, fpath=res_path)
-        UM.guess_writer(guess_arr, fname=guess_fname, fpath=res_path)
-    overall_avg = UM.get_mean_metrics(chall_avgarr)
-    cur_fname2 = f'overall-res.csv'
-    cur_fname_avg2 = f'overall-resavg.csv'
-           
-    UM.metrics_writer(chall_avgarr, fname=cur_fname2, fpath=res_path)
-    UM.metrics_writer([overall_avg], fname=cur_fname_avg2, fpath=res_path)
+    r_precs = np.array(r_precs)
+    dcgs = np.array(dcgs)
+    idcgs = np.array(idcgs)
+    ndcgs = np.array(ndcgs)
+    rscs = np.array(rscs)
+    avg_r_prec = np.mean(r_precs)
+    avg_dcg = np.mean(dcgs)
+    avg_idcg = np.mean(idcgs)
+    avg_ndcg = np.mean(ndcgs)
+    avg_rsc = np.mean(rscs)
+
+    res_per_expr_path = os.path.join(res_path, 'metrics_by_expr.csv')
+    with open(res_per_expr_path, 'w') as f:
+        csvr = csv.writer(f, delimiter=',')
+        csvr.writerow(res_header)
+        for (_rprec,_dcg,_idcg,_ndcg,_rsc) in zip(r_precs,dcgs,idcgs,ndcgs,rscs):
+            csvr.writerow([_rprec,_dcg, _idcg, _ndcg, _rsc])
+    res_avg_path = os.path.join(res_path, 'metrics_avg.csv')
+    with open(res_avg_path, 'w') as f:
+        csvr = csv.writer(f, delimiter=',')
+        csvr.writerow(res_header)
+        csvr.writerow([avg_r_prec, avg_dcg, avg_idcg, avg_ndcg, avg_rsc])
+        

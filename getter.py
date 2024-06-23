@@ -10,6 +10,8 @@ import sklearn.decomposition as SKD
 # for example: select * from new_combined_table where (artist_name="Prince") and track_name="Little Red Corvette";
 # returns two entries
 
+chall_file = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data', 'valid_challenges.csv')
+
 nct_feat = ["track_name", "artist_name", "danceability", "energy", "key", "loudness", "mode", "speechiness", "acousticness", "instrumentalness", "liveness", "valence", "tempo", "type", "id", "uri", "track_href", "analysis_url", "duration_ms", "time_signature"]
 """
 example track
@@ -31,6 +33,25 @@ comp_feat = ['danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness',
 
 # predefining so don't have to run every time
 non_comp_feat = [x for x in nct_feat if x not in comp_feat]
+
+chall_header = ['challenge','file', 'file_idx', 'start_idx','end_idx','has_title','num_cond','random']
+chall_bool = ['has_title', 'random']
+chall_str = ['file']
+def get_challenges():
+    ret = []
+    with open(chall_file, 'r') as f:
+        csvr = csv.DictReader(f)
+        for row in csvr:
+            cur_d = {}
+            for k,v in row.items():
+                if k in chall_str:
+                    cur_d[k] = f'{v}.csv'
+                elif k in chall_bool:
+                    cur_d[k] = int(v) > 0.5
+                else:
+                    cur_d[k] = int(v)
+            ret.append(cur_d)
+    return ret
 
 def get_playlist(file, idx):
     cur_path = os.path.join(G.data_dir, file)

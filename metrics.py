@@ -8,6 +8,8 @@
 # note that all methods expect numpy arrays (which work with strings), see example below
 import numpy as np
 
+header = ['r_precision', 'ndcg', 'clicks', 'rr', 'recall']
+
 def r_precision(g_arr,r_arr):
     """
     g_arr = ground truth numpy 1d array(s)
@@ -124,11 +126,29 @@ def calc_metrics(g_arr, r_arr, max_clicks=50):
 
 # expects array of results dicts (see above)
 def get_mean_metrics(res_arr):
-    h = ['r_precision', 'ndcg', 'clicks', 'rr', 'recall']
-    h_arr = [[x[y] for y in h] for x in res_arr]
+    h_arr = [[x[y] for y in header] for x in res_arr]
     h_means = np.mean(h_arr, axis=0)
-    ret = {x:y for (x,y) in zip(h,h_means)}
+    ret = {x:y for (x,y) in zip(header,h_means)}
     return ret
+
+def metrics_printer(mdict):
+    for (x,y) in mdict.items:
+        print(x, ":", y)
+
+def metrics_writer(res_arr, fname='res.csv', fpath= os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'res')):
+    if os.path.exists(fpath) == False:
+        os.mkdir(fpath)
+    with open(os.path.join(fpath,fname), 'w') as f:
+        csvw = csv.DictWriter(f, fieldnames=header)
+        csvw.writeheader()
+        for mdict in res_arr:
+            csvw.writerow(mdict)
+
+def guess_writer(guess_arr, fname='guess.json', fpath = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'res')):
+    if os.path.exists(fpath) == False:
+        os.mkdir(fpath)
+    with open(os.path.join(fpath,fname), 'w') as f:
+        json.dump(guess_arr,f)
 
 if __name__ == "__main__":
     p1 = np.array(['spotify:track:4vv1KjUzPwrtDbozizSfQc', 'spotify:track:0Ws8D3EWUDgY962Xftb0h5', 'spotify:track:0lMbuWUpfTWhEmOKxppEau', 'spotify:track:4KaIJ1FWXUoAAnOts1YWjD', 'spotify:track:60APt5N2NRaKWf5xzJdzyC', 'spotify:track:4c1BAfuPGZSun6aAvmmoHs', 'spotify:track:25oOaleife6E2MIKmFkPvg', 'spotify:track:1UAmQe8EwpxQ80OfYVD13z', 'spotify:track:2e3OgIbfZw5deCjLMGatSS', 'spotify:track:5de7ci7TFqbQ1PFgKAD7MR', 'spotify:track:29BXCsh4lGLrndprkgYL6O', 'spotify:track:1jQsKN68yE94tMYml0wHMd', 'spotify:track:59J5nzL1KniFHnU120dQzt', 'spotify:track:1e1JKLEDKP7hEQzJfNAgPl', 'spotify:track:5CtI0qwDJkDQGwXD1H1cLb', 'spotify:track:152lZdxL1OR0ZMW6KquMif', 'spotify:track:3DXncPQOG4VBw3QHh3S817', 'spotify:track:2of5xn0GU0TdFneR1saRLH', 'spotify:track:2INqEk4ko5AsGVLBsiKiQe', 'spotify:track:3LRddJIw2ymm1CHIO9xlkC', 'spotify:track:4uTTsXhygWzSjUxXLHZ4HW', 'spotify:track:1jNyxG5S2P9gztbfAnrq85', 'spotify:track:4HW5kSQ8M2IQWZhSxERvla', 'spotify:track:3nVDOYBJpdCkRR6r1DbZum', 'spotify:track:1rsAFUCa6BVMgRQ3FCQQsi', 'spotify:track:6kig1UFggPUyZBCvXD3Wod'])
