@@ -7,7 +7,7 @@
 
 # note that all methods expect numpy arrays (which work with strings), see example below
 import numpy as np
-
+import os
 header = ['r_precision', 'ndcg', 'clicks', 'rr', 'recall']
 
 def r_precision(g_arr,r_arr):
@@ -132,7 +132,7 @@ def get_mean_metrics(res_arr):
     return ret
 
 def metrics_printer(mdict):
-    for (x,y) in mdict.items:
+    for (x,y) in mdict.items():
         print(x, ":", y)
 
 def metrics_writer(res_arr, fname='res.csv', fpath= os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'res')):

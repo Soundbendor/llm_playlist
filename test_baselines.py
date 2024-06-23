@@ -195,8 +195,9 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
 res_header = ['R_Precision', 'DCG', 'IDCG', 'NDCG', 'Recommended_Songs_Clicks']
 # validation_set.csv format, name,num_tracks,idx,file,pid,modified_at,collaborative,num_albums,num_followers
 all_uris = get_popularity_uris()
-exprs = ['euclid', 'random']
+#exprs = ['euclid', 'random']
 #exprs = ['bm25','euclid','random']
+exprs = ['bm25']
 challenges = UG.get_challenges()
 for expr in exprs:
     rng = np.random.default_rng(seed=cur_seed)
@@ -215,7 +216,6 @@ for expr in exprs:
     bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(bstuff['song_df'], normalize=True, pca = 0, seed=cur_seed)
     bstuff['ididx'] = pd.Index(bstuff['song_df']['id'])
     #bstuff['song_df'] = bstuff['song_df'].set_index('id')
-    bstuff['mask'] = cond_num
     #print('got here')
     if expr in ['bm25']:
         bstuff['model'] = GM.OkapiBM25Model.load(model_path)
@@ -231,7 +231,7 @@ for expr in exprs:
             bstuff['plinfo'] = np.array([row for row in csvr])
 
     val_idx = 0
-    res_path = os.path.join(res_dir, f'baseline_{expr}_filt_{gen_num}_real')
+    res_path = os.path.join(res_dir, f'bline-chall_{expr}_filt_{gen_num}_real')
 
     chall_avgarr = []
     for chall in challenges:
@@ -240,6 +240,7 @@ for expr in exprs:
             # non baseline challenge
             continue
         cond_num = chall['num_cond']
+        bstuff['mask'] = cond_num
         file_idx = chall['file_idx']
         chall_file = chall['file']
         val_plgen = UG.playlist_csv_generator(chall_file, csv_path = valid_dir)
@@ -256,7 +257,7 @@ for expr in exprs:
             ground_truth = np.array(cur_uris[cond_num:])
             #print(ground_truth)
             ground_truth_len = ground_truth.shape[0]
-            if ground_truth_len > 0:
+            if ground_truth_len <= 0:
                 print("skip")
                 continue
             print(f'running experiment {expr} {val_idx+1}/{test_num}')
@@ -264,7 +265,6 @@ for expr in exprs:
             guess = get_guess(all_uris, cur_uris, rng, expr_type = expr, guess_num = gen_num, mdict = bstuff, playlist = val_pl)
             cur_m = UM.calc_metrics(ground_truth, guess, max_clicks=gen_num)
             chall_res.append(cur_m)
-            metric_arr.append(cur_m)
             guess_arr.append(guess)
             UM.metrics_printer(cur_m)
             val_idx += 1
