@@ -1,4 +1,4 @@
-import os,csv,json,time
+import os,csv,json,time,sys
 import metrics as UM
 import getter as UG
 import numpy as np
@@ -36,6 +36,9 @@ dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 idx_path = os.path.join(G.model_dir, 'bm25.index')
 pl_path = os.path.join(G.model_dir, 'bm25.playlist')
 
+chall_todo = []
+if len(sys.argv) > 1:
+    chall_todo = set([int(x) for x in sys.argv[1:]])
 """
 cs_weights = {'danceability': 0.75,
             'energy':1.0,
@@ -239,6 +242,11 @@ for expr in exprs:
         if chall_num <= 1:
             # non baseline challenge
             continue
+        if len(chall_todo) > 0:
+            # specified challenges to do
+            if chall_num not in chall_todo:
+                # not in specified challenges
+                continue
         cond_num = chall['num_cond']
         bstuff['mask'] = cond_num
         file_idx = chall['file_idx']
