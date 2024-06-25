@@ -7,7 +7,7 @@
 
 # note that all methods expect numpy arrays (which work with strings), see example below
 import numpy as np
-import os,csv
+import os,csv, json
 header = ['r_precision', 'ndcg', 'clicks', 'rr', 'recall']
 
 def r_precision(g_arr,r_arr):
