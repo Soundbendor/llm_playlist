@@ -17,11 +17,11 @@ cur_seed = 5
 # condition on 10, generate 100, should be at least 20 songs length
 # 500 samples
 data_dir = os.path.join(__file__.split(os.sep)[0], 'data')
-#valid_dir = os.path.join(__file__.split(os.sep)[0], 'valid_retrain')
-valid_dir = os.path.join(__file__.split(os.sep)[0], 'valid')
+valid_dir = os.path.join(__file__.split(os.sep)[0], 'valid_retrain')
+#valid_dir = os.path.join(__file__.split(os.sep)[0], 'valid')
 pop_dir = os.path.join(data_dir, 'stats')
-#res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
-res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
+res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
+#res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 #playlist_csvs = list(os.listdir(csv_dir))
 #num_csvs = len(playlist_csvs)
 
@@ -31,10 +31,17 @@ test_num = 1000
 gen_num = 500
 pl_sampnum = 100
 
-model_path = os.path.join(G.model_dir, 'bm25.model')
-dict_path = os.path.join(G.model_dir, 'bm25.dict' )
-idx_path = os.path.join(G.model_dir, 'bm25.index')
-pl_path = os.path.join(G.model_dir, 'bm25.playlist')
+model_path = os.path.join(G.model_dir, 'retrain_bm25.model')
+dict_path = os.path.join(G.model_dir, 'retrain_bm25.dict' )
+idx_path = os.path.join(G.model_dir, 'retrain_bm25.index')
+pl_path = os.path.join(G.model_dir, 'retrain_bm25.playlist')
+
+
+
+#model_path = os.path.join(G.model_dir, 'bm25.model')
+#dict_path = os.path.join(G.model_dir, 'bm25.dict' )
+#idx_path = os.path.join(G.model_dir, 'bm25.index')
+#pl_path = os.path.join(G.model_dir, 'bm25.playlist')
 
 chall_todo = []
 if len(sys.argv) > 1:
