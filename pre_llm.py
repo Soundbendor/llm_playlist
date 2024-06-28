@@ -125,8 +125,8 @@ if __name__ == "__main__":
         os.mkdir(G.model_dir)
     
     
-    #pgen_train = UG.playlist_csv_generator('train_set.csv')
-    pgen_train = UG.playlist_csv_generator('train_pids_retrain.csv')
+    pgen_train = UG.playlist_csv_generator('train_set.csv')
+    #pgen_train = UG.playlist_csv_generator('train_pids_retrain.csv')
     pgen_valid = UG.playlist_csv_generator('validation_set.csv')
     model_path = os.path.join(G.model_dir, 'retrain_bm25.model')
     dict_path = os.path.join(G.model_dir, 'retrain_bm25.dict' )

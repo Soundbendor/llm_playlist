@@ -17,6 +17,7 @@ cur_seed = 5
 # condition on 10, generate 100, should be at least 20 songs length
 # 500 samples
 data_dir = os.path.join(__file__.split(os.sep)[0], 'data')
+eval_csv = os.path.join(data_dir, 'filtered_validation_set.csv')
 pop_dir = os.path.join(data_dir, 'stats')
 #res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
 res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
@@ -25,9 +26,11 @@ res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 
 cond_num = 10
 test_num = 100
+#gen_num = 100
+#pl_sampnum = 25
+gen_num = 500
+pl_sampnum = 100
 
-# (number of playlists to sample from, generation number)
-gen_tup = [(25, 100), (100, 500)]
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 idx_path = os.path.join(G.model_dir, 'bm25.index')
@@ -147,7 +150,7 @@ def sample_from_playlists(_rng, _idxs, _sims, _plinfo, ipt_uris, sample_num = 10
     return top_idxs, top_scores, top_uris
     
 
-def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, pl_sampnum = 25, expr_type = 'random', mdict = None, playlist = None):
+def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type = 'random', mdict = None, playlist = None):
     guess = None
     num_uris = candidate_songs.shape[0]
     if expr_type == 'random':
@@ -181,7 +184,7 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, pl_sampnum 
         guess = np.array([f'spotify:track:{_id}' for _id in top_songs['id'].values] + lost_songs)
         """
         #print(_guess)
-    elif expr_type == 'euclid':
+    elif expr_type == 'cossim':
         playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
         use_locs = [mdict['ididx'].get_loc(x) for x in mdict['ididx'] if x.strip() not in playlist_ids]
         top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[use_locs], mdict['song_feat'][use_locs], metric='euclidean', weights = cs_weights,tx = mdict['txs'], k = guess_num)
@@ -189,53 +192,55 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, pl_sampnum 
     return guess
     
 
+res_header = ['R_Precision', 'DCG', 'IDCG', 'NDCG', 'Recommended_Songs_Clicks']
 # validation_set.csv format, name,num_tracks,idx,file,pid,modified_at,collaborative,num_albums,num_followers
 all_uris = get_popularity_uris()
 #exprs = ['random']
 #test_num = 1
-exprs = ['bm25', 'euclid', 'random']
-#exprs = ['euclid']
+exprs = ['cossim', 'random']
+#exprs = ['cossim']
 #exprs = ['bm25']
-#exprs = ['bm25','euclid','random']
+#exprs = ['bm25','cossim','random']
 for expr in exprs:
-    for (_pl_sampnum, _gen_num) in gen_tup: 
-        rng = np.random.default_rng(seed=cur_seed)
-        times = []
-        val_plgen = UG.playlist_csv_generator('filtered_validation_set.csv', csv_path = data_dir)
-        song_feat = None
-        song_df = None
-        txs = None
-        bstuff = {}
-        bstuff['cnx'], _ = UG.connect_to_nct()
-        bstuff['song_df'] = pd.read_csv(G.joined_csv2_path, index_col=[0])
-        bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(bstuff['song_df'], normalize=True, pca = 0, seed=cur_seed)
-        bstuff['ididx'] = pd.Index(bstuff['song_df']['id'])
-        #bstuff['song_df'] = bstuff['song_df'].set_index('id')
-        bstuff['mask'] = cond_num
-        #print('got here')
-        if expr in ['bm25']:
-            bstuff['model'] = GM.OkapiBM25Model.load(model_path)
-            bstuff['dict'] = GC.Dictionary.load(dict_path)
-            bstuff['tmp'] = GT.get_tmpfile(idx_path)
-            #bsim = GS.Similarity.
-            bstuff['sim'] = GS.Similarity.load(idx_path)
-            bstuff['sim'].output_prefix = idx_path
-            bstuff['sim'].check_moved()
+    rng = np.random.default_rng(seed=cur_seed)
+    r_precs = []
+    dcgs = []
+    idcgs = []
+    ndcgs = []
+    rscs = []
+    times = []
+    val_plgen = UG.playlist_csv_generator('filtered_validation_set.csv', csv_path = data_dir)
+    song_feat = None
+    song_df = None
+    txs = None
+    bstuff = {}
+    bstuff['cnx'], _ = UG.connect_to_nct()
+    bstuff['song_df'] = pd.read_csv(G.joined_csv2_path, index_col=[0])
+    bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(bstuff['song_df'], normalize=True, pca = 0, seed=cur_seed)
+    bstuff['ididx'] = pd.Index(bstuff['song_df']['id'])
+    #bstuff['song_df'] = bstuff['song_df'].set_index('id')
+    bstuff['mask'] = cond_num
+    #print('got here')
+    if expr in ['bm25']:
+        bstuff['model'] = GM.OkapiBM25Model.load(model_path)
+        bstuff['dict'] = GC.Dictionary.load(dict_path)
+        bstuff['tmp'] = GT.get_tmpfile(idx_path)
+        #bsim = GS.Similarity.
+        bstuff['sim'] = GS.Similarity.load(idx_path)
+        bstuff['sim'].output_prefix = idx_path
+        bstuff['sim'].check_moved()
 
-            with open(pl_path, 'r') as f:
-                csvr = csv.DictReader(f)
-                bstuff['plinfo'] = np.array([row for row in csvr])
+        with open(pl_path, 'r') as f:
+            csvr = csv.DictReader(f)
+            bstuff['plinfo'] = np.array([row for row in csvr])
 
-        val_idx = 0
-        res_path = os.path.join(res_dir, f'baseline_{expr}_filtval_{_gen_num}_rev3')
+    val_idx = 0
+    res_path = os.path.join(res_dir, f'baseline_{expr}_filt_{gen_num}_real')
 
-        if os.path.exists(res_path) == False:
-            os.mkdir(res_path)
-        run_metric_arr = []
-        run_guess_arr = []
-        for val_pl in val_plgen:
-            if val_idx >= test_num:
-                continue
+    if os.path.exists(res_path) == False:
+        os.mkdir(res_path)
+    for val_pl in val_plgen:
+        if val_idx < test_num:
             cfile = val_pl['file']
             cidx = int(val_pl['idx'])
             pl_json = UG.get_playlist_json(cfile)
@@ -244,22 +249,49 @@ for expr in exprs:
             ground_truth = np.array(cur_uris[cond_num:])
             #print(ground_truth)
             ground_truth_len = ground_truth.shape[0]
-            if ground_truth_len <= 0:
-                print('skip')
-                continue
-            print(f'running experiment {expr} (gen: {_gen_num}, samp: {_pl_sampnum}): {val_idx+1}/{test_num}')
-            guess = get_guess(all_uris, cur_uris, rng, expr_type = expr, pl_sampnum = _pl_sampnum, guess_num = _gen_num, mdict = bstuff, playlist = val_pl)
-            cur_m = UM.calc_metrics(ground_truth, guess, max_clicks=gen_num)
-            run_metric_arr.append(cur_m)
-            run_guess_arr.append(guess)
-            UM.metrics_printer(cur_m)
+            if ground_truth_len > 0:
+                print(f'running experiment {expr} {val_idx+1}/{test_num}')
+                guess = get_guess(all_uris, cur_uris, rng, expr_type = expr, guess_num = gen_num, mdict = bstuff, playlist = val_pl)
+                r_prec = UM.r_precision(ground_truth, guess)
+                dcg = UM.dcg(ground_truth, guess)
+                idcg = UM.idcg(ground_truth, guess)
+                ndcg = UM.ndcg(ground_truth, guess)
+                rsc = UM.rec_songs_clicks(ground_truth, guess, max_clicks = gen_num)
+                print(f'r_prec: {r_prec}, dcg: {dcg}, idcg: {idcg}, rsc: {rsc}')
+                r_precs.append(r_prec)
+                dcgs.append(dcg)
+                idcgs.append(idcg)
+                ndcgs.append(ndcg)
+                rscs.append(rsc)
+                guess_path = os.path.join(res_path, f'guess_{val_idx}.txt')
+                with open(guess_path, 'w') as f:
+                    for guess2 in guess:
+                        f.write(guess2)
+                        f.write('\n')
 
-            val_idx += 1
-        run_avg = UM.get_mean_metrics(run_metric_arr)
-        cur_fname = 'res.csv'
-        cur_fname_avg = 'resavg.csv'
-        guess_fname = 'guess.json'
-        UM.metrics_writer(chall_res, fname=cur_fname, fpath=res_path)
-        UM.metrics_writer([chall_avg], fname=cur_fname_avg, fpath=res_path)
-        UM.guess_writer(guess_arr, fname=guess_fname, fpath=res_path)
- 
+                val_idx += 1
+            else:
+                print("skip")
+    r_precs = np.array(r_precs)
+    dcgs = np.array(dcgs)
+    idcgs = np.array(idcgs)
+    ndcgs = np.array(ndcgs)
+    rscs = np.array(rscs)
+    avg_r_prec = np.mean(r_precs)
+    avg_dcg = np.mean(dcgs)
+    avg_idcg = np.mean(idcgs)
+    avg_ndcg = np.mean(ndcgs)
+    avg_rsc = np.mean(rscs)
+
+    res_per_expr_path = os.path.join(res_path, 'metrics_by_expr.csv')
+    with open(res_per_expr_path, 'w') as f:
+        csvr = csv.writer(f, delimiter=',')
+        csvr.writerow(res_header)
+        for (_rprec,_dcg,_idcg,_ndcg,_rsc) in zip(r_precs,dcgs,idcgs,ndcgs,rscs):
+            csvr.writerow([_rprec,_dcg, _idcg, _ndcg, _rsc])
+    res_avg_path = os.path.join(res_path, 'metrics_avg.csv')
+    with open(res_avg_path, 'w') as f:
+        csvr = csv.writer(f, delimiter=',')
+        csvr.writerow(res_header)
+        csvr.writerow([avg_r_prec, avg_dcg, avg_idcg, avg_ndcg, avg_rsc])
+        
