@@ -111,9 +111,23 @@ def get_feat_playlist(cnx, playlist):
     cur_q = f'select distinct * from new_combined_table where uri in ("{songstr}")'
     return pd.read_sql(cur_q, cnx)
 
+def df_get_artists(df):
+    return df.drop_duplicates(subset=['artist_name'])['artist_name'].values
 
-def get_uris_from_df(df, uris):
+def df_get_tracks(df):
+    return df.drop_duplicates(subset=['track_name'])['track_name'].values
+
+
+def df_filter_by_uris(df, uris):
     return df.loc[df['uri'].isin(uris)]
+
+def df_filter_by_uri_file(df, urifile, uri_dir = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data')):
+    trk = []
+    with open(os.path.join(uri_dir, urifile), 'r') as f:
+        trk = set([x.strip() for x in f.readlines()])
+    return df_filter_by_uris(df, trk)
+
+
 
 # input is a dataframe with all features, (numpy) features and scaler
 def all_songs_tx(df, normalize=True, pca = 3, seed=5):
