@@ -112,6 +112,8 @@ def get_feat_playlist(cnx, playlist):
     return pd.read_sql(cur_q, cnx)
 
 
+def get_uris_from_df(df, uris):
+    return df.loc[df['uri'].isin(uris)]
 
 # input is a dataframe with all features, (numpy) features and scaler
 def all_songs_tx(df, normalize=True, pca = 3, seed=5):

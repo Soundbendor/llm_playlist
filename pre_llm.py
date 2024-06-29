@@ -55,36 +55,6 @@ def get_bm25(playlists, idx_path, lazy = True):
     cur_sim = GS.Similarity(tmp_file, cur_m[corpus], len(gdict))
     return cur_m, gdict, cur_sim, pl, train_uris
 
-def get_similarities_from_corpus(playlists, gdict, idx_path, pl_path):
-    slices = {}
-    corpus = []
-    num_playlists = len(playlists)
-    pl = []
-    for i,playlist in enumerate(playlists):
-        print(f"processing playlist {i+1} out of {num_playlists}")
-        cfile = playlist['file']
-        cidx = int(playlist['idx'])
-        cur_pid = playlist['pid']
-        pl.append({'file': cfile, 'idx': cidx, 'pid': cur_pid})
-        cur_slice = cfile.split('.')[-2].strip()
-        if cur_slice not in slices.keys():
-            slices[cur_slice] = UG.get_playlist_json(cfile)
-        cur_pl = slices[cur_slice]['playlists'][cidx]
-        cur_uris = [x['track_uri'] for x in cur_pl['tracks']]
-
-        bow = gdict.doc2bow(cur_uris)
-        corpus.append(bow)
-    btmp = GT.get_tmpfile(idx_path)
-    cur_sim = GS.Similarity(tmp_file, cur_m[corpus], len(gdict))
-    cur_sim.save(idx_path)
-    with open(pl_path, 'w') as f:
-        csvw = csv.DictWriter(f, fieldnames=['file', 'idx', 'pid'])
-        csvw.writeheader()
-        for pl in pl_info:
-            csvw.writerow(pl)
-
-
-
 def rank_uri_by_playlist(_uri,_bm25, _dict, _idx, _plinfo):
     #cfile = playlist['file']
     #cidx = int(playlist['idx'])
