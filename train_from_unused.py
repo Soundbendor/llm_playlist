@@ -3,7 +3,8 @@ import os,csv
 res_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data', 'stats')
 #pool_file = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data', 'filtered_validation_set.csv')
 num_tracks_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data', 'num_splits')
-out_path = "/media/dxk/TOSHIBA EXT/llm_playlist_res/valid"
+#out_path = "/media/dxk/TOSHIBA EXT/llm_playlist_res/valid"
+out_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'valid_retrain2')
 
 if os.path.exists(out_path) == False:
     os.mkdir(out_path)
@@ -15,7 +16,7 @@ used_pid = set()
 with open(os.path.join(out_path, 'valid_pids.txt'), 'r') as f:
     used_pid = set(list([int(x.strip()) for x in f.readlines()]))
 
-with open(os.path.join(out_path, 'train_pids.txt'), 'w') as f:
+with open(os.path.join(out_path, 'train_pids.csv'), 'w') as f:
     csvw = csv.DictWriter(f, fieldnames=header)
     csvw.writeheader()
     for cur_f in os.listdir(num_tracks_path):

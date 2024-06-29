@@ -24,9 +24,8 @@ for _i,_x in enumerate(y):
         _y = prev_pl
     prev_pid = cur_pid
 
-    for _t in _y['tracks']:
-        _u  = _t['track_uri'].strip()
-        train_uris.add(_u)
+    _u = [_t['track_uri'].strip() for _t in _y['tracks']]
+    train_uris.update(set(_u))
 
 with open(os.path.join(res_dir, 'train.uris'), 'w') as f:
     for uri in train_uris:

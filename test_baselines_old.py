@@ -18,16 +18,18 @@ cur_seed = 5
 # 500 samples
 data_dir = os.path.join(__file__.split(os.sep)[0], 'data')
 pop_dir = os.path.join(data_dir, 'stats')
-#res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
-res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
+res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
+#res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 #playlist_csvs = list(os.listdir(csv_dir))
 #num_csvs = len(playlist_csvs)
 
 cond_num = 10
-test_num = 100
+test_num = np.inf
 
 # (number of playlists to sample from, generation number)
-gen_tup = [(25, 100), (100, 500)]
+#gen_tup = [(25, 100), (100, 500)]
+gen_tup = [(100, 500)]
+
 model_path = os.path.join(G.model_dir, 'bm25.model')
 dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 idx_path = os.path.join(G.model_dir, 'bm25.index')
@@ -86,7 +88,7 @@ def get_closest_songs_to_playlist(_cnx,playlist_ids,all_song_df, all_song_feat, 
     # average over all playlist songs to get average distances to each song
     all_song_dist = np.mean(pwdist,axis=0)
     sorted_idx = np.argsort(all_song_dist)
-    if metric == 'cosine':
+    if metric == 'euclid':
         sorted_idx = sorted_idx[::-1]
     top_dist = all_song_dist[sorted_idx[:k]]
     top_songs = all_song_df.iloc[sorted_idx[:k]].reset_index(drop=True)
@@ -226,14 +228,14 @@ for expr in exprs:
                 csvr = csv.DictReader(f)
                 bstuff['plinfo'] = np.array([row for row in csvr])
 
-        val_idx = 0
+        #val_idx = 0
         res_path = os.path.join(res_dir, f'baseline_{expr}_filtval_{_gen_num}_rev3')
 
         if os.path.exists(res_path) == False:
             os.mkdir(res_path)
         run_metric_arr = []
         run_guess_arr = []
-        for val_pl in val_plgen:
+        for val_idx,val_pl in enumerate(val_plgen):
             if val_idx >= test_num:
                 continue
             cfile = val_pl['file']
@@ -246,7 +248,7 @@ for expr in exprs:
             ground_truth_len = ground_truth.shape[0]
             if ground_truth_len <= 0:
                 print('skip')
-                continue
+                break
             print(f'running experiment {expr} (gen: {_gen_num}, samp: {_pl_sampnum}): {val_idx+1}/{test_num}')
             guess = get_guess(all_uris, cur_uris, rng, expr_type = expr, pl_sampnum = _pl_sampnum, guess_num = _gen_num, mdict = bstuff, playlist = val_pl)
             cur_m = UM.calc_metrics(ground_truth, guess, max_clicks=gen_num)
@@ -254,7 +256,6 @@ for expr in exprs:
             run_guess_arr.append(guess)
             UM.metrics_printer(cur_m)
 
-            val_idx += 1
         run_avg = UM.get_mean_metrics(run_metric_arr)
         cur_fname = 'res.csv'
         cur_fname_avg = 'resavg.csv'

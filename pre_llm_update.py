@@ -11,12 +11,10 @@ import gensim.test.utils as GT
 # input: playlist, output: candidate song ids
 from collections import defaultdict
 
-res_dir = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'valid_retrain2')
 
 # playlists should be containing at least ['file'] and ['idx'] keys
 # returns bm25 model, bow dictionary, similarity index, and playlist info
 def get_bm25(playlists, idx_path, lazy = True):
-    train_uris = set([])
     slices = {}
     prev_slice = None
     prev_cfile = ""
@@ -45,15 +43,14 @@ def get_bm25(playlists, idx_path, lazy = True):
                 _slice = prev_slice
             cur_pl = _slice['playlists'][cidx]
         cur_uris = [x['track_uri'] for x in cur_pl['tracks']]
-        train_uris.update(set(cur_uris))
         gdict.add_documents([cur_uris])
-        bow = gdict.doc2bow(cur_uris,allow_update=True)
+        bow = gdict.doc2bow(cur_uris)
         corpus.append(bow)
         prev_cfile = cfile
     cur_m = GM.OkapiBM25Model(corpus)
     tmp_file = GT.get_tmpfile("bm25_tmp")
     cur_sim = GS.Similarity(tmp_file, cur_m[corpus], len(gdict))
-    return cur_m, gdict, cur_sim, pl, train_uris
+    return cur_m, gdict, cur_sim, pl
 
 def get_similarities_from_corpus(playlists, gdict, idx_path, pl_path):
     slices = {}
@@ -128,21 +125,21 @@ if __name__ == "__main__":
         os.mkdir(G.model_dir)
     
     
-    #pgen_train = UG.playlist_csv_generator('train_set.csv')
-    pgen_train = UG.playlist_csv_generator('train_pids_retrain2.csv')
+    pgen_train = UG.playlist_csv_generator('train_set.csv')
+    #pgen_train = UG.playlist_csv_generator('train_pids_retrain.csv')
     pgen_valid = UG.playlist_csv_generator('validation_set.csv')
-    model_path = os.path.join(G.model_dir, 'retrain2_bm25_2.model')
-    dict_path = os.path.join(G.model_dir, 'retrain2_bm25_2.dict' )
-    idx_path = os.path.join(G.model_dir, 'retrain2_bm25_2.index')
-    pl_path = os.path.join(G.model_dir, 'retrain2_bm25_2.playlist')
-    #if os.path.exists(model_path) == False:
-    if True:
+    model_path = os.path.join(G.model_dir, 'retrain_bm25.model')
+    dict_path = os.path.join(G.model_dir, 'retrain_bm25.dict' )
+    idx_path = os.path.join(G.model_dir, 'retrain_bm25.index')
+    pl_path = os.path.join(G.model_dir, 'retrain_bm25.playlist')
+    if os.path.exists(model_path) == False:
+    #if True:
         print('training models')
         playlists = [x for x in pgen_train]
          
         #bdict = GC.Dictionary.load(dict_path)
         #get_similarities_from_corpus(playlists, bdict, idx_path, pl_path)
-        bm25, gdict, sim_idx, pl_info, t_uris  = get_bm25(playlists, idx_path)
+        bm25, gdict, sim_idx, pl_info = get_bm25(playlists, idx_path)
         #model_dir = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'models')
         bm25.save(model_path)
         gdict.save(dict_path)
@@ -152,10 +149,6 @@ if __name__ == "__main__":
             csvw.writeheader()
             for pl in pl_info:
                 csvw.writerow(pl)
-        with open(os.path.join(res_dir, 'train_2.uris'), 'w') as f:
-            for uri in t_uris:
-                f.write(uri)
-                f.write('\n')
     else:
         print('loading models')
         bmodel = GM.OkapiBM25Model.load(model_path)

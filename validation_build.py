@@ -3,7 +3,8 @@ import os,csv
 res_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data', 'stats')
 #pool_file = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data', 'filtered_validation_set.csv')
 num_tracks_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data', 'num_splits')
-out_path = "/media/dxk/TOSHIBA EXT/llm_playlist_res/valid"
+#out_path = "/media/dxk/TOSHIBA EXT/llm_playlist_res/valid"
+out_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'valid_retrain2')
 
 if os.path.exists(out_path) == False:
     os.mkdir(out_path)
@@ -98,6 +99,8 @@ def playlist_getter(want_len, start_tol = 0):
 any_failed = False
 
 for chall_idx in range(num_chall):
+    if chall_idx <= 0:
+        continue
     cur_csv = f"chall-bin_{chall_idx}.csv"
     csv_path = os.path.join(res_path, cur_csv)
     all_pl = []
