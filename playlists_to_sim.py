@@ -11,15 +11,15 @@ import gensim.test.utils as GT
 # input: playlist, output: candidate song ids
 from collections import defaultdict
 
-pls = UG.playlist_csv_generator('test.csv', csv_path = os.sep.join(__file__.split(os.sep)[:-1]))
-#pls = UG.playlist_csv_generator('train_pids_retrain2.csv', csv_path= G.data_dir2)
+#pls = UG.playlist_csv_generator('test.csv', csv_path = os.sep.join(__file__.split(os.sep)[:-1]))
+pls = UG.playlist_csv_generator('all_playlists.csv', csv_path= G.data_dir2)
 # things that should stay the same
-model_path = os.path.join(G.model_dir, 'bm25.model')
-dict_path = os.path.join(G.model_dir, 'bm25.dict' )
+model_path = os.path.join(G.model_dir, 'retrain2_bm25.model')
+dict_path = os.path.join(G.model_dir, 'retrain2_bm25.dict' )
 
 # things you want to change
-idx_path = os.path.join(G.model_dir, 'bm25_test.index')
-pl_path = os.path.join(G.model_dir, 'bm25_test.playlist')
+idx_path = os.path.join(G.model_dir, 'retrain2_bm25_full2.index')
+pl_path = os.path.join(G.model_dir, 'retrain2_bm25_full2.playlist')
 
 
 def get_similarities_from_corpus(playlists, gdict, gmodel, idx_path, pl_path, lazy = True):
