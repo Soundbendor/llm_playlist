@@ -119,7 +119,7 @@ def df_get_tracks(df):
 
 
 def df_filter_by_uris(df, uris):
-    return df.loc[df['uri'].isin(uris)]
+    return df.loc[df['uri'].isin(uris)].reset_index()
 
 def df_filter_by_uri_file(df, urifile, uri_dir = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data')):
     trk = []
@@ -130,12 +130,22 @@ def df_filter_by_uri_file(df, urifile, uri_dir = os.path.join(os.sep.join(__file
 
 
 # input is a dataframe with all features, (numpy) features and scaler
-def all_songs_tx(df, normalize=True, pca = 3, seed=5):
+def all_songs_tx(df, normalize=True, train_uri_file = '', train_uri_dir =  os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data'), pca = 3, seed=5):
     mmscl = None
     np_all_feat = None
+    train_df = None
+    train_filt = False
+    if len(train_uri_file) > 0:
+        train_filt = True
+        train_df = df_filter_by_uri_file(df, train_uri_file, uri_dir = train_uri_dir) 
     if normalize == True:
         mmscl = SKP.MinMaxScaler()
-        np_all_feat = mmscl.fit_transform(df[comp_feat].to_numpy())
+        if train_filt == False:
+            np_all_feat = mmscl.fit_transform(df[comp_feat].to_numpy())
+        else:
+            mmscl.fit(train_df[comp_feat].to_numpy())
+            np_all_feat = mmscl.transform(df[comp_feat].to_numpy())
+            
     else:
         np_all_feat = df[comp_feat].to_numpy()
     pcaer = None

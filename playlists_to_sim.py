@@ -18,8 +18,8 @@ model_path = os.path.join(G.model_dir, 'retrain2_bm25.model')
 dict_path = os.path.join(G.model_dir, 'retrain2_bm25.dict' )
 
 # things you want to change
-idx_path = os.path.join(G.model_dir, 'retrain2_bm25_full2.index')
-pl_path = os.path.join(G.model_dir, 'retrain2_bm25_full2.playlist')
+idx_path = os.path.join(G.model_dir, 'retrain2_bm25_full5.index')
+pl_path = os.path.join(G.model_dir, 'retrain2_bm25_full5.playlist')
 
 
 def get_similarities_from_corpus(playlists, gdict, gmodel, idx_path, pl_path, lazy = True):

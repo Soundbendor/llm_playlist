@@ -17,27 +17,29 @@ cur_seed = 5
 # condition on 10, generate 100, should be at least 20 songs length
 # 500 samples
 data_dir = os.path.join(__file__.split(os.sep)[0], 'data')
-valid_dir = os.path.join(__file__.split(os.sep)[0], 'valid_retrain')
+valid_dir = os.path.join(__file__.split(os.sep)[0], 'valid_retrain2')
 #valid_dir = os.path.join(__file__.split(os.sep)[0], 'valid')
 pop_dir = os.path.join(data_dir, 'stats')
 res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
+#df_path = os.path.join(valid_dir, 'df_train2.csv') 
+df_path = G.joined_csv2_path
 #res_dir = '/media/dxk/TOSHIBA EXT/llm_playlist_res'
 #playlist_csvs = list(os.listdir(csv_dir))
 #num_csvs = len(playlist_csvs)
 
 #gen_num = 100
 #pl_sampnum = 25
-test_num = 1000
+test_num = 99999
 gen_num = 500
 pl_sampnum = 100
 
-model_path = os.path.join(G.model_dir, 'retrain_bm25.model')
-dict_path = os.path.join(G.model_dir, 'retrain_bm25.dict' )
-idx_path = os.path.join(G.model_dir, 'retrain_bm25.index')
-pl_path = os.path.join(G.model_dir, 'retrain_bm25.playlist')
+model_path = os.path.join(G.model_dir, 'retrain2_bm25.model')
+dict_path = os.path.join(G.model_dir, 'retrain2_bm25.dict' )
+idx_path = os.path.join(G.model_dir, 'retrain2_bm25_full4.index')
+pl_path = os.path.join(G.model_dir, 'retrain2_bm25_full4.playlist')
 
 
-
+print(f'running on {valid_dir}')
 #model_path = os.path.join(G.model_dir, 'bm25.model')
 #dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 #idx_path = os.path.join(G.model_dir, 'bm25.index')
@@ -161,6 +163,10 @@ def sample_from_playlists(_rng, _idxs, _sims, _plinfo, ipt_uris, sample_num = 10
     
 
 def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type = 'random', mdict = None, playlist = None):
+    _cond_num = 0
+    if mdict != None:
+        _cond_num = mdict['mask']
+    print(f'calculating guess for {expr_type} with guess_num: {guess_num}, cond_num: {_cond_num}')
     guess = None
     num_uris = candidate_songs.shape[0]
     if expr_type == 'random':
@@ -169,11 +175,11 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
         guess_ids = _rng.choice(use_songs, size=guess_num, replace=False)
         guess = np.array([f'spotify:track:{_id}' for _id in guess_ids])
     elif expr_type == 'bm25':
-        print('ranking playlists')
+        print(f'ranking playlists with mask={_cond_num}')
         top_idx, top_sim, top_pl = PL.rank_train_playlists_by_playlist(playlist,mdict['model'], mdict['dict'], mdict['sim'], mdict['plinfo'], mask = mdict['mask'])
 
         #print(top_idx, top_sim, top_pl)
-        print('sampling from playlists')
+        print(f'sampling from {pl_sampnum} playlists')
         #unranked = sample_from_playlists(_rng, top_idx, top_sim, top_pl, playlist_uris, sample_num = guess_num, playlist_num = pl_sampnum)
         top_idxs2, top_scores2, guess = sample_from_playlists(_rng, top_idx, top_sim, top_pl, playlist_uris, sample_num = guess_num, playlist_num = pl_sampnum, mask = mdict['mask'])
         #print(unranked)
@@ -202,14 +208,15 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
     return guess
     
 
-res_header = ['R_Precision', 'DCG', 'IDCG', 'NDCG', 'Recommended_Songs_Clicks']
 # validation_set.csv format, name,num_tracks,idx,file,pid,modified_at,collaborative,num_albums,num_followers
 all_uris = get_popularity_uris()
 #exprs = ['euclid', 'random']
 #exprs = ['bm25','euclid','random']
 exprs = ['bm25']
 challenges = UG.get_challenges()
+
 for expr in exprs:
+    num_chall_run = 0
     rng = np.random.default_rng(seed=cur_seed)
     r_precs = []
     dcgs = []
@@ -222,8 +229,8 @@ for expr in exprs:
     txs = None
     bstuff = {}
     bstuff['cnx'], _ = UG.connect_to_nct()
-    bstuff['song_df'] = pd.read_csv(G.joined_csv2_path, index_col=[0])
-    bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(bstuff['song_df'], normalize=True, pca = 0, seed=cur_seed)
+    bstuff['song_df'] = pd.read_csv(df_path, index_col=[0])
+    bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(bstuff['song_df'], normalize=True, train_uri_file = 'train.uris', train_uri_dir = valid_dir, pca = 0, seed=cur_seed)
     bstuff['ididx'] = pd.Index(bstuff['song_df']['id'])
     #bstuff['song_df'] = bstuff['song_df'].set_index('id')
     #print('got here')
@@ -241,7 +248,7 @@ for expr in exprs:
             bstuff['plinfo'] = np.array([row for row in csvr])
 
     val_idx = 0
-    res_path = os.path.join(res_dir, f'bline-chall_{expr}_filt_{gen_num}_real')
+    res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_retrain2_full4')
 
     chall_avgarr = []
     for chall in challenges:
@@ -261,6 +268,7 @@ for expr in exprs:
         val_plgen = UG.playlist_csv_generator(chall_file, csv_path = valid_dir)
         chall_res = []
         guess_arr = []
+        anyskip = False
         for val_pl in val_plgen:
             if val_idx >= test_num:
                 continue
@@ -274,8 +282,11 @@ for expr in exprs:
             ground_truth_len = ground_truth.shape[0]
             if ground_truth_len <= 0:
                 print("skip")
+                anyskip = True
+                break
                 continue
-            print(f'running experiment {expr} {val_idx+1}/{test_num}')
+            print(f'RUNNING EXPERIMENT {expr} {val_idx+1}: CHALLENGE {chall_num}')
+            print(f'file: {cfile}, guess_num: {gen_num}, cond_num: {cond_num}, num_playlists: {pl_sampnum}')
             print('---------')
             guess = get_guess(all_uris, cur_uris, rng, expr_type = expr, guess_num = gen_num, mdict = bstuff, playlist = val_pl)
             cur_m = UM.calc_metrics(ground_truth, guess, max_clicks=gen_num)
@@ -283,17 +294,22 @@ for expr in exprs:
             guess_arr.append(guess)
             UM.metrics_printer(cur_m)
             val_idx += 1
-        chall_avg = UM.get_mean_metrics(chall_res)
-        chall_avgarr.append(chall_avg)
-        cur_fname = f'chall-bin_{file_idx}-res.csv'
-        cur_fname_avg = f'chall-bin_{file_idx}-resavg.csv'
-        guess_fname = f'chall-bin_{file_idx}-guess.json'
-        UM.metrics_writer(chall_res, fname=cur_fname, fpath=res_path)
-        UM.metrics_writer([chall_avg], fname=cur_fname_avg, fpath=res_path)
-        UM.guess_writer(guess_arr, fname=guess_fname, fpath=res_path)
-    overall_avg = UM.get_mean_metrics(chall_avgarr)
-    cur_fname2 = f'overall-res.csv'
-    cur_fname_avg2 = f'overall-resavg.csv'
-           
-    UM.metrics_writer(chall_avgarr, fname=cur_fname2, fpath=res_path)
-    UM.metrics_writer([overall_avg], fname=cur_fname_avg2, fpath=res_path)
+        if anyskip == True:
+            print(f'skips in challenge {chall_num}')
+        else:
+            num_chall_run += 1
+            chall_avg = UM.get_mean_metrics(chall_res)
+            chall_avgarr.append(chall_avg)
+            cur_fname = f'chall-bin_{file_idx}-res.csv'
+            cur_fname_avg = f'chall-bin_{file_idx}-resavg.csv'
+            guess_fname = f'chall-bin_{file_idx}-guess.json'
+            UM.metrics_writer(chall_res, fname=cur_fname, fpath=res_path)
+            UM.metrics_writer([chall_avg], fname=cur_fname_avg, fpath=res_path)
+            UM.guess_writer(guess_arr, fname=guess_fname, fpath=res_path)
+    if num_chall_run > 1:
+        overall_avg = UM.get_mean_metrics(chall_avgarr)
+        cur_fname2 = f'overall-res.csv'
+        cur_fname_avg2 = f'overall-resavg.csv'
+               
+        UM.metrics_writer(chall_avgarr, fname=cur_fname2, fpath=res_path)
+        UM.metrics_writer([overall_avg], fname=cur_fname_avg2, fpath=res_path)

@@ -8,4 +8,4 @@ challenge,file,file_idx,start_idx,end_idx,has_title,num_cond,random
 7,chall-bin_5-pids,5,5000,5999,1,25,0
 8,chall-bin_6-pids,6,6000,6999,1,25,1
 9,chall-bin_7-pids,7,7000,7999,1,100,0
-10,chall-bin-8-pids,8,8000,8999,1,100,1
+10,chall-bin_8-pids,8,8000,8999,1,100,1
