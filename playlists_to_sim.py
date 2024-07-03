@@ -14,12 +14,12 @@ from collections import defaultdict
 #pls = UG.playlist_csv_generator('test.csv', csv_path = os.sep.join(__file__.split(os.sep)[:-1]))
 pls = UG.playlist_csv_generator('all_playlists.csv', csv_path= G.data_dir2)
 # things that should stay the same
-model_path = os.path.join(G.model_dir, 'retrain2_bm25.model')
-dict_path = os.path.join(G.model_dir, 'retrain2_bm25.dict' )
+model_path = os.path.join(G.model_dir, 'bm25.model')
+dict_path = os.path.join(G.model_dir, 'bm25.dict' )
 
 # things you want to change
-idx_path = os.path.join(G.model_dir, 'retrain2_bm25_full5.index')
-pl_path = os.path.join(G.model_dir, 'retrain2_bm25_full5.playlist')
+idx_path = os.path.join(G.model_dir, 'bm25_full.index')
+pl_path = os.path.join(G.model_dir, 'bm25_full.playlist')
 
 
 def get_similarities_from_corpus(playlists, gdict, gmodel, idx_path, pl_path, lazy = True):
