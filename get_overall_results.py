@@ -3,7 +3,6 @@ import metrics as UM
 expr = "bm25"
 gen_num = 500
 
-avg = UM.get_mean_metrics(cur)
 
 
 
@@ -18,7 +17,7 @@ for file_idx in range(1,10):
     with open(fname_avg_path, 'r') as f:
         csvr = csv.DictReader(f)
         for row in csvr:
-            chall_avgarr.append(row)
+            chall_avgarr.append({x:float(y) for (x,y) in row.items()})
 
 
 overall_avg = UM.get_mean_metrics(chall_avgarr)
