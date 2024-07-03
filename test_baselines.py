@@ -212,7 +212,8 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
 all_uris = get_popularity_uris()
 #exprs = ['euclid', 'random']
 #exprs = ['bm25','euclid','random']
-exprs = ['euclid']
+#exprs = ['euclid']
+exprs = ['bm25']
 challenges = UG.get_challenges()
 
 for expr in exprs:
@@ -247,7 +248,6 @@ for expr in exprs:
             csvr = csv.DictReader(f)
             bstuff['plinfo'] = np.array([row for row in csvr])
 
-    val_idx = 0
     res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_retrain2_full4')
 
     chall_avgarr = []
@@ -261,11 +261,12 @@ for expr in exprs:
             if chall_num not in chall_todo:
                 # not in specified challenges
                 continue
+        val_idx = 0
         cond_num = chall['num_cond']
         bstuff['mask'] = cond_num
         file_idx = chall['file_idx']
         chall_file = chall['file']
-        val_plgen = UG.playlist_csv_generator(chall_file, csv_path = valid_dir)
+        val_plgen = UG.playlist_csv_generator(chall_file, csv_path = valid_dir,rows = test_num)
         chall_res = []
         guess_arr = []
         anyskip = False
@@ -290,8 +291,10 @@ for expr in exprs:
             print('---------')
             guess = get_guess(all_uris, cur_uris, rng, expr_type = expr, guess_num = gen_num, mdict = bstuff, playlist = val_pl)
             cur_m = UM.calc_metrics(ground_truth, guess, max_clicks=gen_num)
+            guess_fname2 = f'chall-bin_{file_idx}-guess_{val_idx}.json'
+            UM.guess_writer_flat(guess, fname=guess_fname2, fpath=res_path)
             chall_res.append(cur_m)
-            guess_arr.append(guess)
+            guess_arr.append(np.ndarray.tolist(guess))
             UM.metrics_printer(cur_m)
             val_idx += 1
         if anyskip == True:
@@ -302,7 +305,7 @@ for expr in exprs:
             chall_avgarr.append(chall_avg)
             cur_fname = f'chall-bin_{file_idx}-res.csv'
             cur_fname_avg = f'chall-bin_{file_idx}-resavg.csv'
-            guess_fname = f'chall-bin_{file_idx}-guess.json'
+            guess_fname = f'chall-bin_{file_idx}-guess_all.json'
             UM.metrics_writer(chall_res, fname=cur_fname, fpath=res_path)
             UM.metrics_writer([chall_avg], fname=cur_fname_avg, fpath=res_path)
             UM.guess_writer(guess_arr, fname=guess_fname, fpath=res_path)

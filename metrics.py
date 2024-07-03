@@ -127,6 +127,7 @@ def calc_metrics(g_arr, r_arr, max_clicks=50):
 # expects array of results dicts (see above)
 def get_mean_metrics(res_arr):
     h_arr = [[x[y] for y in header] for x in res_arr]
+    print(h_arr)
     h_means = np.mean(h_arr, axis=0)
     ret = {x:y for (x,y) in zip(header,h_means)}
     return ret
@@ -143,6 +144,14 @@ def metrics_writer(res_arr, fname='res.csv', fpath= os.path.join(os.sep.join(__f
         csvw.writeheader()
         for mdict in res_arr:
             csvw.writerow(mdict)
+
+def guess_writer_flat(guess_arr, fname='guess.json', fpath = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'res')):
+    if os.path.exists(fpath) == False:
+        os.mkdir(fpath)
+    with open(os.path.join(fpath,fname), 'w') as f:
+        for guess in guess_arr:
+            f.write(guess)
+            f.write("\n")
 
 def guess_writer(guess_arr, fname='guess.json', fpath = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'res')):
     if os.path.exists(fpath) == False:

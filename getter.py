@@ -167,11 +167,14 @@ def get_playlist_json(pl_file):
     
 # pl_csv is a csv listing playlists
 # csv_path is the path to csvs
-def playlist_csv_generator(pl_csv, csv_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data')):
+def playlist_csv_generator(pl_csv, csv_path = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data'), rows=np.inf):
     with open(os.path.join(csv_path, pl_csv), 'r') as f:
         csvr = csv.DictReader(f)
-        for row in csvr:
-            yield row
+        for row_idx,row in enumerate(csvr):
+            if row_idx < rows:
+                yield row
+            if row_idx >= rows-1:
+                break
 
 # input: all songs feature df
 # returns all songs feature df with 'count' column
