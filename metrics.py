@@ -127,7 +127,6 @@ def calc_metrics(g_arr, r_arr, max_clicks=50):
 # expects array of results dicts (see above)
 def get_mean_metrics(res_arr):
     h_arr = [[x[y] for y in header] for x in res_arr]
-    print(h_arr)
     h_means = np.mean(h_arr, axis=0)
     ret = {x:y for (x,y) in zip(header,h_means)}
     return ret

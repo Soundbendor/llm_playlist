@@ -212,8 +212,8 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
 all_uris = get_popularity_uris()
 #exprs = ['euclid', 'random']
 #exprs = ['bm25','euclid','random']
-#exprs = ['euclid']
-exprs = ['bm25']
+exprs = ['euclid']
+#exprs = ['bm25']
 challenges = UG.get_challenges()
 
 for expr in exprs:
