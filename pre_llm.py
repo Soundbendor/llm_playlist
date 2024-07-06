@@ -51,7 +51,7 @@ def get_bm25(playlists, idx_path, lazy = True):
         corpus.append(bow)
         prev_cfile = cfile
     cur_m = GM.OkapiBM25Model(corpus)
-    tmp_file = GT.get_tmpfile("bm25_tmp")
+    tmp_file = GT.get_tmpfile(idx_path)
     cur_sim = GS.Similarity(tmp_file, cur_m[corpus], len(gdict))
     return cur_m, gdict, cur_sim, pl, train_uris
 

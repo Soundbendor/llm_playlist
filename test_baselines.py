@@ -35,8 +35,8 @@ pl_sampnum = 100
 
 model_path = os.path.join(G.model_dir, 'retrain2_bm25.model')
 dict_path = os.path.join(G.model_dir, 'retrain2_bm25.dict' )
-idx_path = os.path.join(G.model_dir, 'retrain2_bm25_full4.index')
-pl_path = os.path.join(G.model_dir, 'retrain2_bm25_full4.playlist')
+idx_path = os.path.join(G.model_dir, 'retrain2_bm25.index')
+pl_path = os.path.join(G.model_dir, 'retrain2_bm25.playlist')
 
 
 print(f'running on {valid_dir}')
@@ -212,8 +212,8 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
 all_uris = get_popularity_uris()
 #exprs = ['euclid', 'random']
 #exprs = ['bm25','euclid','random']
-exprs = ['euclid']
-#exprs = ['bm25']
+#exprs = ['euclid']
+exprs = ['bm25']
 challenges = UG.get_challenges()
 
 for expr in exprs:
@@ -248,7 +248,7 @@ for expr in exprs:
             csvr = csv.DictReader(f)
             bstuff['plinfo'] = np.array([row for row in csvr])
 
-    res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_retrain2_full4')
+    res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_retrain2')
 
     chall_avgarr = []
     for chall in challenges:
