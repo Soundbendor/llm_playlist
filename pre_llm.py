@@ -74,6 +74,19 @@ def rank_uri_by_playlist(_uri,_bm25, _dict, _idx, _plinfo):
 
 
 
+def rank_train_playlists_by_random(random_uris,_bm25, _dict, _idx, _plinfo):
+
+    bow = _dict.doc2bow(random_uris)
+    
+    cur_rep = _bm25[bow]
+    cur_sim = _idx[cur_rep]
+    top_idx = np.argsort(cur_sim)[::-1]
+    top_sim = cur_sim[top_idx]
+    top_pl = _plinfo[top_idx]
+    return top_idx, top_sim, top_pl
+
+
+
 
 def rank_train_playlists_by_playlist(playlist,_bm25, _dict, _idx, _plinfo, mask = 99999):
     cfile = playlist['file']

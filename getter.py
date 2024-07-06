@@ -157,6 +157,23 @@ def all_songs_tx(df, normalize=True, train_uri_file = '', train_uri_dir =  os.pa
     txdict['pca'] = pcaer
     return np_all_feat, txdict
 
+
+def get_joined_songs():
+    res = []
+    with open(os.path.join(G.data_dir2, 'joinedsongs.txt'), 'r') as f:
+        res = np.array([x.strip() for x in f.readlines()])
+    return res
+ 
+
+def get_all_songs():
+    res = []
+    with open(os.path.join(G.data_dir2, 'allsongs.txt'), 'r') as f:
+        res = np.array([x.strip() for x in f.readlines()])
+    return res
+   
+def get_random_songs(songlist, rng, num=100):
+    return songlist[rng.choice(np.arange(songlist.shape[0]), size=num, replace=False)]
+
 # pl_file is json file 
 def get_playlist_json(pl_file):
     cpath = os.path.join(G.data_dir, pl_file)

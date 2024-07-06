@@ -35,8 +35,8 @@ pl_sampnum = 100
 
 model_path = os.path.join(G.model_dir, 'retrain2_bm25.model')
 dict_path = os.path.join(G.model_dir, 'retrain2_bm25.dict' )
-idx_path = os.path.join(G.model_dir, 'retrain2_bm25.index')
-pl_path = os.path.join(G.model_dir, 'retrain2_bm25.playlist')
+idx_path = os.path.join(G.model_dir, 'retrain2_bm25_train_2.index')
+pl_path = os.path.join(G.model_dir, 'retrain2_bm25_train_2.playlist')
 
 
 print(f'running on {valid_dir}')
@@ -46,6 +46,7 @@ print(f'running on {valid_dir}')
 #pl_path = os.path.join(G.model_dir, 'bm25.playlist')
 
 chall_todo = []
+
 if len(sys.argv) > 1:
     chall_todo = set([int(x) for x in sys.argv[1:]])
 """
@@ -162,7 +163,7 @@ def sample_from_playlists(_rng, _idxs, _sims, _plinfo, ipt_uris, sample_num = 10
     return top_idxs, top_scores, top_uris
     
 
-def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type = 'random', mdict = None, playlist = None):
+def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type = 'random', mdict = None, playlist = None, is_random = False, random_uris = None):
     _cond_num = 0
     if mdict != None:
         _cond_num = mdict['mask']
@@ -175,8 +176,15 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
         guess_ids = _rng.choice(use_songs, size=guess_num, replace=False)
         guess = np.array([f'spotify:track:{_id}' for _id in guess_ids])
     elif expr_type == 'bm25':
-        print(f'ranking playlists with mask={_cond_num}')
-        top_idx, top_sim, top_pl = PL.rank_train_playlists_by_playlist(playlist,mdict['model'], mdict['dict'], mdict['sim'], mdict['plinfo'], mask = mdict['mask'])
+        top_idx = None
+        top_sim = None
+        top_pl = None
+        if is_random == False:
+            print(f'ranking playlists with mask={_cond_num} (non-random)')
+            top_idx, top_sim, top_pl = PL.rank_train_playlists_by_playlist(playlist,mdict['model'], mdict['dict'], mdict['sim'], mdict['plinfo'], mask = mdict['mask'])
+        else:
+            print(f'ranking playlists with mask={_cond_num} (random)')
+            top_idx, top_sim, top_pl = PL.rank_train_playlists_by_random(random_uris,mdict['model'], mdict['dict'], mdict['sim'], mdict['plinfo'])
 
         #print(top_idx, top_sim, top_pl)
         print(f'sampling from {pl_sampnum} playlists')
@@ -216,6 +224,8 @@ all_uris = get_popularity_uris()
 exprs = ['bm25']
 challenges = UG.get_challenges()
 
+all_songs = UG.get_joined_songs()
+
 for expr in exprs:
     num_chall_run = 0
     rng = np.random.default_rng(seed=cur_seed)
@@ -248,10 +258,11 @@ for expr in exprs:
             csvr = csv.DictReader(f)
             bstuff['plinfo'] = np.array([row for row in csvr])
 
-    res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_retrain2')
+    res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_retrain2_train_joined')
 
     chall_avgarr = []
     for chall in challenges:
+        print(chall)
         chall_num = chall['challenge']
         if chall_num <= 1:
             # non baseline challenge
@@ -265,6 +276,7 @@ for expr in exprs:
         cond_num = chall['num_cond']
         bstuff['mask'] = cond_num
         file_idx = chall['file_idx']
+        is_random = chall['random']
         chall_file = chall['file']
         val_plgen = UG.playlist_csv_generator(chall_file, csv_path = valid_dir,rows = test_num)
         chall_res = []
@@ -289,7 +301,11 @@ for expr in exprs:
             print(f'RUNNING EXPERIMENT {expr} {val_idx+1}: CHALLENGE {chall_num}')
             print(f'file: {cfile}, guess_num: {gen_num}, cond_num: {cond_num}, num_playlists: {pl_sampnum}')
             print('---------')
-            guess = get_guess(all_uris, cur_uris, rng, expr_type = expr, guess_num = gen_num, mdict = bstuff, playlist = val_pl)
+            random_uris = None
+            if is_random == True:
+                print("getting random tracks")
+                random_uris = UG.get_random_songs(all_songs, rng, num=cond_num)
+            guess = get_guess(all_uris, cur_uris, rng, expr_type = expr, guess_num = gen_num, mdict = bstuff, playlist = val_pl, is_random=is_random,random_uris=random_uris)
             cur_m = UM.calc_metrics(ground_truth, guess, max_clicks=gen_num)
             guess_fname2 = f'chall-bin_{file_idx}-guess_{val_idx}.json'
             UM.guess_writer_flat(guess, fname=guess_fname2, fpath=res_path)
