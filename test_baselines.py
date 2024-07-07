@@ -35,8 +35,8 @@ pl_sampnum = 100
 
 model_path = os.path.join(G.model_dir, 'retrain2_bm25.model')
 dict_path = os.path.join(G.model_dir, 'retrain2_bm25.dict' )
-idx_path = os.path.join(G.model_dir, 'retrain2_bm25_full4.index')
-pl_path = os.path.join(G.model_dir, 'retrain2_bm25_full4.playlist')
+idx_path = os.path.join(G.model_dir, 'retrain2_bm25_train_2.index')
+pl_path = os.path.join(G.model_dir, 'retrain2_bm25_train_2.playlist')
 
 
 print(f'running on {valid_dir}')
@@ -224,7 +224,7 @@ all_uris = get_popularity_uris()
 exprs = ['bm25']
 challenges = UG.get_challenges()
 
-all_songs = UG.get_all_songs()
+all_songs = UG.get_full_songs()
 
 for expr in exprs:
     num_chall_run = 0
@@ -258,7 +258,7 @@ for expr in exprs:
             csvr = csv.DictReader(f)
             bstuff['plinfo'] = np.array([row for row in csvr])
 
-    res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_retrain2_full4_full')
+    res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_retrain2_train_joined')
 
     chall_avgarr = []
     for chall in challenges:
