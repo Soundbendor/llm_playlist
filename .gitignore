@@ -10,3 +10,7 @@ models/bm25.dict
 gound_gpt_output.py
 filtered_validation_set_uris.csv
 train_set_uris.csv
+res/bline-chall_bm25_500_retrain2_full4/guess_per/*    
+res/bline-chall_bm25_500_retrain2_full4_joinedstitched/guess_per/*
+res/bline-chall_bm25_500_retrain2_train_joined/guess_per/*    
+res/bline-chall_bm25_500_retrain2_train_joinedpartial/*    
