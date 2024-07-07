@@ -13,7 +13,7 @@ import pandas as pd
 import pre_llm as PL
 from collections import defaultdict
 cur_seed = 5
-
+euc_filter_by_train = False
 # condition on 10, generate 100, should be at least 20 songs length
 # 500 samples
 data_dir = os.path.join(__file__.split(os.sep)[0], 'data')
@@ -209,7 +209,11 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
         """
         #print(_guess)
     elif expr_type == 'euclid':
-        playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
+        playlist_ids = None
+        if is_random == False:
+            playlist_ids = [x.split(':')[-1].strip() for x in playlist_uris[:mdict['mask']]]
+        else:
+            playlist_ids = [x.split(':')[-1].strip() for x in random_uris]
         use_locs = [mdict['ididx'].get_loc(x) for x in mdict['ididx'] if x.strip() not in playlist_ids]
         top_idx, top_songs, top_dist = get_closest_songs_to_playlist(bstuff['cnx'], playlist_ids,mdict['song_df'].iloc[use_locs], mdict['song_feat'][use_locs], metric='euclidean', weights = cs_weights,tx = mdict['txs'], k = guess_num)
         guess = np.array([f'spotify:track:{_id}' for _id in top_songs['id'].values])
@@ -220,11 +224,11 @@ def get_guess(candidate_songs, playlist_uris, _rng, guess_num = 100, expr_type =
 all_uris = get_popularity_uris()
 #exprs = ['euclid', 'random']
 #exprs = ['bm25','euclid','random']
-#exprs = ['euclid']
-exprs = ['bm25']
+exprs = ['euclid']
+#exprs = ['bm25']
 challenges = UG.get_challenges()
 
-all_songs = UG.get_full_songs()
+all_songs = UG.get_all_songs()
 
 for expr in exprs:
     num_chall_run = 0
@@ -240,8 +244,9 @@ for expr in exprs:
     txs = None
     bstuff = {}
     bstuff['cnx'], _ = UG.connect_to_nct()
-    bstuff['song_df'] = pd.read_csv(df_path, index_col=[0])
-    bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(bstuff['song_df'], normalize=True, train_uri_file = 'train.uris', train_uri_dir = valid_dir, pca = 0, seed=cur_seed)
+    #bstuff['song_df'] = pd.read_csv(df_path, index_col=[0])
+    all_df = pd.read_csv(df_path, index_col=[0])
+    bstuff['song_df'], bstuff['song_feat'], bstuff['txs'] = UG.all_songs_tx(all_df, normalize=True, train_uri_file = 'train.uris', train_uri_dir = valid_dir, filter_by_train = euc_filter_by_train, pca = 0, seed=cur_seed)
     bstuff['ididx'] = pd.Index(bstuff['song_df']['id'])
     #bstuff['song_df'] = bstuff['song_df'].set_index('id')
     #print('got here')
@@ -258,7 +263,7 @@ for expr in exprs:
             csvr = csv.DictReader(f)
             bstuff['plinfo'] = np.array([row for row in csvr])
 
-    res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_retrain2_train_joined')
+    res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_full_joined')
 
     chall_avgarr = []
     for chall in challenges:

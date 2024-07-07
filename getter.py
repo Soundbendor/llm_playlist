@@ -130,7 +130,8 @@ def df_filter_by_uri_file(df, urifile, uri_dir = os.path.join(os.sep.join(__file
 
 
 # input is a dataframe with all features, (numpy) features and scaler
-def all_songs_tx(df, normalize=True, train_uri_file = '', train_uri_dir =  os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data'), pca = 3, seed=5):
+# filter_by_train means only return training songs
+def all_songs_tx(df, normalize=True, train_uri_file = '', train_uri_dir =  os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'data'), filter_by_train = False, pca = 3, seed=5):
     mmscl = None
     np_all_feat = None
     train_df = None
@@ -144,7 +145,10 @@ def all_songs_tx(df, normalize=True, train_uri_file = '', train_uri_dir =  os.pa
             np_all_feat = mmscl.fit_transform(df[comp_feat].to_numpy())
         else:
             mmscl.fit(train_df[comp_feat].to_numpy())
-            np_all_feat = mmscl.transform(df[comp_feat].to_numpy())
+            if filter_by_train == False:
+                np_all_feat = mmscl.transform(df[comp_feat].to_numpy())
+            else:
+                np_all_feat = mmscl.transform(train_df[comp_feat].to_numpy())
             
     else:
         np_all_feat = df[comp_feat].to_numpy()
@@ -155,7 +159,12 @@ def all_songs_tx(df, normalize=True, train_uri_file = '', train_uri_dir =  os.pa
     txdict = defaultdict(lambda: None)
     txdict['scaler'] = mmscl
     txdict['pca'] = pcaer
-    return np_all_feat, txdict
+    ret_df = None
+    if filter_by_train == True:
+        ret_df = train_df
+    else:
+        ret_df = df
+    return ret_df, np_all_feat, txdict
 
 
 def get_joined_songs():
