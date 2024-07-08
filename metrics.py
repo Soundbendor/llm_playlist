@@ -147,7 +147,7 @@ def metrics_writer(res_arr, fname='res.csv', fpath= os.path.join(os.sep.join(__f
 def guess_writer_flat(guess_arr, fname='guess.json', fpath = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'res')):
     if os.path.exists(fpath) == False:
         os.mkdir(fpath)
-    guess_path = os.path.join(fpath,'guess_all')
+    guess_path = os.path.join(fpath,'guess_per')
     if os.path.exists(guess_path) == False:
         os.mkdir(guess_path)
     with open(os.path.join(guess_path,fname), 'w') as f:
@@ -158,7 +158,7 @@ def guess_writer_flat(guess_arr, fname='guess.json', fpath = os.path.join(os.sep
 def guess_writer(guess_arr, fname='guess.json', fpath = os.path.join(os.sep.join(__file__.split(os.sep)[:-1]), 'res')):
     if os.path.exists(fpath) == False:
         os.mkdir(fpath)
-    guess_path = os.path.join(fpath,'guess_per')
+    guess_path = os.path.join(fpath,'guess_all')
     if os.path.exists(guess_path) == False:
         os.mkdir(guess_path)
     with open(os.path.join(guess_path,fname), 'w') as f:
