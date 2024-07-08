@@ -1,13 +1,14 @@
 import csv, os
 import metrics as UM
-expr = "bm25"
+#expr = "bm25"
+expr = "euclid"
 gen_num = 500
 
 
 
 
 res_dir = os.path.join(__file__.split(os.sep)[0], 'res')
-res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_retrain2_train_all')
+res_path = os.path.join(res_dir, f'bline-chall_{expr}_{gen_num}_train_joined')
 header = ["r_precision","ndcg","clicks","rr","recall"]
 
 chall_avgarr = []
