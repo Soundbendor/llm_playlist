@@ -17,4 +17,6 @@ res/bline-chall_bm25_500_retrain2_train_joined/guess_per/*
 res/bline-chall_bm25_500_retrain2_train_all/guess_per/*    
 res/bline-chall_bm25_500_retrain2_train_joinedpartial/*    
 res/bline-chall_euclid_500_train_joined/guess_per/*    
-res/bline-chall_euclid_500_full_joined/guess_per/*    
+res/bline-chall_euclid_500_full_joined/guess_per/*
+
+res/chall_llama_500_full_joined/guess_per/*
